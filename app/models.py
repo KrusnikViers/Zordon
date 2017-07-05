@@ -1,4 +1,5 @@
 import peewee as pw
+import peewee_migrate as pwm
 from definitions import database_credentials
 
 _database = pw.PostgresqlDatabase(database_credentials['NAME'],
@@ -6,13 +7,12 @@ _database = pw.PostgresqlDatabase(database_credentials['NAME'],
                                   password=database_credentials['PASSWORD'],
                                   host=database_credentials['HOST'],
                                   port=database_credentials['PORT'])
+_router = pwm.Router(_database)
+_router.run()
 
 
 class _BaseModel(pw.Model):
     """ Base model, that uses PostgreSQL database """
-    def __init__(self):
-        pass
-
     class Meta:
         database = _database
 

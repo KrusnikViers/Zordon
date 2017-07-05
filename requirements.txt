@@ -1,4 +1,5 @@
 dj-database-url==0.4.2       # Tool for parsing 12factor DATABASE_URL
 peewee==2.10.1               # Lightweight ORM
+peewee_migrate==0.12.1       # Migrations tool for ORM
 psycopg2 == 2.7.1            # API for PostgreSQL database
 python-telegram-bot == 6.1.0 # Python API for Telegram Bot
