@@ -20,11 +20,10 @@ Should be received from @BotFather during bot registration.
 * `DATABASE_URL`\
 DSN-formatted complete URL of PostgreSQL database.\
 DSN-format: `postgres://<user>:<password>@<host>:<port>/<database_name>`.
+* `SUPERUSER_LOGIN`\
+Username (without @) of only user with unlimited access 
 * `COOLDOWN_TIME` (optional)\
 Duration (in minutes) of time period, while user considered as participant of activity.
 * `WEBHOOK_URL` (optional)\
 URL of the Zordon server.\
 If set, bot will run in webhook mode, instead of usual polling.
-
-
-

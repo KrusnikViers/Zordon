@@ -1,11 +1,11 @@
 import peewee as pw
-from definitions import database_credentials as db_credentials
+from definitions import database_credentials
 
-_database = pw.PostgresqlDatabase(db_credentials['NAME'],
-                                  user=db_credentials['USER'],
-                                  password=db_credentials['PASSWORD'],
-                                  host=db_credentials['HOST'],
-                                  port=db_credentials['PORT'])
+_database = pw.PostgresqlDatabase(database_credentials['NAME'],
+                                  user=database_credentials['USER'],
+                                  password=database_credentials['PASSWORD'],
+                                  host=database_credentials['HOST'],
+                                  port=database_credentials['PORT'])
 
 
 class _BaseModel(pw.Model):
@@ -20,9 +20,8 @@ class _BaseModel(pw.Model):
 class User(_BaseModel):
     """ Telegram user, signed for bot's services """
     telegram_id = pw.IntegerField(primary_key=True)
-    dnd_start_time = pw.TimeField(null=True)
-    dnd_end_time = pw.TimeField(null=True)
     is_active = pw.BooleanField()
+    is_moderator = pw.BooleanField()
 
 
 class Activity(_BaseModel):
