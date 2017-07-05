@@ -1,7 +1,11 @@
 import peewee as pw
-import definitions as defines
+from definitions import database_credentials as db_credentials
 
-_database = pw.PostgresqlDatabase(defines.db_name, user=defines.db_user, password=defines.db_pass, host=defines.db_host)
+_database = pw.PostgresqlDatabase(db_credentials['NAME'],
+                                  user=db_credentials['USER'],
+                                  password=db_credentials['PASSWORD'],
+                                  host=db_credentials['HOST'],
+                                  port=db_credentials['PORT'])
 
 
 class _BaseModel(pw.Model):
@@ -32,5 +36,8 @@ class Participant(_BaseModel):
     user = pw.ForeignKeyField(User)
     activity = pw.ForeignKeyField(Activity)
 
-# Create models, if necessary
-_database.create_tables([User, Activity, Participant], safe=True)
+
+class Subscriber(_BaseModel):
+    """ User, receiving notifications and able to call other users for activity """
+    user = pw.ForeignKeyField(User)
+    activity = pw.ForeignKeyField(Activity)

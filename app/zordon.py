@@ -1,21 +1,21 @@
-import definitions
-import telegram.ext as tg_ext
-import models
-
 import logging
 from logging import info
+from telegram.ext import Updater
+
+import definitions
+import models
 
 
 logging.basicConfig(format='%(asctime)s:%(name)s:%(levelname)s - %(message)s', level=logging.INFO)
 
-updater = tg_ext.Updater(token=definitions.token)
-if definitions.is_hook_on:
-    updater.start_webhook(listen=definitions.hook_host,
-                          port=definitions.hook_port,
-                          url_path=definitions.hook_path)
-    info('Web hook was enabled, listening')
+updater = Updater(token=definitions.telegram_token)
+if definitions.is_web_hook_mode:
+    updater.start_webhook(listen=definitions.web_hook_params.hostname,
+                          port=definitions.web_hook_params.port,
+                          url_path=definitions.web_hook_params.path)
+    info('Web hook is enabled, listening on {0}'.format(definitions.web_hook_params.geturl()))
 else:
     updater.start_polling()
-    info('Web hook was disabled, polling')
+    info('Web hook is not set, polling')
 
 info(updater.bot.get_me())

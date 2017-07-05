@@ -1,14 +1,13 @@
 import os
+import dj_database_url
+import urlparse
 
-token = os.environ['ZRD_TELEGRAM_TOKEN']
+telegram_token = os.environ['TELEGRAM_TOKEN']
 
-db_name = os.getenv('ZRD_DB_NAME', 'zordon_db')
-db_host = os.getenv('ZRD_DB_HOST', '127.0.0.1')
-db_user = os.getenv('ZRD_DB_USER', 'zordon_user')
-db_pass = os.getenv('ZRD_DB_PASS', '')
+database_credentials = dj_database_url.parse(os.environ['DATABASE_URL'])
 
-is_hook_on = os.getenv('ZRD_HOOK_ENABLED', False)
-if is_hook_on:
-    hook_host = os.getenv('ZRD_HOOK_HOST', '127.0.0.1')
-    hook_path = os.getenv('ZRD_HOOK_PATH', '')
-    hook_port = int(os.getenv('ZRD_HOOK_PORT', 80))
+cooldown_time_minutes = os.getenv('COOLDOWN_TIME', 120)
+
+is_web_hook_mode = 'WEB_HOOK_URL' in os.environ
+if is_web_hook_mode:
+    web_hook_params = urlparse(os.environ['WEB_HOOK_URL'])
