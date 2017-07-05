@@ -13,6 +13,10 @@ _router.run()
 
 class _BaseModel(pw.Model):
     """ Base model, that uses PostgreSQL database """
+    def __init__(self, *args, **kwargs):
+        # Explicitly passing constructor arguments to pw.Model.
+        super(_BaseModel, self).__init__(*args, **kwargs)
+
     class Meta:
         database = _database
 
@@ -31,7 +35,7 @@ class Activity(_BaseModel):
 
 class Participant(_BaseModel):
     """ User, agreed to take part in some activity """
-    applying_time = pw.TimestampField(null=False)
+    applying_time = pw.TimestampField()
     user = pw.ForeignKeyField(User)
     activity = pw.ForeignKeyField(Activity)
 
