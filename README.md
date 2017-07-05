@@ -1,4 +1,6 @@
 # Zordon Telegram Bot
+[![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg?branch=master&style=flat)](https://travis-ci.org/KrusnikViers/Zordon)
+[![Build Status](https://img.shields.io/badge/License-MIT-green.svg?style=flat)](https://opensource.org/licenses/MIT)
 
 _Gathers together the most powerful kittens, pandas and capybaras in this Universe. And your friends, also._
 
