@@ -1,1 +1,1 @@
-web: python app/zordon.py
+web: python run_bot.py
