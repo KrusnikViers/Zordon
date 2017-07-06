@@ -28,4 +28,4 @@ env:
     - TELEGRAM_TOKEN="ZTestToken"
 
 script:
-  - python app/tests/test_launch.py
+  - python -m unittest tests.test_launch
