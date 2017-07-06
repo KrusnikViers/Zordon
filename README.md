@@ -1,8 +1,9 @@
 # Zordon Telegram Bot
 _Gathers together the most powerful kittens, pandas and capybaras in the Universe to fight with evil and boredom. Or, at least, to play Overwatch._
 
-[![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg?branch=master&style=flat)](https://travis-ci.org/KrusnikViers/Zordon)
-[![Build Status](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg?branch=master)](https://travis-ci.org/KrusnikViers/Zordon)
+[![Python Versions](https://img.shields.io/badge/python-3.3%2C%203.4%2C%203.5%2C%203.6%2C%203.7-blue.svg)](https://travis-ci.org/KrusnikViers/Zordon)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 **Dependencies:**
 * Python 3.3 or newer
