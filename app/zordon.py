@@ -18,6 +18,3 @@ class ZordonBot:
 
         set_handlers(self.updater.dispatcher)
         print(self.updater.bot.get_me())
-
-if __name__ == '__main__':
-    instance = ZordonBot()

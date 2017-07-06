@@ -1,6 +1,7 @@
 import telegram.ext
 from .models import *
 from .utils import personal_command
+from .definitions import superuser_login
 
 
 @personal_command
@@ -14,6 +15,8 @@ def _on_status(bot, update, user):
         .format(update.effective_user.name,
                 "ready for invitations" if user.is_active else "not receiving invitations",
                 " and able to summon people or create activities" if user.is_moderator else "")
+    if update.effective_user.name == '@' + superuser_login:
+        response += " Your account has superuser rights also."
     bot.send_message(chat_id=update.message.chat_id, text=response)
 
 
