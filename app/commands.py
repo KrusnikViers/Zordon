@@ -1,25 +1,57 @@
 import telegram.ext
+import telegram
 from .models import *
 from .utils import personal_command
 from .definitions import superuser_login
 
 
-@personal_command
-def _on_start(bot, update, _):
-    bot.send_message(chat_id=update.message.chat_id, text="Welcome! Let's fight evil and boredom together, friend.")
+cmd_start = "start"
+cmd_status = "status"
+cmd_activate = "ready"
+cmd_deactivate = "do_not_disturb"
 
 
-@personal_command
-def _on_status(bot, update, user):
-    response = "{0}, at the moment you are {1}{2}."\
-        .format(update.effective_user.name,
-                "ready for invitations" if user.is_active else "not receiving invitations",
-                " and able to summon people or create activities" if user.is_moderator else "")
+def _default_response(bot: telegram.Bot, update: telegram.Update, user: User):
+    """ Reporting user status and providing common inline keyboard. Should be called only from handlers. """
+    response = "{0}, currently you are {1}receiving notifications."\
+        .format(update.effective_user.name, "" if user.is_active else "not ")
+    if user.is_moderator:
+        response += "\nYou have power to create new activities and appeal to your friends!"
     if update.effective_user.name == '@' + superuser_login:
-        response += " Your account has superuser rights also."
+        response += "\nYou are superuser. Use this power wisely."
     bot.send_message(chat_id=update.message.chat_id, text=response)
 
 
+@personal_command
+def _on_status(bot: telegram.Bot, update: telegram.Update, user: User):
+    """ Default handler, that output basic information and inline keyboard. """
+    _default_response(bot, update, user)
+
+
+@personal_command
+def _on_activate(bot: telegram.Bot, update: telegram.Update, user: User):
+    """ Handler of user activation command """
+    if not user.is_active:
+        user.is_active = True
+        user.save()
+    _default_response(bot, update, user)
+
+
+@personal_command
+def _on_deactivate(bot: telegram.Bot, update: telegram.Update, user: User):
+    """ Handler of user deactivation command """
+    if user.is_active:
+        user.is_active = False
+        user.save()
+    bot.send_message(chat_id=update.message.chat_id,
+                     text="I will not disturb you now, friend.",
+                     reply_markup=telegram.InlineKeyboardMarkup([[
+                         telegram.InlineKeyboardButton('Ready again!', callback_data=cmd_activate)
+                     ]]))
+
+
 def set_handlers(dispatcher):
-    dispatcher.add_handler(telegram.ext.CommandHandler('start', _on_start))
-    dispatcher.add_handler(telegram.ext.CommandHandler('status', _on_status))
+    dispatcher.add_handler(telegram.ext.CommandHandler(cmd_start, _on_status))
+    dispatcher.add_handler(telegram.ext.CommandHandler(cmd_status, _on_status))
+    dispatcher.add_handler(telegram.ext.CommandHandler(cmd_activate, _on_activate))
+    dispatcher.add_handler(telegram.ext.CommandHandler(cmd_deactivate, _on_deactivate))
