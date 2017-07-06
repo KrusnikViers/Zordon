@@ -1,13 +1,14 @@
+from os.path import dirname, realpath, sep
 import peewee as pw
 import peewee_migrate as pwm
-from definitions import database_credentials
+from .definitions import database_credentials
 
 _database = pw.PostgresqlDatabase(database_credentials['NAME'],
                                   user=database_credentials['USER'],
                                   password=database_credentials['PASSWORD'],
                                   host=database_credentials['HOST'],
                                   port=database_credentials['PORT'])
-_router = pwm.Router(_database)
+_router = pwm.Router(_database, migrate_dir=dirname(realpath(__file__)) + sep + "migrations")
 _router.run()
 
 

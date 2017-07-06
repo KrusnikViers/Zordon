@@ -1,6 +1,6 @@
 import telegram.ext
-from models import *
-from utils import personal_command
+from .models import *
+from .utils import personal_command
 
 
 @personal_command

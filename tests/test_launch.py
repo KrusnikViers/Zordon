@@ -1,8 +1,11 @@
-import unittest
 from app.zordon import ZordonBot
+from telegram.ext import Updater
+from unittest import TestCase
+from unittest.mock import create_autospec, patch
 
 
-class TestLaunch(unittest.TestCase):
+class TestLaunch(TestCase):
     def test_basic_launch(self):
-        bot_instance = ZordonBot()
-        bot_instance.updater.stop()
+        telegram_updater_mock = create_autospec(Updater)
+        with patch('Updater') as telegram_updater_mock:
+            bot_instance = ZordonBot()

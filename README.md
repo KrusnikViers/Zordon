@@ -9,7 +9,7 @@ Allow to register set of activities. Users, subscribed on Bot and specific activ
 ### Deployment:
 
 **Dependencies:**
-* Python 2.7
+* Python 3.6.1
 * PostgreSQL DB
 
 **Environment variables:**
@@ -21,7 +21,7 @@ Should be received from @BotFather during bot registration.
 DSN-formatted complete URL of PostgreSQL database.\
 DSN-format: `postgres://<user>:<password>@<host>:<port>/<database_name>`.
 * `SUPERUSER_LOGIN`\
-Username (without @) of only user with unlimited access 
+Username (without @) of only user with unlimited access
 * `COOLDOWN_TIME` (optional)\
 Duration (in minutes) of time period, while user considered as participant of activity.
 * `WEBHOOK_URL` (optional)\

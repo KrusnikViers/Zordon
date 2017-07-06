@@ -1,6 +1,6 @@
 import os
 import dj_database_url
-import urlparse
+from urllib.parse import urlparse
 
 # Required environment variables.
 telegram_token = os.environ['TELEGRAM_TOKEN']
