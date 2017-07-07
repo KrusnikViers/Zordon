@@ -1,6 +1,6 @@
 from telegram.ext import Updater, Dispatcher
 from unittest import TestCase
-from unittest.mock import create_autospec, patch, Mock, MagicMock
+from unittest.mock import create_autospec, patch
 
 
 class UpdaterMock(Updater):
@@ -19,4 +19,4 @@ class TestLaunch(TestCase):
     def test_launch(self):
         app.zordon.ZordonBot()
         updater_mock().start_polling.assert_called_once_with()
-        assert updater_mock().dispatcher.add_handler.called
+        self.assertTrue(updater_mock().dispatcher.add_handler.called)
