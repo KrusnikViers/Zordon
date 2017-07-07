@@ -2,16 +2,18 @@ dist: trusty
 sudo: false
 language: python
 python:
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "3.5-dev"
-  - "3.6"
-  - "3.6-dev"
-  - "3.7-dev"
-  - "nightly"
+  - 3.3
+  - 3.4
+  - 3.5
+  - 3.5-dev
+  - 3.6
+  - 3.6-dev
+  - 3.7-dev
+  - nightly
 
-install: "pip install -r requirements.txt"
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
 
 services:
   - postgresql
@@ -26,4 +28,7 @@ env:
     - TELEGRAM_TOKEN="ZTestToken"
 
 script:
-  - python -m unittest tests.test_launch
+  - coverage run --source=app -m unittest
+
+after_success:
+  - coveralls
