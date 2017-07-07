@@ -31,8 +31,6 @@ commands_map = {
 
 def personal_command(decorated_handler):
     def wrapper(bot: Bot, update: Update):
-        if not update.effective_user:
-            return
         user = User.get_or_create(telegram_id=update.effective_user.id,
                                   defaults={'is_active': True,
                                             'is_moderator': False,
@@ -45,11 +43,7 @@ def personal_command(decorated_handler):
 
 
 def keyboard_for_user(user: User):
-    keymap = [[
-        KeyboardButton('/' + (commands_map['deactivate'] if user.is_active else commands_map['activate'])),
-        KeyboardButton('/' + commands_map['status'])
-    ]]
-    if user.has_right('summon'):
-        keymap[0].append(KeyboardButton('/' + commands_map['summon']))
-    keymap[0].append(KeyboardButton('/' + commands_map['activity_list']))
-    return ReplyKeyboardMarkup(keymap, resize_keyboard=True)
+    activation_command = 'deactivate' if user.is_active else 'activate'
+    possible_commands = [activation_command, 'status', 'summon', 'activity_list', 'moderator_list']
+    keyboard_row = [KeyboardButton('/' + commands_map[x]) for x in possible_commands if user.has_right(x)]
+    return ReplyKeyboardMarkup([keyboard_row], resize_keyboard=True)

@@ -15,10 +15,6 @@ _router.run()
 
 class _BaseModel(pw.Model):
     """ Base model, that uses PostgreSQL database """
-    def __init__(self, *args, **kwargs):
-        # Explicitly passing constructor arguments to pw.Model.
-        super(_BaseModel, self).__init__(*args, **kwargs)
-
     class Meta:
         database = _database
 
