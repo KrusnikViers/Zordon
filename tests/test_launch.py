@@ -10,5 +10,3 @@ class TestLaunch(TestCase):
         with patch('telegram.ext.Updater') as _updater_mock:
             from app.zordon import ZordonBot
             bot_instance = ZordonBot()
-
-            _updater_mock().bot.get_me.assert_called_once_with()

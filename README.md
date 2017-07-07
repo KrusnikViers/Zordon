@@ -6,7 +6,10 @@ _Gathers together the most powerful kittens, pandas and capybaras in the Univers
 [![Python Versions](https://img.shields.io/badge/python-3.3%2C%203.4%2C%203.5%2C%203.6%2C%203.7-blue.svg)](https://travis-ci.org/KrusnikViers/Zordon)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+To run bot, you have to set necessary environment variables and run `python run_bot.py`. Tests can be run via `python -m unittests` in root directory.
+
 **Dependencies:**
+
 * Python 3.3 or newer
 * PostgreSQL 9.2 or newer
 * Packages from `requirements.txt`
@@ -26,7 +29,3 @@ Username (without @) of only user with unlimited access
 
 * `COOLDOWN_TIME` (optional)\
 Duration (in minutes) of time period, while user considered as participant of activity.
-
-* `WEBHOOK_URL` (optional)\
-URL of the Zordon server.\
-If set, bot will run in webhook mode, instead of usual polling.
