@@ -1,7 +1,8 @@
 from os.path import dirname, realpath, sep
 import peewee as pw
 import peewee_migrate as pwm
-from .definitions import database_credentials
+from .definitions import database_credentials, superuser_login
+
 
 _database = pw.PostgresqlDatabase(database_credentials['NAME'],
                                   user=database_credentials['USER'],
@@ -25,8 +26,16 @@ class _BaseModel(pw.Model):
 class User(_BaseModel):
     """ Telegram user, signed for bot's services """
     telegram_id = pw.IntegerField(primary_key=True)
+    telegram_login = pw.TextField(null=True)
     is_active = pw.BooleanField()
     is_moderator = pw.BooleanField()
+
+    def has_right(self, command: str):
+        if command in {'activity_rem', 'moderator_list', 'moderator_add', 'moderator_remove'}:
+            return self.telegram_login == '@' + superuser_login
+        if command in {'summon', 'activity_add'}:
+            return self.is_moderator or self.telegram_login == '@' + superuser_login
+        return True
 
 
 class Activity(_BaseModel):
