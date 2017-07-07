@@ -2,8 +2,9 @@
 _Gathers together the most powerful kittens, pandas and capybaras in the Universe to fight with evil and boredom. Or, at least, to play Overwatch._
 
 [![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg?branch=master)](https://travis-ci.org/KrusnikViers/Zordon)
+[![Code Climate](https://codeclimate.com/github/KrusnikViers/Zordon/badges/gpa.svg)](https://codeclimate.com/github/KrusnikViers/Zordon)
 [![Coverage Status](https://coveralls.io/repos/github/KrusnikViers/Zordon/badge.svg?branch=master)](https://coveralls.io/github/KrusnikViers/Zordon?branch=master)
-[![Python Versions](https://img.shields.io/badge/python-3.3%2C%203.4%2C%203.5%2C%203.6%2C%203.7-blue.svg)](https://travis-ci.org/KrusnikViers/Zordon)
+[![Python Versions](https://img.shields.io/badge/python-3.3-blue.svg)](https://travis-ci.org/KrusnikViers/Zordon)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 To run bot, you have to set necessary environment variables and run `python run_bot.py`. Tests can be run via `python -m unittests` in root directory.
