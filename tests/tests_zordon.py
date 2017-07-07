@@ -16,9 +16,7 @@ class TestLaunch(TestCase):
     def setUp(self):
         updater_mock.reset_mock()
 
-    def test_basic_launch_2(self):
-        print(updater_mock)
-        print(updater_mock())
+    def test_launch(self):
         app.zordon.ZordonBot()
         updater_mock().start_polling.assert_called_once_with()
         assert updater_mock().dispatcher.add_handler.called
