@@ -1,12 +1,24 @@
-from telegram.ext import Updater
+from telegram.ext import Updater, Dispatcher
 from unittest import TestCase
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec, patch, Mock, MagicMock
 
-_updater_mock = create_autospec(Updater)
+
+class UpdaterMock(Updater):
+    """ Special class for testing without actual telegram.ext.Updater """
+    dispatcher = Dispatcher
+
+updater_mock = create_autospec(UpdaterMock)
+with patch('telegram.ext.Updater', new=updater_mock):
+    import app.zordon
 
 
 class TestLaunch(TestCase):
-    def test_basic_launch(self):
-        with patch('telegram.ext.Updater') as _updater_mock:
-            from app.zordon import ZordonBot
-            bot_instance = ZordonBot()
+    def setUp(self):
+        updater_mock.reset_mock()
+
+    def test_basic_launch_2(self):
+        print(updater_mock)
+        print(updater_mock())
+        app.zordon.ZordonBot()
+        updater_mock().start_polling.assert_called_once_with()
+        assert updater_mock().dispatcher.add_handler.called
