@@ -10,7 +10,7 @@ commands_map = {
     'deactivate': 'do_not_disturb',
 
     # Commands with activities
-    'activity_list': 'activities_list',
+    'activity_list': 'list_activities',
     'activity_add': 'add_activity',  # (moderator-only)
     'activity_rem': 'remove_activity',  # (superuser-only)
     'subscribe': 'subscribe',
