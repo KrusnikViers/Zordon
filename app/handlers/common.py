@@ -31,13 +31,10 @@ commands_map = {
 
 def personal_command(decorated_handler):
     def wrapper(bot: Bot, update: Update):
-        user = User.get_or_create(telegram_id=update.effective_user.id,
-                                  defaults={'is_active': True,
-                                            'is_moderator': False,
-                                            'telegram_login': update.effective_user.name})[0]
-        if user.telegram_login != update.effective_user.name:
-            user.telegram_login = update.effective_user.name
-            user.save()
+        user = User.get_or_create(telegram_user_id=update.effective_user.id,
+                                  defaults={'telegram_login': update.effective_user.name,
+                                            'telegram_chat_id': update.message.chat_id})[0]
+        user.validate_info(update.effective_user.name)
         decorated_handler(bot, update, user)
     return wrapper
 

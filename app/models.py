@@ -21,18 +21,28 @@ class _BaseModel(pw.Model):
 
 class User(_BaseModel):
     """ Telegram user, signed for bot's services """
-    telegram_id = pw.IntegerField(primary_key=True)
+    telegram_user_id = pw.IntegerField(primary_key=True)
+    telegram_chat_id = pw.IntegerField(unique=True)
     telegram_login = pw.TextField(default='')
-    is_active = pw.BooleanField(default=True)
-    is_moderator = pw.BooleanField(default=False)
+    rights_level = pw.IntegerField(default=0)
     pending_action = pw.IntegerField(default=0)
+    is_active = pw.BooleanField(default=True)
+    is_disabled_chat = pw.BooleanField(default=False)
 
     def has_right(self, command: str):
-        if command in {'activity_rem', 'moderator_list', 'moderator_add', 'moderator_remove'}:
-            return self.telegram_login == '@' + superuser_login
-        if command in {'summon', 'activity_add'}:
-            return self.is_moderator or self.telegram_login == '@' + superuser_login
+        if self.telegram_login == '@' + superuser_login:
+            return True
+        elif command in {'activity_rem', 'moderator_list', 'moderator_add', 'moderator_remove'}:
+            return False
+        elif command in {'summon', 'activity_add'}:
+            return self.rights_level > 0
         return True
+
+    def validate_info(self, login: str):
+        if self.telegram_login != login or self.is_disabled_chat:
+            self.telegram_login = login
+            self.is_disabled_chat = False
+            self.save()
 
 
 class Activity(_BaseModel):

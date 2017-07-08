@@ -1,4 +1,4 @@
-"""Peewee migrations -- 001_0_basic.py.
+"""Peewee migrations -- 001_common.py.
 
 Some examples (model - class or model name)::
 
@@ -37,9 +37,13 @@ def migrate(migrator, database, fake=False, **kwargs):
 
     @migrator.create_model
     class User(pw.Model):
-        telegram_id = pw.IntegerField(primary_key=True)
-        is_active = pw.BooleanField()
-        is_moderator = pw.BooleanField()
+        telegram_user_id = pw.IntegerField(primary_key=True)
+        telegram_chat_id = pw.IntegerField(unique=True)
+        telegram_login = pw.TextField(default='')
+        rights_level = pw.IntegerField(default=0)
+        pending_action = pw.IntegerField(default=0)
+        is_active = pw.BooleanField(default=True)
+        is_disabled_chat = pw.BooleanField(default=False)
 
         class Meta:
             db_table = "user"
@@ -47,7 +51,7 @@ def migrate(migrator, database, fake=False, **kwargs):
     @migrator.create_model
     class Participant(pw.Model):
         applying_time = pw.TimestampField(default=dt.datetime.now)
-        user = pw.ForeignKeyField(db_column='user_id', rel_model=migrator.orm['user'], to_field='telegram_id')
+        user = pw.ForeignKeyField(db_column='user_id', rel_model=migrator.orm['user'], to_field='telegram_user_id')
         activity = pw.ForeignKeyField(db_column='activity_id', rel_model=migrator.orm['activity'], to_field='id')
 
         class Meta:
@@ -55,21 +59,17 @@ def migrate(migrator, database, fake=False, **kwargs):
 
     @migrator.create_model
     class Subscriber(pw.Model):
-        user = pw.ForeignKeyField(db_column='user_id', rel_model=migrator.orm['user'], to_field='telegram_id')
+        user = pw.ForeignKeyField(db_column='user_id', rel_model=migrator.orm['user'], to_field='telegram_user_id')
         activity = pw.ForeignKeyField(db_column='activity_id', rel_model=migrator.orm['activity'], to_field='id')
 
         class Meta:
             db_table = "subscriber"
 
 
-
 def rollback(migrator, database, fake=False, **kwargs):
     """Write your rollback migrations here."""
 
     migrator.remove_model('subscriber')
-
     migrator.remove_model('participant')
-
     migrator.remove_model('user')
-
     migrator.remove_model('activity')
