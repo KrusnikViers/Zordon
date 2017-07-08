@@ -22,9 +22,10 @@ class _BaseModel(pw.Model):
 class User(_BaseModel):
     """ Telegram user, signed for bot's services """
     telegram_id = pw.IntegerField(primary_key=True)
-    telegram_login = pw.TextField(null=True)
-    is_active = pw.BooleanField()
-    is_moderator = pw.BooleanField()
+    telegram_login = pw.TextField(default='')
+    is_active = pw.BooleanField(default=True)
+    is_moderator = pw.BooleanField(default=False)
+    pending_action = pw.IntegerField(default=0)
 
     def has_right(self, command: str):
         if command in {'activity_rem', 'moderator_list', 'moderator_add', 'moderator_remove'}:
