@@ -4,7 +4,7 @@ from ..models import *
 from ..definitions import superuser_login
 
 
-@personal_command
+@personal_command('status')
 def on_status(bot: telegram.Bot, update: telegram.Update, user: User):
     response = "Your current status: "
     response += "Ready (receiving all notifications)." if user.is_active else "DnD (do not want to be disturbed)."
@@ -15,7 +15,7 @@ def on_status(bot: telegram.Bot, update: telegram.Update, user: User):
     user.send_message(bot, text=response, reply_markup=keyboard_for_user(user))
 
 
-@personal_command
+@personal_command('activate')
 def on_activate(bot: telegram.Bot, update: telegram.Update, user: User):
     if user.is_active:
         user.send_message(bot, text="You were already receiving all notifications.")
@@ -28,7 +28,7 @@ def on_activate(bot: telegram.Bot, update: telegram.Update, user: User):
         # TODO: send all pending summons
 
 
-@personal_command
+@personal_command('deactivate')
 def on_deactivate(bot: telegram.Bot, update: telegram.Update, user: User):
     if not user.is_active:
         user.send_message(bot, text="Summon notifications were already suppressed.")

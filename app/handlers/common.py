@@ -29,14 +29,21 @@ commands_map = {
 }
 
 
-def personal_command(decorated_handler):
-    def wrapper(bot: Bot, update: Update):
-        user = User.get_or_create(telegram_user_id=update.effective_user.id,
-                                  defaults={'telegram_login': update.effective_user.name,
-                                            'telegram_chat_id': update.message.chat_id})[0]
-        user.validate_info(update.effective_user.name)
-        decorated_handler(bot, update, user)
-    return wrapper
+def personal_command(command):
+    def personal_command_impl(decorated_handler):
+        def wrapper(bot: Bot, update: Update):
+            user = User.get_or_create(telegram_user_id=update.effective_user.id,
+                                      defaults={'telegram_login': update.effective_user.name,
+                                                'telegram_chat_id': update.message.chat_id})[0]
+            user.validate_info(update.effective_user.name)
+            if command and not user.has_right(command):
+                user.send_message(bot,
+                                  text='Unfortunately, you have not enough rights to execute this command.',
+                                  reply_markup=keyboard_for_user(user))
+            else:
+                decorated_handler(bot, update, user)
+        return wrapper
+    return personal_command_impl
 
 
 def keyboard_for_user(user: User):
