@@ -1,4 +1,5 @@
 from os.path import dirname, realpath, sep
+from telegram import Bot, TelegramError
 import peewee as pw
 import peewee_migrate as pwm
 from .definitions import database_credentials, superuser_login
@@ -42,6 +43,14 @@ class User(_BaseModel):
         if self.telegram_login != login or self.is_disabled_chat:
             self.telegram_login = login
             self.is_disabled_chat = False
+            self.save()
+
+    def send_message(self, bot: Bot, *args, **kwargs):
+        try:
+            bot.send_message(chat_id=self.telegram_chat_id, *args, **kwargs)
+        except TelegramError:
+            # User locked his conversation with bot
+            self.is_disabled_chat = True
             self.save()
 
 
