@@ -47,6 +47,7 @@ def personal_command(command):
 
 def keyboard_for_user(user: User):
     activation_command = 'deactivate' if user.is_active else 'activate'
-    possible_commands = [activation_command, 'status', 'summon', 'activity_list', 'moderator_list']
-    keyboard_row = [KeyboardButton('/' + commands_map[x]) for x in possible_commands if user.has_right(x)]
-    return ReplyKeyboardMarkup([keyboard_row], resize_keyboard=True)
+    possible_commands = [[activation_command, 'status', 'summon'], ['activity_list', 'moderator_list']]
+    keyboard_markup = [[KeyboardButton('/' + commands_map[x]) for x in commands_row if user.has_right(x)]
+                       for commands_row in possible_commands]
+    return ReplyKeyboardMarkup(keyboard_markup, resize_keyboard=True)
