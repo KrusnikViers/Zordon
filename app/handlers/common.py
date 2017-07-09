@@ -33,8 +33,7 @@ def personal_command(command):
     def personal_command_impl(decorated_handler):
         def wrapper(bot: Bot, update: Update):
             user = User.get_or_create(telegram_user_id=update.effective_user.id,
-                                      defaults={'telegram_login': update.effective_user.name,
-                                                'telegram_chat_id': update.message.chat_id})[0]
+                                      defaults={'telegram_login': update.effective_user.name})[0]
             user.validate_info(update.effective_user.name)
             if command and not user.has_right(command):
                 user.send_message(bot,

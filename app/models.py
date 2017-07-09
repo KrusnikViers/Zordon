@@ -23,7 +23,6 @@ class _BaseModel(pw.Model):
 class User(_BaseModel):
     """ Telegram user, signed for bot's services """
     telegram_user_id = pw.IntegerField(primary_key=True)
-    telegram_chat_id = pw.IntegerField(unique=True)
     telegram_login = pw.TextField(default='')
     rights_level = pw.IntegerField(default=0)
     pending_action = pw.IntegerField(default=0)
@@ -47,7 +46,7 @@ class User(_BaseModel):
 
     def send_message(self, bot: Bot, *args, **kwargs):
         try:
-            bot.send_message(chat_id=self.telegram_chat_id, *args, **kwargs)
+            bot.send_message(chat_id=self.telegram_user_id, *args, **kwargs)
         except TelegramError:
             # User locked his conversation with bot
             self.is_disabled_chat = True
