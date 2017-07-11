@@ -1,8 +1,8 @@
 from unittest import TestCase
 from unittest.mock import create_autospec
-from app.models import *
+
 from app.handlers.common import commands_map
-from app.definitions import superuser_login
+from app.models import *
 
 
 class TestModels(TestCase):

@@ -1,7 +1,8 @@
 from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, Filters
-from .handlers.user import *
+
 from .handlers.activity import *
 from .handlers.messages import *
+from .handlers.user import *
 
 
 def set_handlers(dispatcher):

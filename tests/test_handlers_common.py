@@ -1,8 +1,9 @@
+from telegram import CallbackQuery
 from unittest import TestCase
 from unittest.mock import create_autospec, MagicMock, PropertyMock
-from telegram import CallbackQuery
-from app.handlers.common import *
+
 from app.definitions import superuser_login
+from app.handlers.common import *
 
 
 class TestCommonHandlers(TestCase):

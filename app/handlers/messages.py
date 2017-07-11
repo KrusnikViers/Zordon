@@ -1,5 +1,5 @@
-from .common import *
 from .activity import on_activity_add_with_name
+from .common import *
 
 
 @personal_command()

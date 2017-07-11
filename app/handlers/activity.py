@@ -1,6 +1,7 @@
+import telegram as tg
+
 from .common import *
 from ..models import *
-import telegram as tg
 
 
 @personal_command('activity_add')

@@ -1,8 +1,9 @@
+from telegram import Update
 from unittest import TestCase
 from unittest.mock import patch, create_autospec
-from app.models import *
+
 from app.handlers import common
-from telegram import Update
+from app.models import *
 
 _on_activity_add_with_name_mock = patch('app.handlers.activity.on_activity_add_with_name', autospec=True).start()
 import app.handlers.messages as h_messages

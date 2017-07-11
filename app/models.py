@@ -1,8 +1,9 @@
 from os.path import dirname, realpath, sep
-from telegram import Bot, TelegramError
 import peewee as pw
 import peewee_migrate as pwm
 import re
+from telegram import Bot, TelegramError
+
 from .definitions import database_credentials, superuser_login
 
 

@@ -1,7 +1,7 @@
 import telegram as tg
+
 from .common import *
 from ..models import *
-from ..definitions import superuser_login
 
 
 @personal_command('status')
