@@ -16,7 +16,6 @@ def on_activity_add(bot: tg.Bot, update: tg.Update, user: User):
 def on_activity_add_with_name(bot: tg.Bot, update: tg.Update, user: User):
     activity, error_message = Activity.try_to_create(update.message.text, user)
     if not activity:
-        print(error_message)
         user.send_message(bot, text='Try again: ' + error_message)
     else:
         user.pending_action = pending_user_actions['none']
@@ -41,7 +40,8 @@ def on_activity_list(bot: tg.Bot, update: tg.Update, user: User):
         response = 'Available activities:'
         for i in range(0, len(activities)):
             activity = activities[i]
-            is_subscribed = Subscriber.select().where(Subscriber.user == user).count() == 1
+            is_subscribed = Subscriber.select().where((Subscriber.user == user) &
+                                                      (Subscriber.activity == activity)).exists()
             if is_subscribed:
                 possible_actions['unsubscribe'] = True
             else:
