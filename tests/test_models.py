@@ -16,13 +16,13 @@ class TestModels(TestCase):
             self.assertEqual(user.has_right(command), (command in allowed_commands))
 
     def test_rights_level_1(self):
-        allowed_commands = {'start', 'status', 'activate', 'deactivate', 'activity_list', 'activity_add', 'subscribe',
-                            'unsubscribe', 'summon', 'join', 'later', 'decline'}
+        allowed_commands = {'start', 'status', 'activate', 'deactivate', 'activity_list', 'activity_add',
+                            'activity_rem', 'subscribe', 'unsubscribe', 'summon', 'join', 'later', 'decline'}
         user = User.create(telegram_user_id=0, rights_level=1)
         for command in commands_map:
             self.assertEqual(user.has_right(command), (command in allowed_commands))
 
     def test_superuser_rights(self):
-        user = User.create(telegram_user_id=0, telegram_login='@' + superuser_login)
+        user = User.create(telegram_user_id=0, telegram_login=superuser_login)
         for command in commands_map:
             self.assertTrue(user.has_right(command))

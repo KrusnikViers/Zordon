@@ -1,14 +1,14 @@
-import telegram
+import telegram as tg
 from .common import *
 from ..models import *
 from ..definitions import superuser_login
 
 
 @personal_command('status')
-def on_status(bot: telegram.Bot, update: telegram.Update, user: User):
+def on_status(bot: tg.Bot, update: tg.Update, user: User):
     response = "Your current status: "
     response += "Ready (receiving all notifications)." if user.is_active else "DnD (do not want to be disturbed)."
-    if update.effective_user.name == '@' + superuser_login:
+    if update.effective_user.name == superuser_login:
         response += "\nYou have superuser rights. Use this power wisely."
     elif user.is_moderator:
         response += "\nAlso, you have rights to create activities or summon other people."
@@ -16,7 +16,7 @@ def on_status(bot: telegram.Bot, update: telegram.Update, user: User):
 
 
 @personal_command('activate')
-def on_activate(bot: telegram.Bot, update: telegram.Update, user: User):
+def on_activate(bot: tg.Bot, update: tg.Update, user: User):
     if user.is_active:
         user.send_message(bot, text="You were already receiving all notifications.")
     else:
@@ -29,7 +29,7 @@ def on_activate(bot: telegram.Bot, update: telegram.Update, user: User):
 
 
 @personal_command('deactivate')
-def on_deactivate(bot: telegram.Bot, update: telegram.Update, user: User):
+def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
     if not user.is_active:
         user.send_message(bot, text="Summon notifications were already suppressed.")
     else:
@@ -38,3 +38,14 @@ def on_deactivate(bot: telegram.Bot, update: telegram.Update, user: User):
         user.send_message(bot,
                           text="Now you would not be disturbed with summon notifications.",
                           reply_markup=keyboard_for_user(user))
+
+
+@personal_command()
+def on_cancel(bot: Bot, update: Update, user: User):
+    if user.pending_action == pending_user_actions['none']:
+        user.send_message(bot, text='Nothing to be cancelled.')
+        return
+    if user.pending_action == pending_user_actions['activity_add']:
+        user.send_message(bot, text='New activity adding cancelled.')
+    user.pending_action = pending_user_actions['none']
+    user.save()

@@ -37,5 +37,5 @@ class TestModels(TestCase):
     def test_superuser_keyboard(self):
         expected_keyboard_commands = [[commands_map['deactivate'], commands_map['status'], commands_map['summon']],
                                       [commands_map['activity_list'], commands_map['moderator_list']]]
-        user = User.create(telegram_user_id=0, telegram_login='@' + superuser_login)
+        user = User.create(telegram_user_id=0, telegram_login=superuser_login)
         self._check_keyboard_expectations(keyboard_for_user(user).keyboard, expected_keyboard_commands)
