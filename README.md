@@ -7,13 +7,13 @@ _Gathers together the most powerful kittens, pandas and capybaras in the Univers
 
 To run bot, you have to set necessary environment variables and run `python run_bot.py`. Tests can be run via `python -m unittests` in root directory.
 
-###Dependencies:
+### Dependencies:
 
 * Python 3.3 or newer
 * PostgreSQL 9.2 or newer
 * Packages from `requirements.txt`
 
-###Environment variables:
+### Environment variables:
 
 * `TELEGRAM_TOKEN` - Access token for Telegram Bot. Should be received from @BotFather during bot registration.
 * `DATABASE_URL` - DSN-formatted complete URL of PostgreSQL database. DSN-format: _postgres://user:password@host:port/database_name_.
