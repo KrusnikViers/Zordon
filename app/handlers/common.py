@@ -39,16 +39,17 @@ pending_user_actions = {
 def personal_command(command=None):
     def personal_command_impl(decorated_handler):
         def wrapper(bot: Bot, update: Update, user=None):
+            # Mark callback source as answered
             if update.callback_query:
                 update.callback_query.answer()
+            # Get or create user record for operation
             if not user:
                 user = User.get_or_create(telegram_user_id=update.effective_user.id,
                                           defaults={'telegram_login': update.effective_user.name})[0]
                 user.validate_info(update.effective_user.name)
+            # Check user rights to perform operation
             if command and not user.has_right(command):
-                user.send_message(bot,
-                                  text='Unfortunately, you have not enough rights to execute this operation.',
-                                  reply_markup=keyboard_for_user(user))
+                user.send_message(bot, text='Not enough rights.', reply_markup=keyboard_for_user(user))
             else:
                 decorated_handler(bot, update, user)
         return wrapper

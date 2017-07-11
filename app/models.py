@@ -70,7 +70,7 @@ class Activity(_BaseModel):
             return None, 'name is empty.'
         if not re.match("^[\w\ \_\.\-]*$", new_activity_name):
             return None, 'allowed only alphanumeric characters, spaces and `_.-`'
-        if cls.select().where(cls.name == new_activity_name).count() > 0:
+        if cls.select().where(cls.name == new_activity_name).exists():
             return None, 'activity with name *{0}* already exists.'.format(new_activity_name)
         return cls.create(name=new_activity_name, owner=user), ''
 
@@ -86,7 +86,7 @@ class Participant(_BaseModel):
     activity = pw.ForeignKeyField(Activity, on_delete='CASCADE')
 
 
-class Subscriber(_BaseModel):
+class Subscription(_BaseModel):
     """ User, receiving notifications and able to call other users for activity """
     user = pw.ForeignKeyField(User, on_delete='CASCADE')
     activity = pw.ForeignKeyField(Activity, on_delete='CASCADE')
