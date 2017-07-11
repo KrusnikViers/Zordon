@@ -29,16 +29,8 @@ def migrate(migrator, database, fake=False, **kwargs):
     """Write your migrations here."""
 
     @migrator.create_model
-    class Activity(pw.Model):
-        name = pw.TextField(unique=True)
-
-        class Meta:
-            db_table = "activity"
-
-    @migrator.create_model
     class User(pw.Model):
         telegram_user_id = pw.IntegerField(primary_key=True)
-        telegram_chat_id = pw.IntegerField(unique=True)
         telegram_login = pw.TextField(default='')
         rights_level = pw.IntegerField(default=0)
         pending_action = pw.IntegerField(default=0)
@@ -47,6 +39,14 @@ def migrate(migrator, database, fake=False, **kwargs):
 
         class Meta:
             db_table = "user"
+
+    @migrator.create_model
+    class Activity(pw.Model):
+        name = pw.TextField(unique=True)
+        owner = pw.ForeignKeyField(db_column='owner_id', rel_model=migrator.orm['user'], to_field='telegram_user_id')
+
+        class Meta:
+            db_table = "activity"
 
     @migrator.create_model
     class Participant(pw.Model):
@@ -71,5 +71,5 @@ def rollback(migrator, database, fake=False, **kwargs):
 
     migrator.remove_model('subscriber')
     migrator.remove_model('participant')
-    migrator.remove_model('user')
     migrator.remove_model('activity')
+    migrator.remove_model('user')
