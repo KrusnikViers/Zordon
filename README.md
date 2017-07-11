@@ -9,7 +9,7 @@ To run bot, you have to set necessary environment variables and run `python run_
 
 ### Dependencies:
 
-* Python 3.3 or newer
+* Python 3.5 or newer
 * PostgreSQL 9.2 or newer
 * Packages from `requirements.txt`
 
