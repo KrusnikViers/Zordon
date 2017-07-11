@@ -1,13 +1,16 @@
 from unittest import TestCase
-from app.models import *
-from app.handlers.common import commands_map, keyboard_for_user
+from unittest.mock import create_autospec, MagicMock, PropertyMock
+from telegram import CallbackQuery
+from app.handlers.common import *
 from app.definitions import superuser_login
 
 
-class TestModels(TestCase):
+class TestCommonHandlers(TestCase):
     def setUp(self):
         User.delete().execute()
 
+
+class TestUserKeyboard(TestCommonHandlers):
     def _check_keyboard_expectations(self, keyboard, expected_buttons):
         self.assertEqual(len(keyboard), len(expected_buttons))
         for row_index in range(0, len(keyboard)):
@@ -39,3 +42,38 @@ class TestModels(TestCase):
                                       [commands_map['activity_list'], commands_map['moderator_list']]]
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
         self._check_keyboard_expectations(keyboard_for_user(user).keyboard, expected_keyboard_commands)
+
+
+class TestPersonalCommand(TestCommonHandlers):
+    def test_callback_query(self):
+        update = Update(0, callback_query=create_autospec(CallbackQuery))
+        user = User.create(telegram_user_id=0)
+        handler = MagicMock()
+
+        # Call decorator explicitly
+        personal_command()(handler)(None, update, user)
+        update.callback_query.answer.assert_called_once_with()
+        handler.assert_called_once_with(None, update, user)
+
+    def test_user_undefined(self):
+        update = MagicMock()
+        type(update.effective_user).id = PropertyMock(return_value=12345)
+        type(update.effective_user).name = PropertyMock(return_value='username')
+        handler = MagicMock()
+
+        # Call decorator explicitly
+        personal_command()(handler)(None, update)
+        self.assertTrue(handler.called)
+        self.assertTrue(User.get((User.telegram_user_id == 12345) & (User.telegram_login == 'username')))
+
+    def test_not_enough_rights(self):
+        user = MagicMock()
+        update = MagicMock()
+        bot = MagicMock()
+        handler = MagicMock()
+        user.has_right.return_value = False
+
+        personal_command('some_command')(handler)(bot, update, user)
+        user.has_right.assert_any_call('some_command')
+        self.assertTrue(user.send_message.called)
+        self.assertFalse(handler.called)
