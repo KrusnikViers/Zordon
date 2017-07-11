@@ -90,5 +90,5 @@ def on_activity_rem_with_name(bot: tg.Bot, update: tg.Update, user: User):
     if not activity.has_right_to_remove(user):
         user.send_message(bot, text='You have not enough rights to remove *{0}*.'.format(activity_name))
         return
-    activity.delete_instance(recursive=True)
+    activity.delete_instance()
     user.send_message(bot, text='Activity *{0}* successfully deleted.'.format(activity_name))

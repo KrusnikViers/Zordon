@@ -43,7 +43,7 @@ def migrate(migrator, database, fake=False, **kwargs):
     @migrator.create_model
     class Activity(pw.Model):
         name = pw.TextField(unique=True)
-        owner = pw.ForeignKeyField(db_column='owner_id', rel_model=migrator.orm['user'], to_field='telegram_user_id')
+        owner = pw.ForeignKeyField(db_column='owner_id', on_delete='CASCADE', rel_model=migrator.orm['user'], to_field='telegram_user_id')
 
         class Meta:
             db_table = "activity"
@@ -51,16 +51,16 @@ def migrate(migrator, database, fake=False, **kwargs):
     @migrator.create_model
     class Participant(pw.Model):
         applying_time = pw.TimestampField(default=dt.datetime.now)
-        user = pw.ForeignKeyField(db_column='user_id', rel_model=migrator.orm['user'], to_field='telegram_user_id')
-        activity = pw.ForeignKeyField(db_column='activity_id', rel_model=migrator.orm['activity'], to_field='id')
+        user = pw.ForeignKeyField(db_column='user_id', on_delete='CASCADE', rel_model=migrator.orm['user'], to_field='telegram_user_id')
+        activity = pw.ForeignKeyField(db_column='activity_id', on_delete='CASCADE', rel_model=migrator.orm['activity'], to_field='id')
 
         class Meta:
             db_table = "participant"
 
     @migrator.create_model
     class Subscriber(pw.Model):
-        user = pw.ForeignKeyField(db_column='user_id', rel_model=migrator.orm['user'], to_field='telegram_user_id')
-        activity = pw.ForeignKeyField(db_column='activity_id', rel_model=migrator.orm['activity'], to_field='id')
+        user = pw.ForeignKeyField(db_column='user_id', on_delete='CASCADE', rel_model=migrator.orm['user'], to_field='telegram_user_id')
+        activity = pw.ForeignKeyField(db_column='activity_id', on_delete='CASCADE', rel_model=migrator.orm['activity'], to_field='id')
 
         class Meta:
             db_table = "subscriber"

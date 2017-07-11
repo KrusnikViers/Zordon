@@ -57,7 +57,7 @@ class User(_BaseModel):
 class Activity(_BaseModel):
     """ Some activity, to which users can be invited """
     name = pw.TextField(unique=True)
-    owner = pw.ForeignKeyField(User)
+    owner = pw.ForeignKeyField(User, on_delete='CASCADE')
 
     @classmethod
     def try_to_create(cls, new_activity_name: str, user: User):
@@ -81,11 +81,11 @@ class Activity(_BaseModel):
 class Participant(_BaseModel):
     """ User, agreed to take part in some activity """
     applying_time = pw.TimestampField()
-    user = pw.ForeignKeyField(User)
-    activity = pw.ForeignKeyField(Activity)
+    user = pw.ForeignKeyField(User, on_delete='CASCADE')
+    activity = pw.ForeignKeyField(Activity, on_delete='CASCADE')
 
 
 class Subscriber(_BaseModel):
     """ User, receiving notifications and able to call other users for activity """
-    user = pw.ForeignKeyField(User)
-    activity = pw.ForeignKeyField(Activity)
+    user = pw.ForeignKeyField(User, on_delete='CASCADE')
+    activity = pw.ForeignKeyField(Activity, on_delete='CASCADE')
