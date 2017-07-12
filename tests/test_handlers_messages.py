@@ -1,6 +1,6 @@
 from telegram import Update
 from unittest import TestCase
-from unittest.mock import patch, create_autospec
+from unittest.mock import patch, create_autospec, MagicMock
 
 from app.handlers import common
 from app.models import *
@@ -9,12 +9,14 @@ _on_activity_add_with_name_mock = patch('app.handlers.activity.on_activity_add_w
 import app.handlers.messages as h_messages
 
 _bot = create_autospec(Bot)
-_update = Update(0)
+_update = MagicMock()
 
 
 class TestMessagesHandlers(TestCase):
     def setUp(self):
         _on_activity_add_with_name_mock.reset_mock()
+        _bot.reset_mock()
+        _update.reset_mock()
 
         User.delete().execute()
 
@@ -25,5 +27,6 @@ class TestMessagesHandlers(TestCase):
 
     def test_message_routing_add_activity(self):
         user = User.create(telegram_user_id=0, pending_action=common.pending_user_actions['activity_add'])
+        _update.message.text = 'Sample name'
         h_messages.message_handler(_bot, _update, user)
         _on_activity_add_with_name_mock.assert_called_once_with(_bot, _update, user)
