@@ -1,4 +1,4 @@
-from telegram import Update, Bot, ReplyKeyboardMarkup, KeyboardButton
+from telegram import Update, Bot, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
 from ..models import User
 
@@ -9,6 +9,7 @@ commands_map = {
     'status': 'status',
     'activate': 'ready',
     'deactivate': 'do_not_disturb',
+    'cancel': 'cancel',
 
     # Commands with activities
     'activity_list': 'list_activities',
@@ -36,29 +37,53 @@ pending_user_actions = {
 }
 
 
+def build_inline_keyboard(buttons: list):
+    if not buttons:
+        return None
+    return InlineKeyboardMarkup(
+        [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons])
+
+
+def build_default_keyboard(user: User):
+    activation_command = 'deactivate' if user.is_active else 'activate'
+    buttons = [[activation_command, 'status', 'summon'], ['activity_list', 'moderator_list']]
+    markup = [[KeyboardButton('/' + commands_map[x]) for x in row if user.has_right(x)] for row in buttons]
+    return ReplyKeyboardMarkup(markup, resize_keyboard=True)
+
+
+def callback_only(decorated_handler):
+    def handler_wrapper(bot: Bot, update: Update):
+        if update.callback_query:
+            return decorated_handler(bot, update)
+    return handler_wrapper
+
+
+def send_response(user: User, bot: Bot, response):
+    if not response:
+        return
+    if isinstance(response, tuple):
+        user.send_message(bot, text=response[0], reply_markup=response[1])
+    else:
+        user.send_message(bot, text=response)
+
+
 def personal_command(command=None):
     def personal_command_impl(decorated_handler):
-        def wrapper(bot: Bot, update: Update, user=None):
-            # Mark callback source as answered
+        def decorated_handler_wrapper(bot: Bot, update: Update, user=None):
             if update.callback_query:
                 update.callback_query.answer()
-            # Get or create user record for operation
+
             if not user:
                 user = User.get_or_create(telegram_user_id=update.effective_user.id,
                                           defaults={'telegram_login': update.effective_user.name})[0]
-                user.validate_info(update.effective_user.name)
-            # Check user rights to perform operation
+                if user.is_disabled_chat or user.telegram_login != update.effective_user.name:
+                    user.telegram_login = update.effective_user.name
+                    user.is_disabled_chat = False
+                    user.save()
+
             if command and not user.has_right(command):
-                user.send_message(bot, text='Not enough rights.', reply_markup=keyboard_for_user(user))
+                send_response(user, bot, ('Not enough rights', build_default_keyboard(user)))
             else:
-                decorated_handler(bot, update, user)
-        return wrapper
+                send_response(user, bot, decorated_handler(bot, update, user))
+        return decorated_handler_wrapper
     return personal_command_impl
-
-
-def keyboard_for_user(user: User):
-    activation_command = 'deactivate' if user.is_active else 'activate'
-    possible_commands = [[activation_command, 'status', 'summon'], ['activity_list', 'moderator_list']]
-    keyboard_markup = [[KeyboardButton('/' + commands_map[x]) for x in commands_row if user.has_right(x)]
-                       for commands_row in possible_commands]
-    return ReplyKeyboardMarkup(keyboard_markup, resize_keyboard=True)

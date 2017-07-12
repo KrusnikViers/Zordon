@@ -13,14 +13,14 @@ class TestModels(TestCase):
 
 class TestUserModel(TestModels):
     def test_rights_usual(self):
-        allowed_commands = {'start', 'status', 'activate', 'deactivate', 'activity_list', 'subscribe', 'unsubscribe',
-                            'join', 'later', 'decline'}
+        allowed_commands = {'start', 'status', 'activate', 'deactivate', 'cancel', 'activity_list', 'subscribe',
+                            'unsubscribe', 'join', 'later', 'decline'}
         user = User.create(telegram_user_id=0)
         for command in commands_map:
             self.assertEqual(user.has_right(command), (command in allowed_commands), msg=command)
 
     def test_rights_level_1(self):
-        allowed_commands = {'start', 'status', 'activate', 'deactivate', 'activity_list', 'activity_add',
+        allowed_commands = {'start', 'status', 'activate', 'deactivate', 'cancel', 'activity_list', 'activity_add',
                             'activity_rem', 'subscribe', 'unsubscribe', 'summon', 'join', 'later', 'decline'}
         user = User.create(telegram_user_id=0, rights_level=1)
         for command in commands_map:
@@ -30,12 +30,6 @@ class TestUserModel(TestModels):
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
         for command in commands_map:
             self.assertTrue(user.has_right(command), msg=command)
-
-    def test_validate_info(self):
-        rejoined_user = User.create(telegram_user_id=0, telegram_login='old_login', is_disabled_chat=True)
-        rejoined_user.validate_info('new_login')
-        self.assertFalse(rejoined_user.is_disabled_chat)
-        self.assertEqual(rejoined_user.telegram_login, 'new_login')
 
     def test_send_message_basic(self):
         bot_mock = create_autospec(Bot)
@@ -94,6 +88,6 @@ class TestActivityModel(TestModels):
         superuser = User.create(telegram_user_id=1, telegram_login=superuser_login)
         another_user = User.create(telegram_user_id=2)
         activity = Activity.try_to_create('Correct name', user)[0]
-        self.assertTrue(activity.has_right_to_remove(user))
+        self.assertFalse(activity.has_right_to_remove(user))
         self.assertTrue(activity.has_right_to_remove(superuser))
         self.assertFalse(activity.has_right_to_remove(another_user))

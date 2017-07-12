@@ -3,8 +3,9 @@ import peewee as pw
 import peewee_migrate as pwm
 import re
 from telegram import Bot, TelegramError
+import datetime
 
-from .definitions import database_credentials, superuser_login
+from .definitions import database_credentials, superuser_login, cooldown_time_minutes
 
 
 _database = pw.PostgresqlDatabase(database_credentials['NAME'],
@@ -40,17 +41,10 @@ class User(_BaseModel):
             return self.rights_level > 0
         return True
 
-    def validate_info(self, login: str):
-        if self.telegram_login != login or self.is_disabled_chat:
-            self.telegram_login = login
-            self.is_disabled_chat = False
-            self.save()
-
     def send_message(self, bot: Bot, *args, **kwargs):
         try:
             bot.send_message(chat_id=self.telegram_user_id, *args, parse_mode='Markdown', **kwargs)
         except TelegramError:
-            # User locked his conversation with bot
             self.is_disabled_chat = True
             self.save()
 
@@ -75,15 +69,22 @@ class Activity(_BaseModel):
         return cls.create(name=new_activity_name, owner=user), ''
 
     def has_right_to_remove(self, user: User):
-        is_owner = self.owner == user
-        return is_owner or user.telegram_login == superuser_login
+        if user.has_right('activity_rem'):
+            return self.owner == user or user.telegram_login == superuser_login
+        return False
 
 
 class Participant(_BaseModel):
     """ User, agreed to take part in some activity """
-    applying_time = pw.TimestampField()
+    report_time = pw.TimestampField()
+    is_accepted = pw.BooleanField(default=True)
     user = pw.ForeignKeyField(User, on_delete='CASCADE')
     activity = pw.ForeignKeyField(Activity, on_delete='CASCADE')
+
+    @classmethod
+    def clear_inactive(cls):
+        lower_bound = datetime.datetime.now() - datetime.timedelta(minutes=cooldown_time_minutes)
+        cls.delete().where(cls.report_time < lower_bound)
 
 
 class Subscription(_BaseModel):

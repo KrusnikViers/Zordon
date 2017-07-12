@@ -6,46 +6,44 @@ from ..models import *
 
 @personal_command('status')
 def on_status(bot: tg.Bot, update: tg.Update, user: User):
-    response = "Your current status: "
-    response += "Ready (receiving all notifications)." if user.is_active else "DnD (do not want to be disturbed)."
+    response = "Current status: {0}".format("*Active* (receiving all notifications)"
+                                            if user.is_active else
+                                            "*Do not disturb* (summon notifications ignored)")
     if update.effective_user.name == superuser_login:
-        response += "\nYou have superuser rights. Use this power wisely."
+        response += "\nSuperuser mode enabled. Use this power wisely."
     elif user.is_moderator:
-        response += "\nAlso, you have rights to create activities or summon other people."
-    user.send_message(bot, text=response, reply_markup=keyboard_for_user(user))
+        response += "\nEnabled rights to manage activities and summon other people."
+    return response, build_default_keyboard(user)
 
 
 @personal_command('activate')
 def on_activate(bot: tg.Bot, update: tg.Update, user: User):
     if user.is_active:
-        user.send_message(bot, text="You were already receiving all notifications.")
-    else:
-        user.is_active = True
-        user.save()
-        user.send_message(bot,
-                          text="Now you are receiving all notifications again.",
-                          reply_markup=keyboard_for_user(user))
-        # TODO: send all pending summons
+        return "*Active* mode already enabled."
+
+    # TODO: send all pending summons
+    user.is_active = True
+    user.save()
+    return "Status updated to *Active*", build_default_keyboard(user)
 
 
 @personal_command('deactivate')
 def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
     if not user.is_active:
-        user.send_message(bot, text="Summon notifications were already suppressed.")
-    else:
-        user.is_active = False
-        user.save()
-        user.send_message(bot,
-                          text="Now you would not be disturbed with summon notifications.",
-                          reply_markup=keyboard_for_user(user))
+        return "*Do not disturb* mode already enabled."
+
+    user.is_active = False
+    user.save()
+    return "Status updated to *Do not disturb*", build_default_keyboard(user)
 
 
 @personal_command()
 def on_cancel(bot: Bot, update: Update, user: User):
     if user.pending_action == pending_user_actions['none']:
-        user.send_message(bot, text='Nothing to be cancelled.')
-        return
-    if user.pending_action == pending_user_actions['activity_add']:
-        user.send_message(bot, text='New activity adding cancelled.')
+        return 'Nothing to be cancelled.'
+
+    cancelled_action = user.pending_action
     user.pending_action = pending_user_actions['none']
     user.save()
+    if cancelled_action == pending_user_actions['activity_add']:
+        return 'New activity adding cancelled.'

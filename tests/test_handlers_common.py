@@ -24,25 +24,25 @@ class TestUserKeyboard(TestCommonHandlers):
         expected_keyboard_commands = [[commands_map['activate'], commands_map['status']],
                                       [commands_map['activity_list']]]
         user = User.create(telegram_user_id=0, is_active=False)
-        self._check_keyboard_expectations(keyboard_for_user(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
     def test_usual_user_keyboard(self):
         expected_keyboard_commands = [[commands_map['deactivate'], commands_map['status']],
                                       [commands_map['activity_list']]]
         user = User.create(telegram_user_id=0)
-        self._check_keyboard_expectations(keyboard_for_user(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
     def test_keyboard_rights_level_1(self):
         expected_keyboard_commands = [[commands_map['deactivate'], commands_map['status'], commands_map['summon']],
                                       [commands_map['activity_list']]]
         user = User.create(telegram_user_id=0, rights_level=1)
-        self._check_keyboard_expectations(keyboard_for_user(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
     def test_superuser_keyboard(self):
         expected_keyboard_commands = [[commands_map['deactivate'], commands_map['status'], commands_map['summon']],
                                       [commands_map['activity_list'], commands_map['moderator_list']]]
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
-        self._check_keyboard_expectations(keyboard_for_user(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
 
 class TestPersonalCommand(TestCommonHandlers):
@@ -50,6 +50,7 @@ class TestPersonalCommand(TestCommonHandlers):
         update = Update(0, callback_query=create_autospec(CallbackQuery))
         user = User.create(telegram_user_id=0)
         handler = MagicMock()
+        handler.return_value = None
 
         # Call decorator explicitly
         personal_command()(handler)(None, update, user)
@@ -61,11 +62,12 @@ class TestPersonalCommand(TestCommonHandlers):
         type(update.effective_user).id = PropertyMock(return_value=12345)
         type(update.effective_user).name = PropertyMock(return_value='username')
         handler = MagicMock()
+        handler.return_value = None
 
         # Call decorator explicitly
         personal_command()(handler)(None, update)
         self.assertTrue(handler.called)
-        self.assertTrue(User.get((User.telegram_user_id == 12345) & (User.telegram_login == 'username')))
+        self.assertTrue(User.get(User.telegram_user_id == 12345, User.telegram_login == 'username'))
 
     def test_not_enough_rights(self):
         user = MagicMock()
