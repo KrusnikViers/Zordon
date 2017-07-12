@@ -8,7 +8,7 @@ from ..models import *
 def on_activity_add(bot: tg.Bot, update: tg.Update, user: User):
     user.pending_action = pending_user_actions['activity_add']
     user.save()
-    return 'Send new activity name:', build_inline_keyboard([[('Cancel', 'cancel')]])
+    return 'Send new activity name:', build_default_keyboard(user)
 
 
 @personal_command('activity_add')
@@ -19,7 +19,7 @@ def on_activity_add_with_name(bot: tg.Bot, update: tg.Update, user: User):
 
     user.pending_action = pending_user_actions['none']
     user.save()
-    return 'Activity *{0}* created'.format(activity.name)
+    return 'Activity *{0}* created'.format(activity.name), build_default_keyboard(user)
 
 
 @personal_command('activity_list')

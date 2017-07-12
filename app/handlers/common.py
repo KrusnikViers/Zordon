@@ -48,10 +48,14 @@ def build_inline_keyboard(buttons: list):
 
 
 def build_default_keyboard(user: User):
-    activation_command = 'deactivate' if user.is_active else 'activate'
-    buttons = [[activation_command, 'status', 'summon'], ['activity_list', 'moderator_list']]
-    markup = [[KeyboardButton('/' + commands_map[x]) for x in row if user.has_right(x)] for row in buttons]
-    return ReplyKeyboardMarkup(markup, resize_keyboard=True)
+    buttons = [['Do not disturb' if user.is_active else 'Ready', 'Status'], ['Activities list']]
+    if user.pending_action != pending_user_actions['none']:
+        buttons[0].insert(0, 'Cancel action')
+    if user.has_right('summon'):
+        buttons[1].append('Summon friends')
+    if user.has_right('raw_data'):
+        buttons[1].append('Raw data')
+    return ReplyKeyboardMarkup([[KeyboardButton(x) for x in row] for row in buttons], resize_keyboard=True)
 
 
 def build_summon_response_keyboard(activity_name: str):

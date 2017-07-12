@@ -48,13 +48,13 @@ def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
 @personal_command('cancel')
 def on_cancel(bot: Bot, update: Update, user: User):
     if user.pending_action == pending_user_actions['none']:
-        return 'Nothing to be cancelled.'
+        return 'Nothing to be cancelled.', build_default_keyboard(user)
 
     cancelled_action = user.pending_action
     user.pending_action = pending_user_actions['none']
     user.save()
     if cancelled_action == pending_user_actions['activity_add']:
-        return 'New activity adding cancelled.'
+        return 'New activity adding cancelled.', build_default_keyboard(user)
 
 
 @personal_command('raw_data')
