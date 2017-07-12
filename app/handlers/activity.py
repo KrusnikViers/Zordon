@@ -1,5 +1,4 @@
 import telegram as tg
-import peewee as pw
 
 from .common import *
 from ..models import *
@@ -41,7 +40,13 @@ def on_activity_list(bot: tg.Bot, update: tg.Update, user: User):
         actions['unsubscribe'] |= is_subscribed
         actions['subscribe'] |= not is_subscribed
         actions['rem'] |= activity.has_right_to_remove(user)
-        response += '\n - *{0}*{1}'.format(activity.name, ' (subscription active)' if is_subscribed else '')
+        response += '\n\n - *{0}*'.format(activity.name)
+        if is_subscribed:
+            response += '\n   subscription active'
+            current_participants = (Participant.select(Participant, User)
+                                               .where(Participant.activity == activity).join(User))
+            if current_participants.exists():
+                response += '\n   current session: ' + ' '.join([x.user.telegram_login for x in current_participants])
     buttons = []
     if user.has_right('summon'):
         buttons.append([('Summon people', 'summon')])

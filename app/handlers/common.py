@@ -28,6 +28,9 @@ commands_map = {
     'moderator_list': 'list_moderators',
     'moderator_add': 'add_moderator',
     'moderator_remove': 'remove_moderator',
+
+    # Superuser access to raw DB data
+    'raw_data': 'raw_data',
 }
 
 

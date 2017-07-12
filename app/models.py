@@ -35,7 +35,7 @@ class User(_BaseModel):
     def has_right(self, command: str):
         if self.telegram_login == superuser_login:
             return True
-        elif command in {'moderator_list', 'moderator_add', 'moderator_remove'}:
+        elif command in {'raw_data', 'moderator_list', 'moderator_add', 'moderator_remove'}:
             return False
         elif command in {'summon', 'activity_add', 'activity_rem'}:
             return self.rights_level > 0
@@ -96,7 +96,7 @@ class Participant(_BaseModel):
     @classmethod
     def clear_inactive(cls):
         lower_bound = datetime.datetime.now() - datetime.timedelta(minutes=cooldown_time_minutes)
-        cls.delete().where(cls.report_time < lower_bound)
+        cls.delete().where(cls.report_time < lower_bound).execute()
 
     @classmethod
     def select_active_users(cls, activity: Activity, user: User):

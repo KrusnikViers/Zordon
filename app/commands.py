@@ -12,6 +12,7 @@ def set_handlers(dispatcher):
     dispatcher.add_handler(CommandHandler(commands_map['status'], on_status))
     dispatcher.add_handler(CommandHandler(commands_map['activate'], on_activate))
     dispatcher.add_handler(CommandHandler(commands_map['deactivate'], on_deactivate))
+    dispatcher.add_handler(CommandHandler(commands_map['raw_data'], on_raw_data))
     dispatcher.add_handler(CallbackQueryHandler(on_cancel, pattern="^cancel$"))
 
     dispatcher.add_handler(CommandHandler(commands_map['activity_list'], on_activity_list))

@@ -25,6 +25,7 @@ def on_summon_with_name(bot: tg.Bot, update: tg.Update, user: User):
                                    reply_markup=build_inline_keyboard([[('Join now', 'join ' + activity.name),
                                                                         ('Coming', 'later ' + activity.name),
                                                                         ('Decline', 'decline ' + activity.name)]]))
+    return 'Notifications sent'
 
 
 @callback_only
@@ -34,6 +35,7 @@ def on_join_with_name(bot: tg.Bot, update: tg.Update, user: User):
     if not activity:
         return error
     Participant.response_to_summon(bot, user, activity, 'join')
+    return 'You have accepted invitation to {0}'.format(activity.name)
 
 
 @callback_only
@@ -43,6 +45,7 @@ def on_later_with_name(bot: tg.Bot, update: tg.Update, user: User):
     if not activity:
         return error
     Participant.response_to_summon(bot, user, activity, 'later')
+    return 'You have accepted invitation to {0}'.format(activity.name)
 
 
 @callback_only
@@ -52,3 +55,4 @@ def on_decline_with_name(bot: tg.Bot, update: tg.Update, user: User):
     if not activity:
         return error
     Participant.response_to_summon(bot, user, activity, 'decline')
+    return 'You have declined invitation to {0}'.format(activity.name)
