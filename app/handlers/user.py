@@ -21,7 +21,13 @@ def on_activate(bot: tg.Bot, update: tg.Update, user: User):
     if user.is_active:
         return "*Active* mode already enabled."
 
-    # TODO: send all pending summons
+    if not user.is_active:
+        suppressed_summons = (Activity.select().join(Subscription).where(Subscription.user == user).switch(Activity)
+                                               .join(Participant).aggregate_rows())
+        for activity in suppressed_summons:
+            user.send_message(bot,
+                              text='Summon is active for *{0}*'.format(activity.name),
+                              reply_markup=build_summon_response_keyboard(activity.name))
     user.is_active = True
     user.save()
     return "Status updated to *Active*", build_default_keyboard(user)
@@ -32,6 +38,8 @@ def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
     if not user.is_active:
         return "*Do not disturb* mode already enabled."
 
+    if user.is_active:
+        Participant.delete().where(Participant.user == user)
     user.is_active = False
     user.save()
     return "Status updated to *Do not disturb*", build_default_keyboard(user)

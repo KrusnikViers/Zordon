@@ -51,6 +51,12 @@ def build_default_keyboard(user: User):
     return ReplyKeyboardMarkup(markup, resize_keyboard=True)
 
 
+def build_summon_response_keyboard(activity_name: str):
+    return build_inline_keyboard([[('Join now', 'join ' + activity_name),
+                                   ('Coming', 'later ' + activity_name),
+                                   ('Decline', 'decline ' + activity_name)]])
+
+
 def callback_only(decorated_handler):
     def handler_wrapper(bot: Bot, update: Update):
         if update.callback_query:

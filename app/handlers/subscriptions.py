@@ -22,13 +22,17 @@ def on_subscribe(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('subscribe')
 def on_subscribe_with_name(bot: tg.Bot, update: tg.Update, user: User):
-    activity_name = update.callback_query.data.split(' ', 1)[1]
-    try:
-        activity = Activity.get(Activity.name == activity_name)
-    except Activity.DoesNotExist:
-        return 'Activity *{0}* not found.'.format(activity_name)
+    activity, error = Activity.get_from_callback_data(update.callback_query.data)
+    if not activity:
+        return error
 
-    Subscription.get_or_create(activity=activity, user=user)
+    _, is_created = Subscription.get_or_create(activity=activity, user=user)
+    if is_created:
+        Participant.clear_inactive()
+        if Participant.select(Participant).where(Participant.activity == activity).exists():
+            user.send_message(bot,
+                              text='Summon is active for *{1}*',
+                              reply_markup=build_summon_response_keyboard(activity.name))
     return 'Subscription to *{0}* enabled'.format(activity.name)
 
 
@@ -49,11 +53,9 @@ def on_unsubscribe(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('unsubscribe')
 def on_unsubscribe_with_name(bot: tg.Bot, update: tg.Update, user: User):
-    activity_name = update.callback_query.data.split(' ', 1)[1]
-    try:
-        activity = Activity.get(Activity.name == activity_name)
-    except Activity.DoesNotExist:
-        return 'Activity *{0}* not found.'.format(activity_name)
+    activity, error = Activity.get_from_callback_data(update.callback_query.data)
+    if not activity:
+        return error
 
     Subscription.delete().where((Subscription.activity == activity) & (Subscription.user == user)).execute()
     return 'Subscription to *{0}* disabled'.format(activity.name)

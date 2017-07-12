@@ -34,7 +34,7 @@ def on_activity_list(bot: tg.Bot, update: tg.Update, user: User):
         return ('Activities list is empty',
                 build_inline_keyboard([[('Create new', 'activity_add')]]) if user.has_right('activity_add') else None)
 
-    actions = {'subscribe': False, 'unsubscribe': False, 'add': user.has_right('activity_add'), 'rem': False}
+    actions = {'subscribe': False, 'unsubscribe': False, 'rem': False}
     response = 'Available activities:'
     for activity in activities:
         is_subscribed = activity.subscription.id is not None
@@ -43,11 +43,13 @@ def on_activity_list(bot: tg.Bot, update: tg.Update, user: User):
         actions['rem'] |= activity.has_right_to_remove(user)
         response += '\n - *{0}*{1}'.format(activity.name, ' (subscription active)' if is_subscribed else '')
     buttons = []
+    if user.has_right('summon'):
+        buttons.append([('Summon people', 'summon')])
     if actions['subscribe']:
         buttons.append([('New subscription', 'subscribe')])
     if actions['unsubscribe']:
         buttons.append([('Unsubscribe', 'unsubscribe')])
-    if actions['add']:
+    if user.has_right('activity_add'):
         buttons.append([('Create activity', 'activity_add')])
     if actions['rem']:
         buttons.append([('Delete existing', 'activity_rem')])
@@ -69,14 +71,12 @@ def on_activity_rem(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('activity_rem')
 def on_activity_rem_with_name(bot: tg.Bot, update: tg.Update, user: User):
-    activity_name = update.callback_query.data.split(' ', 1)[1]
-    try:
-        activity = Activity.get(Activity.name == activity_name)
-    except Activity.DoesNotExist:
-        return 'Activity *{0}* not found.'.format(activity_name)
+    activity, error = Activity.get_from_callback_data(update.callback_query.data)
+    if not activity:
+        return error
 
     if not activity.has_right_to_remove(user):
-        return 'You have not enough rights to remove *{0}*.'.format(activity_name)
+        return 'You have not enough rights to remove *{0}*.'.format(activity.name)
 
     activity.delete_instance()
-    return 'Activity *{0}* successfully deleted.'.format(activity_name)
+    return 'Activity *{0}* successfully deleted.'.format(activity.name)

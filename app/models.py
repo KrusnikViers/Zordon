@@ -42,6 +42,9 @@ class User(_BaseModel):
         return True
 
     def send_message(self, bot: Bot, *args, **kwargs):
+        if self.is_disabled_chat:
+            return
+
         try:
             bot.send_message(chat_id=self.telegram_user_id, *args, parse_mode='Markdown', **kwargs)
         except TelegramError:
@@ -68,6 +71,15 @@ class Activity(_BaseModel):
             return None, 'activity with name *{0}* already exists.'.format(new_activity_name)
         return cls.create(name=new_activity_name, owner=user), ''
 
+    @classmethod
+    def get_from_callback_data(cls, activity_name: str):
+        activity_name = activity_name.split(' ', 1)[1]
+        try:
+            activity = Activity.get(Activity.name == activity_name)
+        except Activity.DoesNotExist:
+            return None, 'Activity *{0}* not found.'.format(activity_name)
+        return activity, None
+
     def has_right_to_remove(self, user: User):
         if user.has_right('activity_rem'):
             return self.owner == user or user.telegram_login == superuser_login
@@ -85,6 +97,37 @@ class Participant(_BaseModel):
     def clear_inactive(cls):
         lower_bound = datetime.datetime.now() - datetime.timedelta(minutes=cooldown_time_minutes)
         cls.delete().where(cls.report_time < lower_bound)
+
+    @classmethod
+    def select_active_users(cls, activity: Activity, user: User):
+        return User.select().join(cls).where((cls.activity == activity) &
+                                             (cls.user != user) &
+                                             (cls.is_accepted is True))
+
+    @classmethod
+    def select_inactive_users(cls, activity: Activity):
+        return (User.select().where(User.is_active)
+                    .join(Subscription).where(Subscription.activity == activity).switch(User)
+                    .join(Participant, pw.JOIN_LEFT_OUTER).where((Participant.activity == activity) &
+                                                                 (Participant.id.is_null(True))))
+
+    @classmethod
+    def response_to_summon(cls, bot: Bot, user: User, activity: Activity, join_mode: str):
+        cls.clear_inactive()
+        is_accepted = join_mode != 'decline'
+        messages = {'join': '{0} join you in *{1}*',
+                    'later': '{0} will join you in *{1}* in a short while',
+                    'decline': '{0} declined summon for *{1}*'}
+        participant, was_created = cls.get_or_create(activity=activity, user=user,
+                                                     defaults={'report_time': datetime.datetime.now(),
+                                                               'is_accepted': is_accepted})
+        if was_created or is_accepted is not participant.is_accepted:
+            for active_user in cls.select_active_users(activity, user):
+                active_user.send_message(bot, text=messages[join_mode].format(user.telegram_login, activity.name))
+        if not was_created:
+            participant.is_accepted = True
+            participant.report_time = datetime.datetime.now()
+            participant.save()
 
 
 class Subscription(_BaseModel):

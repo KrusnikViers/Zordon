@@ -3,6 +3,7 @@ from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, F
 from .handlers.activity import *
 from .handlers.messages import *
 from .handlers.subscriptions import *
+from .handlers.summon import *
 from .handlers.user import *
 
 
@@ -26,5 +27,12 @@ def set_handlers(dispatcher):
     dispatcher.add_handler(CallbackQueryHandler(on_unsubscribe, pattern="^unsubscribe$"))
     dispatcher.add_handler(CallbackQueryHandler(on_subscribe_with_name, pattern="^subscribe.+$"))
     dispatcher.add_handler(CallbackQueryHandler(on_unsubscribe_with_name, pattern="^unsubscribe.+$"))
+
+    dispatcher.add_handler(CommandHandler(commands_map['summon'], on_summon))
+    dispatcher.add_handler(CallbackQueryHandler(on_summon, pattern="^summon$"))
+    dispatcher.add_handler(CallbackQueryHandler(on_summon_with_name, pattern="^summon.+$"))
+    dispatcher.add_handler(CallbackQueryHandler(on_join_with_name, pattern="^join.+$"))
+    dispatcher.add_handler(CallbackQueryHandler(on_later_with_name, pattern="^later.+$"))
+    dispatcher.add_handler(CallbackQueryHandler(on_decline_with_name, pattern="^decline.+$"))
 
     dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
