@@ -33,13 +33,12 @@ class User(_BaseModel):
     is_disabled_chat = pw.BooleanField(default=False)
 
     def has_right(self, command: str):
-        if self.is_superuser():
+        if self.is_superuser() or command in {'start', 'status', 'activate', 'deactivate', 'cancel', 'activity_list',
+                                              'subscribe', 'unsubscribe', 'join', 'later', 'decline'}:
             return True
-        elif command in {'raw_data', 'moderator_list', 'moderator_add', 'moderator_remove'}:
-            return False
-        elif command in {'summon', 'activity_add', 'activity_rem'}:
+        if command in {'activity_add', 'activity_rem', 'summon'}:
             return self.rights_level > 0
-        return True
+        return False
 
     def is_superuser(self):
         return self.telegram_login == superuser_login
