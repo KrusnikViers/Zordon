@@ -44,6 +44,10 @@ class User(_BaseModel):
     def is_superuser(self):
         return self.telegram_login == superuser_login
 
+    @staticmethod
+    def max_rights_level():
+        return 1
+
     def send_message(self, bot: Bot, *args, **kwargs):
         if self.is_disabled_chat:
             return
@@ -75,8 +79,7 @@ class Activity(_BaseModel):
         return cls.create(name=new_activity_name, owner=user), ''
 
     @classmethod
-    def get_from_callback_data(cls, activity_name: str):
-        activity_name = activity_name.split(' ', 1)[1]
+    def get_by_name(cls, activity_name: str):
         try:
             activity = Activity.get(Activity.name == activity_name)
         except Activity.DoesNotExist:

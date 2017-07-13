@@ -76,7 +76,7 @@ def on_activity_rem(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('activity_rem')
 def on_activity_rem_with_name(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.get_from_callback_data(update.callback_query.data)
+    activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
     if not activity:
         return error
 

@@ -15,7 +15,7 @@ def on_summon(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('summon')
 def on_summon_with_name(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.get_from_callback_data(update.callback_query.data)
+    activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
     if not activity:
         return error
     Participant.response_to_summon(bot, user, activity, 'join')
@@ -41,7 +41,7 @@ def on_join_with_name(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('later')
 def on_later_with_name(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.get_from_callback_data(update.callback_query.data)
+    activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
     if not activity:
         return error
     Participant.response_to_summon(bot, user, activity, 'later')

@@ -61,6 +61,10 @@ def build_summon_response_keyboard(activity_name: str):
                                    ('Decline', 'decline ' + activity_name)]])
 
 
+def get_info_from_callback_data(callback_data: str)->str:
+    return callback_data.split(' ', 1)[1]
+
+
 def callback_only(decorated_handler):
     def handler_wrapper(bot: Bot, update: Update):
         if update.callback_query:

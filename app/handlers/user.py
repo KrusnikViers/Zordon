@@ -55,34 +55,3 @@ def on_cancel(bot: Bot, update: Update, user: User):
     user.save()
     if cancelled_action == pending_user_actions['activity_add']:
         return 'New activity adding cancelled.', build_default_keyboard(user)
-
-
-@personal_command('raw_data')
-def on_raw_data(bot: Bot, update: Update, user: User):
-    users = User.select()
-    response = "User list:"
-    for raw_user in users:
-        response += "\n{0} : rights {1}, pending {2}, active: {3}, disabled: {4}".format(
-            raw_user.telegram_login, raw_user.rights_level, raw_user.pending_action, raw_user.is_active,
-            raw_user.is_disabled_chat)
-    user.send_message(bot, text=response)
-
-    activities = Activity.select(Activity, User).join(User)
-    response = "Activities list:"
-    for activity in activities:
-        response += "\n*{0}* - owner {1}".format(activity.name, activity.owner.telegram_login)
-    user.send_message(bot, text=response)
-
-    subscriptions = Subscription.select(Activity, Subscription, User).join(Activity).join(User)
-    response = "Subscriptions:"
-    for subscription in subscriptions:
-        response += "\n{0} to {1}".format(subscription.user.telegram_login, subscription.activity.name)
-    user.send_message(bot, text=response)
-
-    Participant.clear_inactive()
-    participants = Participant.select(Activity, Participant, User).join(Activity).join(User)
-    response = "Participants:"
-    for participant in participants:
-        response += "\n{0} in {1} ({2} from {3})".format(participant.user.telegram_login, participant.activity.name,
-                                                         participant.is_accepted, participant.report_time)
-    user.send_message(bot, text=response)

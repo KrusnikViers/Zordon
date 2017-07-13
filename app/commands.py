@@ -1,6 +1,7 @@
 from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, Filters
 
 from .handlers.activity import *
+from .handlers.management import *
 from .handlers.messages import *
 from .handlers.subscriptions import *
 from .handlers.summon import *
@@ -12,7 +13,6 @@ def set_handlers(dispatcher):
     dispatcher.add_handler(CommandHandler(commands_map['status'], on_status))
     dispatcher.add_handler(CommandHandler(commands_map['activate'], on_activate))
     dispatcher.add_handler(CommandHandler(commands_map['deactivate'], on_deactivate))
-    dispatcher.add_handler(CommandHandler(commands_map['raw_data'], on_raw_data))
     dispatcher.add_handler(CallbackQueryHandler(on_cancel, pattern="^cancel$"))
 
     dispatcher.add_handler(CommandHandler(commands_map['activity_list'], on_activity_list))
@@ -35,5 +35,11 @@ def set_handlers(dispatcher):
     dispatcher.add_handler(CallbackQueryHandler(on_join_with_name, pattern="^join.+$"))
     dispatcher.add_handler(CallbackQueryHandler(on_later_with_name, pattern="^later.+$"))
     dispatcher.add_handler(CallbackQueryHandler(on_decline_with_name, pattern="^decline.+$"))
+
+    dispatcher.add_handler(CommandHandler(commands_map['raw_data'], on_raw_data))
+    dispatcher.add_handler(CallbackQueryHandler(on_user_promote, pattern="^user_promote$"))
+    dispatcher.add_handler(CallbackQueryHandler(on_user_demote, pattern="^user_demote$"))
+    dispatcher.add_handler(CallbackQueryHandler(on_user_promote_with_id, pattern="^user_promote.+$"))
+    dispatcher.add_handler(CallbackQueryHandler(on_user_demote_with_id, pattern="^user_demote.+$"))
 
     dispatcher.add_handler(MessageHandler(Filters.text, message_handler))

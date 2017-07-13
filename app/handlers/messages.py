@@ -1,7 +1,8 @@
 from .activity import on_activity_add_with_name, on_activity_list
 from .common import *
+from .management import on_raw_data
 from .summon import on_summon
-from .user import on_cancel, on_activate, on_deactivate, on_status, on_raw_data
+from .user import on_cancel, on_activate, on_deactivate, on_status
 
 
 command_plain_aliases = {
