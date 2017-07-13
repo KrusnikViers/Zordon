@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import create_autospec
 
-from app.handlers.common import commands_map
+from app.handlers.common import commands_set
 from app.models import *
 
 
@@ -13,22 +13,22 @@ class TestModels(TestCase):
 
 class TestUserModel(TestModels):
     def test_rights_usual(self):
-        allowed_commands = {'start', 'status', 'activate', 'deactivate', 'cancel', 'activity_list', 'subscribe',
-                            'unsubscribe', 'join', 'later', 'decline'}
+        allowed_commands = {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 's_new', 's_delete',
+                            'p_accept_now', 'p_accept_later', 'p_decline'}
         user = User.create(telegram_user_id=0)
-        for command in commands_map:
+        for command in commands_set:
             self.assertEqual(user.has_right(command), (command in allowed_commands), msg=command)
 
     def test_rights_level_1(self):
-        allowed_commands = {'start', 'status', 'activate', 'deactivate', 'cancel', 'activity_list', 'activity_add',
-                            'activity_rem', 'subscribe', 'unsubscribe', 'summon', 'join', 'later', 'decline'}
+        allowed_commands = {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 'a_new', 'a_delete',
+                            's_new', 's_delete', 'p_summon', 'p_accept_now', 'p_accept_later', 'p_decline'}
         user = User.create(telegram_user_id=0, rights_level=1)
-        for command in commands_map:
+        for command in commands_set:
             self.assertEqual(user.has_right(command), (command in allowed_commands), msg=command)
 
     def test_rights_superuser(self):
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
-        for command in commands_map:
+        for command in commands_set:
             self.assertTrue(user.has_right(command), msg=command)
 
     def test_send_message_basic(self):

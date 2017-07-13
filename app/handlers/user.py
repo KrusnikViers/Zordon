@@ -4,7 +4,7 @@ from .common import *
 from ..models import *
 
 
-@personal_command('status')
+@personal_command('u_status')
 def on_status(bot: tg.Bot, update: tg.Update, user: User):
     response = "Current status: {0}".format("*Active* (receiving all notifications)"
                                             if user.is_active else
@@ -16,7 +16,7 @@ def on_status(bot: tg.Bot, update: tg.Update, user: User):
     return response, build_default_keyboard(user)
 
 
-@personal_command('activate')
+@personal_command('u_activate')
 def on_activate(bot: tg.Bot, update: tg.Update, user: User):
     if user.is_active:
         return "*Active* mode already enabled."
@@ -33,7 +33,7 @@ def on_activate(bot: tg.Bot, update: tg.Update, user: User):
     return "Status updated to *Active*", build_default_keyboard(user)
 
 
-@personal_command('deactivate')
+@personal_command('u_deactivate')
 def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
     if not user.is_active:
         return "*Do not disturb* mode already enabled."
@@ -45,7 +45,7 @@ def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
     return "Status updated to *Do not disturb*", build_default_keyboard(user)
 
 
-@personal_command('cancel')
+@personal_command('u_cancel')
 def on_cancel(bot: Bot, update: Update, user: User):
     if user.pending_action == pending_user_actions['none']:
         return 'Nothing to be cancelled.', build_default_keyboard(user)

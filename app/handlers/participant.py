@@ -4,17 +4,17 @@ from ..models import *
 from .common import *
 
 
-@personal_command('summon')
+@personal_command('p_summon')
 def on_summon(bot: tg.Bot, update: tg.Update, user: User):
     activities = Activity.select()
     if not activities.exists():
         return 'No activities available'
-    return 'Select activity for summon:', build_inline_keyboard([[(x.name, 'summon ' + x.name)] for x in activities])
+    return 'Select activity for summon:', build_inline_keyboard([[(x.name, 'p_summon ' + x.name)] for x in activities])
 
 
 @callback_only
-@personal_command('summon')
-def on_summon_with_name(bot: tg.Bot, update: tg.Update, user: User):
+@personal_command('p_summon')
+def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
     if not activity:
         return error
@@ -22,15 +22,15 @@ def on_summon_with_name(bot: tg.Bot, update: tg.Update, user: User):
     for inactive_user in Participant.select_inactive_users(activity):
         inactive_user.send_message(bot,
                                    text='{0} is summoning you for *{1}*'.format(user.telegram_login, activity.name),
-                                   reply_markup=build_inline_keyboard([[('Join now', 'join ' + activity.name),
-                                                                        ('Coming', 'later ' + activity.name),
-                                                                        ('Decline', 'decline ' + activity.name)]]))
+                                   reply_markup=build_inline_keyboard([[('Join now', 'p_accept_now ' + activity.name),
+                                                                        ('Coming', 'p_accept_later ' + activity.name),
+                                                                        ('Decline', 'p_decline ' + activity.name)]]))
     return 'Notifications sent'
 
 
 @callback_only
-@personal_command('join')
-def on_join_with_name(bot: tg.Bot, update: tg.Update, user: User):
+@personal_command('p_accept_now')
+def on_accept_now_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.get_from_callback_data(update.callback_query.data)
     if not activity:
         return error
@@ -39,8 +39,8 @@ def on_join_with_name(bot: tg.Bot, update: tg.Update, user: User):
 
 
 @callback_only
-@personal_command('later')
-def on_later_with_name(bot: tg.Bot, update: tg.Update, user: User):
+@personal_command('p_accept_later')
+def on_accept_later_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
     if not activity:
         return error
@@ -49,8 +49,8 @@ def on_later_with_name(bot: tg.Bot, update: tg.Update, user: User):
 
 
 @callback_only
-@personal_command('decline')
-def on_decline_with_name(bot: tg.Bot, update: tg.Update, user: User):
+@personal_command('p_decline')
+def on_decline_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.get_from_callback_data(update.callback_query.data)
     if not activity:
         return error

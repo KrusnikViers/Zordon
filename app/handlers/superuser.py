@@ -2,8 +2,8 @@ from .common import *
 from ..models import *
 
 
-@personal_command('raw_data')
-def on_raw_data(bot: Bot, update: Update, user: User):
+@personal_command('su_full_information')
+def on_full_information(bot: Bot, update: Update, user: User):
     # Users
     users = User.select()
     response = "User list:"
@@ -11,8 +11,8 @@ def on_raw_data(bot: Bot, update: Update, user: User):
         response += "\n{0} : rights {1}, pending {2}, active: {3}, disabled: {4}".format(
             raw_user.telegram_login, raw_user.rights_level, raw_user.pending_action, raw_user.is_active,
             raw_user.is_disabled_chat)
-    user.send_message(bot, text=response, reply_markup=build_inline_keyboard([[('Promote', 'user_promote'),
-                                                                               ('Demote', 'user_demote')]]))
+    user.send_message(bot, text=response, reply_markup=build_inline_keyboard([[('Promote', 'su_promote'),
+                                                                               ('Demote', 'su_demote')]]))
 
     # Activities
     activities = Activity.select(Activity, User).join(User)
@@ -39,20 +39,20 @@ def on_raw_data(bot: Bot, update: Update, user: User):
 
 
 @callback_only
-@personal_command('user_promote')
-def on_user_promote(bot: Bot, update: Update, user: User):
+@personal_command('su_promote')
+def on_promote(bot: Bot, update: Update, user: User):
     users = User.select().where((User.rights_level < User.max_rights_level()) &
                                 (User.telegram_login != superuser_login))
     if not users.exists():
         return 'No users to promote'
 
     return ('Select user to promote:',
-            build_inline_keyboard([[(x.telegram_login, 'user_promote ' + x.telegram_user_id)] for x in users]))
+            build_inline_keyboard([[(x.telegram_login, 'su_promote ' + x.telegram_user_id)] for x in users]))
 
 
 @callback_only
-@personal_command('user_promote')
-def on_user_promote_with_id(bot: Bot, update: Update, user: User):
+@personal_command('su_promote')
+def on_promote_with_data(bot: Bot, update: Update, user: User):
     telegram_id = get_info_from_callback_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
     if selected_user.rights_level == User.max_rights_level():
@@ -66,19 +66,19 @@ def on_user_promote_with_id(bot: Bot, update: Update, user: User):
 
 
 @callback_only
-@personal_command('user_demote')
-def on_user_demote(bot: Bot, update: Update, user: User):
+@personal_command('su_demote')
+def on_demote(bot: Bot, update: Update, user: User):
     users = User.select().where((User.rights_level > 0) & (User.telegram_login != superuser_login))
     if not users.exists():
         return 'No users to demote'
 
     return ('Select user to demote:',
-            build_inline_keyboard([[(x.telegram_login, 'user_demote ' + x.telegram_user_id)] for x in users]))
+            build_inline_keyboard([[(x.telegram_login, 'su_demote ' + x.telegram_user_id)] for x in users]))
 
 
 @callback_only
-@personal_command('user_demote')
-def on_user_demote_with_id(bot: Bot, update: Update, user: User):
+@personal_command('su_demote')
+def on_demote_with_data(bot: Bot, update: Update, user: User):
     telegram_id = get_info_from_callback_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
     if selected_user.rights_level == 0:

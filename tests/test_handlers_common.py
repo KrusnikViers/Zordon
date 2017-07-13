@@ -37,7 +37,7 @@ class TestUserKeyboard(TestCommonHandlers):
 
     def test_superuser_keyboard(self):
         expected_keyboard_commands = [['Do not disturb', 'Status'],
-                                      ['Activities list', 'Summon friends', 'Raw data']]
+                                      ['Activities list', 'Summon friends', 'Full information']]
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
         self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
@@ -73,7 +73,7 @@ class TestPersonalCommand(TestCommonHandlers):
         handler = MagicMock()
         user.has_right.return_value = False
 
-        personal_command('some_command')(handler)(bot, update, user)
-        user.has_right.assert_any_call('some_command')
+        personal_command('su_full_information')(handler)(bot, update, user)
+        user.has_right.assert_any_call('su_full_information')
         self.assertTrue(user.send_message.called)
         self.assertFalse(handler.called)

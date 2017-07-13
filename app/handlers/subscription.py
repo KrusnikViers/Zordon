@@ -1,12 +1,11 @@
-import peewee as pw
 import telegram as tg
 
 from ..models import *
 from .common import *
 
 
-@personal_command('subscribe')
-def on_subscribe(bot: tg.Bot, update: tg.Update, user: User):
+@personal_command('s_new')
+def on_new(bot: tg.Bot, update: tg.Update, user: User):
     activities = (Activity
                   .select(Activity, Subscription)
                   .join(Subscription, pw.JOIN_LEFT_OUTER)
@@ -16,12 +15,12 @@ def on_subscribe(bot: tg.Bot, update: tg.Update, user: User):
         return 'No activities available for subscription'
 
     return ('Select activity to subscribe:',
-            build_inline_keyboard([[(x.name, 'subscribe ' + x.name)] for x in activities]))
+            build_inline_keyboard([[(x.name, 's_new ' + x.name)] for x in activities]))
 
 
 @callback_only
-@personal_command('subscribe')
-def on_subscribe_with_name(bot: tg.Bot, update: tg.Update, user: User):
+@personal_command('s_new')
+def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
     if not activity:
         return error
@@ -36,8 +35,8 @@ def on_subscribe_with_name(bot: tg.Bot, update: tg.Update, user: User):
     return 'Subscription to *{0}* enabled'.format(activity.name)
 
 
-@personal_command('unsubscribe')
-def on_unsubscribe(bot: tg.Bot, update: tg.Update, user: User):
+@personal_command('s_delete')
+def on_delete(bot: tg.Bot, update: tg.Update, user: User):
     activities = (Activity
                   .select(Activity, Subscription)
                   .join(Subscription)
@@ -47,12 +46,12 @@ def on_unsubscribe(bot: tg.Bot, update: tg.Update, user: User):
         return 'No activities to unsubscribe from.'
 
     return ('Select activity to unsubscribe:',
-            build_inline_keyboard([[(x.name, 'unsubscribe ' + x.name)] for x in activities]))
+            build_inline_keyboard([[(x.name, 's_delete ' + x.name)] for x in activities]))
 
 
 @callback_only
-@personal_command('unsubscribe')
-def on_unsubscribe_with_name(bot: tg.Bot, update: tg.Update, user: User):
+@personal_command('s_delete')
+def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.get_from_callback_data(update.callback_query.data)
     if not activity:
         return error

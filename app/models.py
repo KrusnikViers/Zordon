@@ -5,7 +5,7 @@ import re
 from telegram import Bot, TelegramError
 import datetime
 
-from .definitions import database_credentials, superuser_login, cooldown_time_minutes
+from .definitions import *
 
 
 _database = pw.PostgresqlDatabase(database_credentials['NAME'],
@@ -33,10 +33,11 @@ class User(_BaseModel):
     is_disabled_chat = pw.BooleanField(default=False)
 
     def has_right(self, command: str):
-        if self.is_superuser() or command in {'start', 'status', 'activate', 'deactivate', 'cancel', 'activity_list',
-                                              'subscribe', 'unsubscribe', 'join', 'later', 'decline'}:
+        assert command in commands_set
+        if self.is_superuser() or command in {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 's_new',
+                                              's_delete', 'p_accept_now', 'p_accept_later', 'p_decline'}:
             return True
-        if command in {'activity_add', 'activity_rem', 'summon'}:
+        if command in {'a_new', 'a_delete', 'p_summon'}:
             return self.rights_level > 0
         return False
 
@@ -86,7 +87,7 @@ class Activity(_BaseModel):
         return activity, None
 
     def has_right_to_remove(self, user: User):
-        if user.has_right('activity_rem'):
+        if user.has_right('a_delete'):
             return self.owner == user or user.is_superuser()
         return False
 

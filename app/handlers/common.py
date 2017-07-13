@@ -1,40 +1,7 @@
 from telegram import Update, Bot, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
 from ..models import User
-
-
-commands_map = {
-    # User-related commands
-    'start': 'start',
-    'status': 'status',
-    'activate': 'ready',
-    'deactivate': 'do_not_disturb',
-    'cancel': 'cancel',
-
-    # Commands with activities
-    'activity_list': 'list_activities',
-    'activity_add': 'add_activity',
-    'activity_rem': 'remove_activity',
-    'subscribe': 'subscribe',
-    'unsubscribe': 'unsubscribe',
-
-    # Summoning commands
-    'summon': 'summon',
-    'join': 'will_join',
-    'later': 'will_join_later',
-    'decline': 'will_not_join',
-
-    # Bot management (superuser-only)
-    'user_promote': 'user_promote',
-    'user_demote': 'user_demote',
-    'raw_data': 'raw_data',
-}
-
-
-pending_user_actions = {
-    'none': 0,
-    'activity_add': 1,
-}
+from ..definitions import commands_set, pending_user_actions
 
 
 def build_inline_keyboard(buttons: list):
@@ -48,17 +15,17 @@ def build_default_keyboard(user: User):
     buttons = [['Do not disturb' if user.is_active else 'Ready', 'Status'], ['Activities list']]
     if user.pending_action != pending_user_actions['none']:
         buttons[0].insert(0, 'Cancel action')
-    if user.has_right('summon'):
+    if user.has_right('p_summon'):
         buttons[1].append('Summon friends')
-    if user.has_right('raw_data'):
-        buttons[1].append('Raw data')
+    if user.has_right('su_full_information'):
+        buttons[1].append('Full information')
     return ReplyKeyboardMarkup([[KeyboardButton(x) for x in row] for row in buttons], resize_keyboard=True)
 
 
 def build_summon_response_keyboard(activity_name: str):
-    return build_inline_keyboard([[('Join now', 'join ' + activity_name),
-                                   ('Coming', 'later ' + activity_name),
-                                   ('Decline', 'decline ' + activity_name)]])
+    return build_inline_keyboard([[('Join now', 'p_accept_now ' + activity_name),
+                                   ('Coming', 'p_accept_later ' + activity_name),
+                                   ('Decline', 'p_decline ' + activity_name)]])
 
 
 def get_info_from_callback_data(callback_data: str)->str:
@@ -82,6 +49,9 @@ def send_response(user: User, bot: Bot, response):
 
 
 def personal_command(command=None):
+    if command:
+        assert command in commands_set
+
     def personal_command_impl(decorated_handler):
         def decorated_handler_wrapper(bot: Bot, update: Update, user=None):
             if update.callback_query:
