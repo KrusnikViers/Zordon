@@ -13,23 +13,20 @@ commands_map = {
 
     # Commands with activities
     'activity_list': 'list_activities',
-    'activity_add': 'add_activity',  # (moderator-only)
-    'activity_rem': 'remove_activity',  # (superuser-only)
+    'activity_add': 'add_activity',
+    'activity_rem': 'remove_activity',
     'subscribe': 'subscribe',
     'unsubscribe': 'unsubscribe',
 
     # Summoning commands
-    'summon': 'summon',  # (moderator-only)
+    'summon': 'summon',
     'join': 'will_join',
     'later': 'will_join_later',
     'decline': 'will_not_join',
 
-    # Moderating the moderators (superuser-only)
-    'moderator_list': 'list_moderators',
-    'moderator_add': 'add_moderator',
-    'moderator_remove': 'remove_moderator',
-
-    # Superuser access to raw DB data
+    # Bot management (superuser-only)
+    'user_promote': 'user_promote',
+    'user_demote': 'user_demote',
     'raw_data': 'raw_data',
 }
 

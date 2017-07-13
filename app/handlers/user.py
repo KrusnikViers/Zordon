@@ -9,9 +9,9 @@ def on_status(bot: tg.Bot, update: tg.Update, user: User):
     response = "Current status: {0}".format("*Active* (receiving all notifications)"
                                             if user.is_active else
                                             "*Do not disturb* (summon notifications ignored)")
-    if update.effective_user.name == superuser_login:
+    if user.is_superuser():
         response += "\nSuperuser mode enabled. Use this power wisely."
-    elif user.is_moderator:
+    elif user.rights_level > 0:
         response += "\nEnabled rights to manage activities and summon other people."
     return response, build_default_keyboard(user)
 

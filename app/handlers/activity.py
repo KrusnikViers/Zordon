@@ -64,7 +64,7 @@ def on_activity_list(bot: tg.Bot, update: tg.Update, user: User):
 @personal_command('activity_rem')
 def on_activity_rem(bot: tg.Bot, update: tg.Update, user: User):
     activities = Activity.select().order_by(Activity.name)
-    if user.telegram_login != superuser_login:
+    if not user.is_superuser():
         activities = activities.where(Activity.owner == user)
     if not activities.exists():
         return 'Activities list is empty'
