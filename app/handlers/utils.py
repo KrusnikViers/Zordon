@@ -22,21 +22,26 @@ def build_default_keyboard(user: User):
     return ReplyKeyboardMarkup([[KeyboardButton(x) for x in row] for row in buttons], resize_keyboard=True)
 
 
-def build_summon_response_keyboard(activity_name: str):
-    return build_inline_keyboard([[('Join now', 'p_accept_now ' + activity_name),
-                                   ('Coming', 'p_accept_later ' + activity_name),
-                                   ('Decline', 'p_decline ' + activity_name)]])
+def build_summon_response_keyboard(activity_name: str, is_selected_accept=None):
+    buttons = []
+    if not is_selected_accept:
+        buttons += [[('Join now', 'p_accept ' + activity_name), ('Coming', 'p_accept_later ' + activity_name)]]
+    if is_selected_accept or is_selected_accept is None:
+        buttons += [[('Decline', 'p_decline ' + activity_name)]]
+    return build_inline_keyboard(buttons)
+
+
+def edit_callback_message(update: Update, text, reply_markup=None):
+    if not update.callback_query:
+        return
+    if text:
+        update.callback_query.edit_message_text(text=text)
+    if reply_markup:
+        update.callback_query.edit_message_reply_markup(reply_markup=reply_markup)
 
 
 def get_info_from_callback_data(callback_data: str)->str:
     return callback_data.split(' ', 1)[1]
-
-
-def callback_only(decorated_handler):
-    def handler_wrapper(bot: Bot, update: Update):
-        if update.callback_query:
-            return decorated_handler(bot, update)
-    return handler_wrapper
 
 
 def send_response(user: User, bot: Bot, response):
@@ -46,6 +51,13 @@ def send_response(user: User, bot: Bot, response):
         user.send_message(bot, text=response[0], reply_markup=response[1])
     else:
         user.send_message(bot, text=response)
+
+
+def callback_only(decorated_handler):
+    def handler_wrapper(bot: Bot, update: Update):
+        if update.callback_query:
+            return decorated_handler(bot, update)
+    return handler_wrapper
 
 
 def personal_command(command=None):

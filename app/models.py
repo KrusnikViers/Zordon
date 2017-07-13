@@ -35,7 +35,7 @@ class User(_BaseModel):
     def has_right(self, command: str):
         assert command in commands_set
         if self.is_superuser() or command in {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 's_new',
-                                              's_delete', 'p_accept_now', 'p_accept_later', 'p_decline'}:
+                                              's_delete', 'p_accept', 'p_accept_later', 'p_decline'}:
             return True
         if command in {'a_new', 'a_delete', 'p_summon'}:
             return self.rights_level > 0
@@ -120,10 +120,10 @@ class Participant(_BaseModel):
     @classmethod
     def response_to_summon(cls, bot: Bot, user: User, activity: Activity, join_mode: str):
         cls.clear_inactive()
-        is_accepted = join_mode != 'decline'
-        messages = {'join': '{0} join you in *{1}*',
-                    'later': '{0} will join you in *{1}* in a short while',
-                    'decline': '{0} declined summon for *{1}*'}
+        is_accepted = join_mode != 'p_decline'
+        messages = {'p_accept': '{0} join you in *{1}*',
+                    'p_accept_later': '{0} will join you in *{1}* in a short while',
+                    'p_decline': '{0} declined summon for *{1}*'}
         participant, was_created = cls.get_or_create(activity=activity, user=user,
                                                      defaults={'report_time': datetime.datetime.now(),
                                                                'is_accepted': is_accepted})

@@ -1,6 +1,6 @@
 import telegram as tg
 
-from .common import *
+from .utils import *
 from ..models import *
 
 
@@ -78,6 +78,8 @@ def on_delete(bot: tg.Bot, update: tg.Update, user: User):
 @personal_command('a_delete')
 def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
+    edit_callback_message(update, 'Removing selected activity...')
+
     if not activity:
         return error
 

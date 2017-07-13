@@ -28,7 +28,7 @@ commands_set = {
 
     # Participation commands
     'p_summon',
-    'p_accept_now',
+    'p_accept',
     'p_accept_later',
     'p_decline',
 

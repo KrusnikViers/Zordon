@@ -2,7 +2,6 @@ from telegram import Update
 from unittest import TestCase
 from unittest.mock import patch, create_autospec, MagicMock
 
-from app.handlers import common
 from app.models import *
 
 _on_activity_new_with_data_mock = patch('app.handlers.activity.on_new_with_data', autospec=True).start()
@@ -26,7 +25,7 @@ class TestMessagesHandlers(TestCase):
         self.assertFalse(_on_activity_new_with_data_mock.called)
 
     def test_message_routing_add_activity(self):
-        user = User.create(telegram_user_id=0, pending_action=common.pending_user_actions['a_new'])
+        user = User.create(telegram_user_id=0, pending_action=pending_user_actions['a_new'])
         _update.message.text = 'Sample name'
         h_messages.message_handler(_bot, _update, user)
         _on_activity_new_with_data_mock.assert_called_once_with(_bot, _update, user)

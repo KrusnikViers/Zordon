@@ -1,6 +1,6 @@
 import telegram as tg
 
-from .common import *
+from .utils import *
 from ..models import *
 
 
@@ -53,5 +53,5 @@ def on_cancel(bot: Bot, update: Update, user: User):
     cancelled_action = user.pending_action
     user.pending_action = pending_user_actions['none']
     user.save()
-    if cancelled_action == pending_user_actions['activity_add']:
+    if cancelled_action == pending_user_actions['a_new']:
         return 'New activity adding cancelled.', build_default_keyboard(user)

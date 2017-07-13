@@ -1,4 +1,4 @@
-from .common import *
+from .utils import *
 from ..models import *
 
 
@@ -55,6 +55,7 @@ def on_promote(bot: Bot, update: Update, user: User):
 def on_promote_with_data(bot: Bot, update: Update, user: User):
     telegram_id = get_info_from_callback_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
+    edit_callback_message(update, 'Promoting...')
     if selected_user.rights_level == User.max_rights_level():
         return selected_user.telegram_login + ' has maximum rights already'
     selected_user.rights_level += 1
@@ -81,6 +82,7 @@ def on_demote(bot: Bot, update: Update, user: User):
 def on_demote_with_data(bot: Bot, update: Update, user: User):
     telegram_id = get_info_from_callback_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
+    edit_callback_message(update, 'Demoting...')
     if selected_user.rights_level == 0:
         return selected_user.telegram_login + ' has default rights already'
     selected_user.rights_level -= 1

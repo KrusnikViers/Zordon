@@ -3,7 +3,7 @@ from unittest import TestCase
 from unittest.mock import create_autospec, MagicMock, PropertyMock
 
 from app.definitions import superuser_login
-from app.handlers.common import *
+from app.handlers.utils import *
 
 
 class TestCommonHandlers(TestCase):
