@@ -41,7 +41,7 @@ def on_full_information(bot: Bot, update: Update, user: User):
 @callback_only
 @personal_command('su_promote')
 def on_promote(bot: Bot, update: Update, user: User):
-    users = User.select().where((User.rights_level < User.max_rights_level()) &
+    users = User.select().where((User.rights_level < len(commands_by_level) - 1) &
                                 (User.telegram_login != superuser_login))
     if not users.exists():
         return 'No users to promote'
@@ -56,7 +56,7 @@ def on_promote_with_data(bot: Bot, update: Update, user: User):
     telegram_id = get_info_from_callback_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
     edit_callback_message(update, 'Promoting...')
-    if selected_user.rights_level == User.max_rights_level():
+    if selected_user.rights_level == len(commands_by_level) - 1:
         return selected_user.telegram_login + ' has maximum rights already'
     selected_user.rights_level += 1
     selected_user.save()

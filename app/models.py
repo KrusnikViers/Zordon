@@ -32,17 +32,13 @@ class User(_BaseModel):
     is_active = pw.BooleanField(default=True)
     is_disabled_chat = pw.BooleanField(default=False)
 
-    @staticmethod
-    def max_rights_level()->int:
-        return 1
-
     def has_right_to(self, command: str):
         assert command in commands_set
-        if self.is_superuser() or command in {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 's_new',
-                                              's_delete', 'p_accept', 'p_accept_later', 'p_decline'}:
+        if self.is_superuser():
             return True
-        if command in {'a_new', 'a_delete', 'p_summon'}:
-            return self.rights_level > 0
+        for level in range(0, self.rights_level + 1):
+            if command in commands_by_level[level]:
+                return True
         return False
 
     def is_superuser(self):
