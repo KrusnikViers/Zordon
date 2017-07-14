@@ -70,12 +70,14 @@ def personal_command(command=None):
                 update.callback_query.answer()
 
             if not user:
-                user = User.get_or_create(telegram_user_id=update.effective_user.id,
-                                          defaults={'telegram_login': update.effective_user.name})[0]
+                user, is_created = User.get_or_create(telegram_user_id=update.effective_user.id,
+                                                      defaults={'telegram_login': update.effective_user.name})
                 if user.is_disabled_chat or user.telegram_login != update.effective_user.name:
                     user.telegram_login = update.effective_user.name
                     user.is_disabled_chat = False
                     user.save()
+                if is_created:
+                    User.send_message_to_superuser(bot, text='{0} joined'.format(user.telegram_login))
 
             if command and not user.has_right_to(command):
                 send_response(user, bot, ('Not enough rights', build_default_keyboard(user)))

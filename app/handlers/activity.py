@@ -69,6 +69,7 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
 
     user.pending_action = pending_user_actions['none']
     user.save()
+    User.send_message_to_superuser(bot, text='{0} created activity *{1}*'.format(user.telegram_login, activity.name))
     return 'Activity *{0}* created'.format(activity.name), build_default_keyboard(user)
 
 

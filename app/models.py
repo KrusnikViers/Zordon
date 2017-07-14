@@ -55,6 +55,7 @@ class User(_BaseModel):
         try:
             bot.send_message(chat_id=self.telegram_user_id, *args, parse_mode='Markdown', **kwargs)
         except TelegramError:
+            User.send_message_to_superuser(bot, text='{0} disabled chat'.format(self.telegram_login))
             self.is_disabled_chat = True
             self.save()
 
