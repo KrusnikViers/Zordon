@@ -1,0 +1,41 @@
+build: false
+
+services:
+  - postgresql93
+
+environment:
+  global:
+    DATABASE_URL: "postgres://postgres:Password12!@127.0.0.1:5432/test_db"
+    SUPERUSER_LOGIN: "ZTestSuperuser"
+    TELEGRAM_TOKEN: "ZTestToken"
+    PGUSER: "postgres"
+    PGPASSWORD: "Password12!"
+
+  matrix:
+    - PYTHON: "C:\\Python35"
+      PYTHON_VERSION: "3.5.x"
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python35-x64"
+      PYTHON_VERSION: "3.5.x"
+      PYTHON_ARCH: "64"
+
+    - PYTHON: "C:\\Python36"
+      PYTHON_VERSION: "3.6.x"
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6.x"
+      PYTHON_ARCH: "64"
+
+install:
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\Program Files\\PostgreSQL\\9.3\\bin\\;%PATH%"
+  - "python --version"
+  - "pip install --disable-pip-version-check --user --upgrade pip"
+  - "pip install -r requirements.txt"
+
+before_test:
+  - "createdb test_db"
+
+test_script:
+  - "python -m unittest"
