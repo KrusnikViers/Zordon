@@ -53,5 +53,26 @@ def on_cancel(bot: Bot, update: Update, user: User):
     cancelled_action = user.pending_action
     user.pending_action = pending_user_actions['none']
     user.save()
-    if cancelled_action == pending_user_actions['a_new']:
-        return 'New activity adding cancelled.', build_default_keyboard(user)
+    cancel_replies = {
+        'a_new': 'New activity adding cancelled.',
+        'u_report': 'Reporting cancelled',
+    }
+    return cancel_replies[cancelled_action], build_default_keyboard(user)
+
+
+@personal_command('u_report')
+def on_report(bot: Bot, update: Update, user: User):
+    if user.pending_action not in {pending_user_actions['none'], pending_user_actions['u_report']}:
+        on_cancel(bot, update, user)
+
+    user.pending_action = pending_user_actions['u_report']
+    user.save()
+    return 'Send report message (text only):', build_default_keyboard(user)
+
+
+@personal_command('u_report')
+def on_report_with_data(bot: Bot, update: Update, user: User):
+    user.pending_action = pending_user_actions['none']
+    user.save()
+    User.send_message_to_superuser(bot, text=update.message.text)
+    return 'Your message was sent to superuser', build_default_keyboard(user)

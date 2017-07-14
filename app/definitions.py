@@ -16,6 +16,7 @@ commands_by_level = [
         'u_activate',    # Turn summon notifications on
         'u_deactivate',  # Turn summon notifications off
         'u_cancel',      # Cancel current action
+        'u_report',      # Send message to superuser
 
         'a_list',  # List all available activities
 
@@ -46,4 +47,5 @@ for commands_on_level in commands_by_level:
 pending_user_actions = {
     'none': 0,
     'a_new': 1,
+    'u_report': 2,
 }

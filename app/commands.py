@@ -12,6 +12,7 @@ from .handlers.messages import message_handler
 def set_handlers(dispatcher):
     dispatcher.add_handler(CommandHandler('start', u.on_status))
     dispatcher.add_handler(CallbackQueryHandler(u.on_cancel, pattern="^u_cancel$"))
+    dispatcher.add_handler(CommandHandler('report', u.on_report))
 
     dispatcher.add_handler(CallbackQueryHandler(a.on_new, pattern="^a_new$"))
     dispatcher.add_handler(CallbackQueryHandler(a.on_delete, pattern="^a_delete$"))

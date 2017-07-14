@@ -49,7 +49,7 @@ class User(_BaseModel):
             return
 
         try:
-            bot.send_message(chat_id=self.telegram_user_id, *args, parse_mode='Markdown', **kwargs)
+            bot.send_message(self.telegram_user_id, *args, parse_mode='Markdown', **kwargs)
         except TelegramError:
             User.send_message_to_superuser(bot, text='{0} disabled chat'.format(self.telegram_login))
             self.is_disabled_chat = True
@@ -62,7 +62,7 @@ class User(_BaseModel):
         except User.DoesNotExist:
             return
 
-        superuser.send_message(bot, args, kwargs)
+        superuser.send_message(bot, *args, **kwargs)
 
 
 class Activity(_BaseModel):

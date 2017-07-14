@@ -12,11 +12,11 @@ def build_inline_keyboard(buttons: list):
 
 
 def build_default_keyboard(user: User):
-    buttons = [['Do not disturb' if user.is_active else 'Ready', 'Status'], ['Activities list']]
+    buttons = [['Do not disturb' if user.is_active else 'Ready', 'Status'], ['Activities list', 'Report bug']]
     if user.pending_action != pending_user_actions['none']:
         buttons[0].insert(0, 'Cancel action')
     if user.has_right_to('p_summon'):
-        buttons[1].append('Summon friends')
+        buttons[1].insert(1, 'Summon friends')
     if user.has_right_to('su_full_information'):
         buttons[1].append('Full information')
     return ReplyKeyboardMarkup([[KeyboardButton(x) for x in row] for row in buttons], resize_keyboard=True)

@@ -21,23 +21,23 @@ class TestUserKeyboard(TestCommonHandlers):
                                  expected_buttons[row_index][button_index])
 
     def test_inactive_user_keyboard(self):
-        expected_keyboard_commands = [['Ready', 'Status'], ['Activities list']]
+        expected_keyboard_commands = [['Ready', 'Status'], ['Activities list', 'Report bug']]
         user = User.create(telegram_user_id=0, is_active=False)
         self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
     def test_usual_user_keyboard(self):
-        expected_keyboard_commands = [['Do not disturb', 'Status'], ['Activities list']]
+        expected_keyboard_commands = [['Do not disturb', 'Status'], ['Activities list', 'Report bug']]
         user = User.create(telegram_user_id=0)
         self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
     def test_keyboard_rights_level_1(self):
-        expected_keyboard_commands = [['Do not disturb', 'Status'], ['Activities list', 'Summon friends']]
+        expected_keyboard_commands = [['Do not disturb', 'Status'], ['Activities list', 'Summon friends', 'Report bug']]
         user = User.create(telegram_user_id=0, rights_level=1)
         self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
     def test_superuser_keyboard(self):
         expected_keyboard_commands = [['Do not disturb', 'Status'],
-                                      ['Activities list', 'Summon friends', 'Full information']]
+                                      ['Activities list', 'Summon friends', 'Report bug', 'Full information']]
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
         self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 

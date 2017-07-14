@@ -3,6 +3,7 @@ import peewee as pw
 
 from .utils import *
 from ..models import *
+import app.handlers.user as u
 
 
 def _build_list_keyboard(available_actions: set)->tg.InlineKeyboardMarkup:
@@ -56,6 +57,8 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
 
 @personal_command('a_new')
 def on_new(bot: tg.Bot, update: tg.Update, user: User):
+    if user.pending_action not in {pending_user_actions['none'], pending_user_actions['a_new']}:
+        u.on_cancel(bot, update, user)
     user.pending_action = pending_user_actions['a_new']
     user.save()
     return 'Send new activity name:', build_default_keyboard(user)

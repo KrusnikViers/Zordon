@@ -16,6 +16,7 @@ command_plain_aliases = {
     'Status': u.on_status,
     'Activities list': a.on_list,
     'Summon friends': p.on_summon,
+    'Report bug': u.on_report,
     'Full information': su.on_full_information,
 }
 
@@ -25,5 +26,7 @@ def message_handler(bot: tg.Bot, update: tg.Update, user: User):
     message = update.message.text.strip()
     if message in command_plain_aliases:
         command_plain_aliases[message](bot, update, user)
-    if user.pending_action == pending_user_actions['a_new']:
+    elif user.pending_action == pending_user_actions['a_new']:
         a.on_new_with_data(bot, update, user)
+    elif user.pending_action == pending_user_actions['u_report']:
+        u.on_report_with_data(bot, update, user)
