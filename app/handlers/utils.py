@@ -15,9 +15,9 @@ def build_default_keyboard(user: User):
     buttons = [['Do not disturb' if user.is_active else 'Ready', 'Status'], ['Activities list']]
     if user.pending_action != pending_user_actions['none']:
         buttons[0].insert(0, 'Cancel action')
-    if user.has_right('p_summon'):
+    if user.has_right_to('p_summon'):
         buttons[1].append('Summon friends')
-    if user.has_right('su_full_information'):
+    if user.has_right_to('su_full_information'):
         buttons[1].append('Full information')
     return ReplyKeyboardMarkup([[KeyboardButton(x) for x in row] for row in buttons], resize_keyboard=True)
 
@@ -77,7 +77,7 @@ def personal_command(command=None):
                     user.is_disabled_chat = False
                     user.save()
 
-            if command and not user.has_right(command):
+            if command and not user.has_right_to(command):
                 send_response(user, bot, ('Not enough rights', build_default_keyboard(user)))
             else:
                 send_response(user, bot, decorated_handler(bot, update, user))

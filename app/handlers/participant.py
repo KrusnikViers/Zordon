@@ -15,17 +15,17 @@ def on_summon(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('p_summon')
 def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
+    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
     edit_callback_message(update, 'Summoning...')
     if not activity:
         return error
     Participant.response_to_summon(bot, user, activity, 'join')
-    for inactive_user in Participant.select_inactive_users(activity):
+    for inactive_user in Participant.select_subscribers_for_activity(activity):
         inactive_user.send_message(bot,
                                    text='{0} is summoning you for *{1}*'.format(user.telegram_login, activity.name),
                                    reply_markup=build_summon_response_keyboard(activity.name))
     return 'Invitations to *{0}* sent to {1} users'.format(activity.name,
-                                                         Participant.select_inactive_users(activity).count())
+                                                           Participant.select_subscribers_for_activity(activity).count())
 
 
 @callback_only
@@ -45,7 +45,7 @@ def on_accept_now_with_data(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('p_accept_later')
 def on_accept_later_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.get_by_name(get_info_from_callback_data(update.callback_query.data))
+    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
     edit_callback_message(update, 'Responding...')
     if not activity:
         return error

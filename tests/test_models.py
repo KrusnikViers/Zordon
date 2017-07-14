@@ -16,19 +16,19 @@ class TestUserModel(TestModels):
                             'p_accept', 'p_accept_later', 'p_decline'}
         user = User.create(telegram_user_id=0)
         for command in commands_set:
-            self.assertEqual(user.has_right(command), (command in allowed_commands), msg=command)
+            self.assertEqual(user.has_right_to(command), (command in allowed_commands), msg=command)
 
     def test_rights_level_1(self):
         allowed_commands = {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 'a_new', 'a_delete',
                             's_new', 's_delete', 'p_summon', 'p_accept', 'p_accept_later', 'p_decline'}
         user = User.create(telegram_user_id=0, rights_level=1)
         for command in commands_set:
-            self.assertEqual(user.has_right(command), (command in allowed_commands), msg=command)
+            self.assertEqual(user.has_right_to(command), (command in allowed_commands), msg=command)
 
     def test_rights_superuser(self):
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
         for command in commands_set:
-            self.assertTrue(user.has_right(command), msg=command)
+            self.assertTrue(user.has_right_to(command), msg=command)
 
     def test_send_message_basic(self):
         bot_mock = create_autospec(Bot)

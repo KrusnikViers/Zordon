@@ -71,9 +71,9 @@ class TestPersonalCommand(TestCommonHandlers):
         update = MagicMock()
         bot = MagicMock()
         handler = MagicMock()
-        user.has_right.return_value = False
+        user.has_right_to.return_value = False
 
         personal_command('su_full_information')(handler)(bot, update, user)
-        user.has_right.assert_any_call('su_full_information')
+        user.has_right_to.assert_any_call('su_full_information')
         self.assertTrue(user.send_message.called)
         self.assertFalse(handler.called)

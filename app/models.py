@@ -1,9 +1,9 @@
+import datetime
 from os.path import dirname, realpath, sep
 import peewee as pw
 import peewee_migrate as pwm
 import re
 from telegram import Bot, TelegramError
-import datetime
 
 from .definitions import *
 
@@ -32,7 +32,11 @@ class User(_BaseModel):
     is_active = pw.BooleanField(default=True)
     is_disabled_chat = pw.BooleanField(default=False)
 
-    def has_right(self, command: str):
+    @staticmethod
+    def max_rights_level()->int:
+        return 1
+
+    def has_right_to(self, command: str):
         assert command in commands_set
         if self.is_superuser() or command in {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 's_new',
                                               's_delete', 'p_accept', 'p_accept_later', 'p_decline'}:
@@ -44,10 +48,6 @@ class User(_BaseModel):
     def is_superuser(self):
         return self.telegram_login == superuser_login
 
-    @staticmethod
-    def max_rights_level():
-        return 1
-
     def send_message(self, bot: Bot, *args, **kwargs):
         if self.is_disabled_chat:
             return
@@ -58,6 +58,15 @@ class User(_BaseModel):
             self.is_disabled_chat = True
             self.save()
 
+    @staticmethod
+    def send_message_to_superuser(bot: Bot, *args, **kwargs):
+        try:
+            superuser = User.get(User.telegram_login == superuser_login)
+        except User.DoesNotExist:
+            return
+
+        superuser.send_message(bot, args, kwargs)
+
 
 class Activity(_BaseModel):
     """ Some activity, to which users can be invited """
@@ -65,7 +74,7 @@ class Activity(_BaseModel):
     owner = pw.ForeignKeyField(User, on_delete='CASCADE')
 
     @classmethod
-    def try_to_create(cls, new_activity_name: str, user: User):
+    def try_to_create(cls, new_activity_name: str, owner: User)->(object, str):
         max_length = 25
         new_activity_name = new_activity_name.strip()
         if len(new_activity_name) > max_length:
@@ -76,10 +85,10 @@ class Activity(_BaseModel):
             return None, 'allowed only alphanumeric characters, spaces and `_.-`'
         if cls.select().where(cls.name == new_activity_name).exists():
             return None, 'activity with name *{0}* already exists.'.format(new_activity_name)
-        return cls.create(name=new_activity_name, owner=user), ''
+        return cls.create(name=new_activity_name, owner=owner), ''
 
     @classmethod
-    def get_by_name(cls, activity_name: str):
+    def try_to_get(cls, activity_name: str)->(object, str):
         try:
             activity = Activity.get(Activity.name == activity_name)
         except Activity.DoesNotExist:
@@ -87,7 +96,7 @@ class Activity(_BaseModel):
         return activity, None
 
     def has_right_to_remove(self, user: User):
-        if user.has_right('a_delete'):
+        if user.has_right_to('a_delete'):
             return self.owner == user or user.is_superuser()
         return False
 
@@ -101,18 +110,18 @@ class Participant(_BaseModel):
 
     @classmethod
     def clear_inactive(cls):
-        lower_bound = datetime.datetime.now() - datetime.timedelta(minutes=cooldown_time_minutes)
-        cls.delete().where(cls.report_time < lower_bound).execute()
+        time_lower_bound = datetime.datetime.now() - datetime.timedelta(minutes=cooldown_time_minutes)
+        cls.delete().where(cls.report_time < time_lower_bound).execute()
 
     @classmethod
-    def select_active_users(cls, activity: Activity, user: User):
+    def select_participants_for_activity(cls, activity: Activity, user: User):
         return User.select().join(cls).where((cls.activity == activity) &
                                              (cls.user != user) &
                                              (cls.is_accepted is True))
 
     @classmethod
-    def select_inactive_users(cls, activity: Activity):
-        return (User.select().where(User.is_active)
+    def select_subscribers_for_activity(cls, activity: Activity):
+        return (User.select().where((User.is_active) & (~User.is_disabled_chat))
                     .join(Subscription).where(Subscription.activity == activity).switch(User)
                     .join(Participant, pw.JOIN_LEFT_OUTER).where((Participant.activity == activity) &
                                                                  (Participant.id.is_null(True))))
@@ -128,10 +137,10 @@ class Participant(_BaseModel):
                                                      defaults={'report_time': datetime.datetime.now(),
                                                                'is_accepted': is_accepted})
         if was_created or is_accepted is not participant.is_accepted:
-            for active_user in cls.select_active_users(activity, user):
+            for active_user in cls.select_participants_for_activity(activity, user):
                 active_user.send_message(bot, text=messages[join_mode].format(user.telegram_login, activity.name))
         if not was_created:
-            participant.is_accepted = True
+            participant.is_accepted = is_accepted
             participant.report_time = datetime.datetime.now()
             participant.save()
 
