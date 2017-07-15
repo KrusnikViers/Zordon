@@ -19,14 +19,32 @@ class TestParticipantHandlers(BaseTestCase):
         self.set_callback_data(self.superuser, 'su_promote')
         on_promote(self._mm_bot, self._mm_update)
 
+    def test_promote_no_users(self):
+        self.set_callback_data(self.superuser, 'su_promote')
+        User.delete().execute()
+        on_promote(self._mm_bot, self._mm_update)
+
     def test_promote_with_data_basic(self):
         self.set_callback_data(self.superuser, 'su_promote ' + str(self.user_0.telegram_user_id))
+        on_promote_with_data(self._mm_bot, self._mm_update)
+
+    def test_promote_with_data_again(self):
+        self.set_callback_data(self.superuser, 'su_promote ' + str(self.user_1.telegram_user_id))
         on_promote_with_data(self._mm_bot, self._mm_update)
 
     def test_demote_basic(self):
         self.set_callback_data(self.superuser, 'su_demote')
         on_demote(self._mm_bot, self._mm_update)
 
+    def test_demote_no_users(self):
+        self.set_callback_data(self.superuser, 'su_demote')
+        User.delete().execute()
+        on_demote(self._mm_bot, self._mm_update)
+
     def test_demote_with_data_basic(self):
         self.set_callback_data(self.superuser, 'su_demote ' + str(self.user_1.telegram_user_id))
+        on_demote_with_data(self._mm_bot, self._mm_update)
+
+    def test_demote_with_data_again(self):
+        self.set_callback_data(self.superuser, 'su_demote ' + str(self.user_0.telegram_user_id))
         on_demote_with_data(self._mm_bot, self._mm_update)

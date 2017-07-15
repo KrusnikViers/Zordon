@@ -54,4 +54,4 @@ class TestParticipantHandlers(BaseTestCase):
 
     def test_report_with_data_basic(self):
         self.set_message_text('Report message')
-        self.call_handler_with_mock(on_report, self.user_active)
+        self.call_handler_with_mock(on_report_with_data, self.user_active)

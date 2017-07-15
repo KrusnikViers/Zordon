@@ -101,6 +101,19 @@ class TestPersonalCommand(BaseTestCase):
         self.assertTrue(handler.called)
         self.assertTrue(User.get(User.telegram_user_id == 12345, User.telegram_login == 'username'))
 
+    def test_user_login_outdated(self):
+        user = User.create(telegram_user_id=12345, telegram_login='new_one')
+        self.set_callback_data(user, 'what a data')
+        user.telegram_login = 'Somehow_stored_old_login'
+        user.save()
+        self.assertTrue(User.get(User.telegram_user_id == 12345, User.telegram_login == 'Somehow_stored_old_login'))
+        handler = MagicMock()
+        handler.return_value = None
+
+        # Call decorator explicitly
+        personal_command()(handler)(self._mm_bot, self._mm_update)
+        self.assertTrue(User.get(User.telegram_user_id == 12345, User.telegram_login == 'new_one'))
+
     def test_not_enough_rights(self):
         user = MagicMock()
         handler = MagicMock()
