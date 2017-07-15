@@ -20,38 +20,23 @@ class TestActivityHandlers(BaseTestCase):
         activity = Activity.create(name='test', owner=self.user_1)
         user = User.create(telegram_user_id=12345, rights_level=1)
         Subscription.create(activity=activity, user=self.user_1)
-
-        class _KeyboardMatcher:
-            def __eq__(self, other):
-                expected = ['s_new', 'a_new', 'p_summon']
-                for i in range(0, len(expected)):
-                    if other.inline_keyboard[i][0].callback_data != expected[i]:
-                        return False
-                return True
-
         self.call_handler_with_mock(on_list, user)
         self._mm_bot.send_message.assert_called_once_with(user.telegram_user_id,
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
-                                                          reply_markup=_KeyboardMatcher())
+                                                          reply_markup=self.KeyboardMatcher(
+                                                              ['s_new', 'a_new', 'p_summon']
+                                                          ))
 
     def test_list_keyboard(self):
         activities = [Activity.create(name=str(x), owner=self.user_1) for x in range(0, 2)]
         Subscription.create(activity=activities[0], user=self.user_1)
-
-        class _KeyboardMatcher:
-            def __eq__(self, other):
-                expected = ['s_new', 's_delete', 'p_summon', 'a_new', 'a_delete']
-                for i in range(0, len(expected)):
-                    if other.inline_keyboard[i][0].callback_data != expected[i]:
-                        return False
-                return True
-
         self.call_handler_with_mock(on_list, self.user_1)
         self._mm_bot.send_message.assert_called_once_with(self.user_1.telegram_user_id,
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
-                                                          reply_markup=_KeyboardMatcher())
+                                                          reply_markup=self.KeyboardMatcher(
+                                                              ['s_new', 's_delete', 'p_summon', 'a_new', 'a_delete']))
 
     def test_new_basic(self):
         on_new(self._mm_bot, self._mm_update, self.user_1)

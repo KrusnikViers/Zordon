@@ -53,6 +53,11 @@ def on_promote(bot: Bot, update: Update, user: User):
 @callback_only
 @personal_command('su_promote')
 def on_promote_with_data(bot: Bot, update: Update, user: User):
+    promote_messages = [
+        '',
+        'You have been promoted!\n\nRights to manage activities and summon friends added.',
+    ]
+
     telegram_id = get_info_from_callback_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
     edit_callback_message(update, 'Promoting...')
@@ -61,7 +66,7 @@ def on_promote_with_data(bot: Bot, update: Update, user: User):
     selected_user.rights_level += 1
     selected_user.save()
     selected_user.send_message(bot,
-                               text='You have been promoted, new actions available!',
+                               text=promote_messages[selected_user.rights_level],
                                reply_markup=build_default_keyboard(selected_user))
     return '{0} promoted to rights level {1}'.format(selected_user.telegram_login, selected_user.rights_level)
 
@@ -80,6 +85,11 @@ def on_demote(bot: Bot, update: Update, user: User):
 @callback_only
 @personal_command('su_demote')
 def on_demote_with_data(bot: Bot, update: Update, user: User):
+    demote_messages = [
+        'You have been demoted!\n\nRights to manage activities and summon friends removed.',
+        '',
+    ]
+
     telegram_id = get_info_from_callback_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
     edit_callback_message(update, 'Demoting...')
@@ -88,6 +98,6 @@ def on_demote_with_data(bot: Bot, update: Update, user: User):
     selected_user.rights_level -= 1
     selected_user.save()
     selected_user.send_message(bot,
-                               text='You have been demoted. Some actions become unavailable',
+                               text=demote_messages[selected_user.rights_level],
                                reply_markup=build_default_keyboard(selected_user))
     return '{0} demoted to rights level {1}'.format(selected_user.telegram_login, selected_user.rights_level)

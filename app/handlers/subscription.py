@@ -8,7 +8,8 @@ from .utils import *
 def on_new(bot: tg.Bot, update: tg.Update, user: User):
     activities = (Activity
                   .select(Activity, Subscription)
-                  .join(Subscription, pw.JOIN_LEFT_OUTER)
+                  .join(Subscription, join_type=pw.JOIN_LEFT_OUTER,
+                        on=((Subscription.activity == Activity.id) & (Subscription.user == user)))
                   .where(Subscription.id.is_null(True))
                   .order_by(Activity.name))
     if not activities:
