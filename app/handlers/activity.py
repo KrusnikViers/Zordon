@@ -12,6 +12,7 @@ buttons = [
     ('a_delete', 'Delete existing',),
 ]
 
+
 def _build_list_keyboard(available_actions: set)->tg.InlineKeyboardMarkup:
     return build_inline_keyboard([[(name, command)] for command, name in buttons if command in available_actions])
 
@@ -38,7 +39,7 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
 
     response = 'Available activities:'
     for activity in activities:
-        response += '\n\n*{0}*'.format(activity.name)
+        response += '\n\n{0}'.format(activity.name_md())
         is_subscribed = activity.subscription.id is not None
         available_actions.add('s_delete' if is_subscribed else 's_new')
         if activity.has_right_to_remove(user):
@@ -69,8 +70,8 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
 
     user.pending_action = pending_user_actions['none']
     user.save()
-    User.send_message_to_superuser(bot, text='{0} created activity *{1}*'.format(user.telegram_login, activity.name))
-    return 'Activity *{0}* created'.format(activity.name), build_default_keyboard(user)
+    User.send_message_to_superuser(bot, text='{0} created activity {1}'.format(user.telegram_login, activity.name_md()))
+    return 'Activity {0} created'.format(activity.name_md()), build_default_keyboard(user)
 
 
 @personal_command('a_delete')
@@ -94,7 +95,7 @@ def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return error
 
     if not activity.has_right_to_remove(user):
-        return 'You have not enough rights to remove *{0}*.'.format(activity.name)
+        return 'You have not enough rights to remove {0}.'.format(activity.name_md())
 
     activity.delete_instance()
-    return 'Activity *{0}* successfully deleted.'.format(activity.name)
+    return 'Activity {0} successfully deleted.'.format(activity.name_md())

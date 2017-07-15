@@ -34,7 +34,7 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
             user.send_message(bot,
                               text='Summon is active for *{1}*',
                               reply_markup=build_summon_response_keyboard(activity.name))
-    return 'Subscription to *{0}* enabled'.format(activity.name)
+    return 'Subscription to {0} enabled'.format(activity.name_md())
 
 
 @personal_command('s_delete')
@@ -60,4 +60,4 @@ def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return error
 
     Subscription.delete().where((Subscription.activity == activity) & (Subscription.user == user)).execute()
-    return 'Subscription to *{0}* disabled'.format(activity.name)
+    return 'Subscription to {0} disabled'.format(activity.name_md())

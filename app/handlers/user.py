@@ -26,7 +26,7 @@ def on_activate(bot: tg.Bot, update: tg.Update, user: User):
                                                .join(Participant).aggregate_rows())
         for activity in suppressed_summons:
             user.send_message(bot,
-                              text='Summon is active for *{0}*'.format(activity.name),
+                              text='Summon is active for {0}'.format(activity.name_md()),
                               reply_markup=build_summon_response_keyboard(activity.name))
     user.is_active = True
     user.save()

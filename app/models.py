@@ -94,6 +94,9 @@ class Activity(_BaseModel):
             return self.owner == user or user.is_superuser()
         return False
 
+    def name_md(self):
+        return '*{0}*'.format(self.name)
+
 
 class Participant(_BaseModel):
     """ User, agreed to take part in some activity """
@@ -123,15 +126,15 @@ class Participant(_BaseModel):
     def response_to_summon(cls, bot: Bot, user: User, activity: Activity, join_mode: str):
         cls.clear_inactive()
         is_accepted = join_mode != 'p_decline'
-        messages = {'p_accept': '{0} join you in *{1}*',
-                    'p_accept_later': '{0} will join you in *{1}* in a short while',
-                    'p_decline': '{0} declined summon for *{1}*'}
+        messages = {'p_accept': '{0} join you in {1}',
+                    'p_accept_later': '{0} will join you in {1} in a short while',
+                    'p_decline': '{0} declined summon for {1}'}
         participant, was_created = cls.get_or_create(activity=activity, user=user,
                                                      defaults={'report_time': datetime.datetime.now(),
                                                                'is_accepted': is_accepted})
         if was_created or is_accepted is not participant.is_accepted:
             for active_user in cls.select_participants_for_activity(activity, user):
-                active_user.send_message(bot, text=messages[join_mode].format(user.telegram_login, activity.name))
+                active_user.send_message(bot, text=messages[join_mode].format(user.telegram_login, activity.name_md()))
         if not was_created:
             participant.is_accepted = is_accepted
             participant.report_time = datetime.datetime.now()

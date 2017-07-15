@@ -18,14 +18,14 @@ def on_full_information(bot: Bot, update: Update, user: User):
     activities = Activity.select(Activity, User).join(User)
     response = "Activities list:"
     for activity in activities:
-        response += "\n*{0}* - owner {1}".format(activity.name, activity.owner.telegram_login)
+        response += "\n{0} - owner {1}".format(activity.name_md(), activity.owner.telegram_login)
     user.send_message(bot, text=response)
 
     # Subscriptions
     subscriptions = Subscription.select(Activity, Subscription, User).join(Activity).join(User)
     response = "Subscriptions:"
     for subscription in subscriptions:
-        response += "\n{0} to {1}".format(subscription.user.telegram_login, subscription.activity.name)
+        response += "\n{0} to {1}".format(subscription.user.telegram_login, subscription.activity.name_md())
     user.send_message(bot, text=response)
 
     # Participants
@@ -33,7 +33,7 @@ def on_full_information(bot: Bot, update: Update, user: User):
     participants = Participant.select(Activity, Participant, User).join(Activity).join(User)
     response = "Participants:"
     for participant in participants:
-        response += "\n{0} in {1} ({2} from {3})".format(participant.user.telegram_login, participant.activity.name,
+        response += "\n{0} in {1} ({2} from {3})".format(participant.user.telegram_login, participant.activity.name_md(),
                                                          participant.is_accepted, participant.report_time)
     user.send_message(bot, text=response)
 
