@@ -23,6 +23,18 @@ class BaseTestCase(TestCase):
         def __eq__(self, other):
             return True
 
+    class KeyboardMatcher:
+        def __init__(self, expectations):
+            self.expectations = expectations
+
+        def __eq__(self, other):
+            if len(self.expectations) != len(other.inline_keyboard):
+                return False
+            for i in range(0, len(self.expectations)):
+                if other.inline_keyboard[i][0].callback_data != self.expectations[i]:
+                    return False
+            return True
+
     def call_handler_with_mock(self, handler, user: object):
         if user:
             handler(self._mm_bot, self._mm_update, user)
