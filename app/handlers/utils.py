@@ -5,7 +5,7 @@ from ..definitions import commands_set, pending_user_actions
 
 
 def build_inline_keyboard(buttons: list):
-    if not buttons:
+    if not buttons or not buttons[0]:
         return None
     return InlineKeyboardMarkup(
         [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons])
@@ -23,11 +23,11 @@ def build_default_keyboard(user: User):
 
 
 def build_summon_response_keyboard(activity_name: str, is_selected_accept=None):
-    buttons = []
+    buttons = [[]]
     if not is_selected_accept:
-        buttons += [[('Join now', 'p_accept ' + activity_name), ('Coming', 'p_accept_later ' + activity_name)]]
+        buttons[0] += [('Join now', 'p_accept ' + activity_name), ('Coming', 'p_accept_later ' + activity_name)]
     if is_selected_accept or is_selected_accept is None:
-        buttons += [[('Decline', 'p_decline ' + activity_name)]]
+        buttons[0].append(('Decline', 'p_decline ' + activity_name))
     return build_inline_keyboard(buttons)
 
 

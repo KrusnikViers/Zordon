@@ -37,6 +37,46 @@ class TestUserKeyboard(BaseTestCase):
         self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
 
 
+class TestInlineKeyboard(BaseTestCase):
+    def test_empty_keyboard(self):
+        self.assertEqual(None, build_inline_keyboard([[]]))
+
+    def test_basic_keyboard(self):
+        source = [[('t11', 'cb11'), ('t12', 'cb12')], [('t21', 'c21')]]
+        result = build_inline_keyboard(source)
+        self.assertTrue(isinstance(result, InlineKeyboardMarkup))
+        self.assertEqual(len(source), len(result.inline_keyboard))
+        for i in range(0, len(source)):
+            self.assertEqual(len(source[i]), len(result.inline_keyboard[i]))
+            for j in range(0, len(source[i])):
+                self.assertTrue(isinstance(result.inline_keyboard[i][j], InlineKeyboardButton))
+                self.assertEqual(source[i][j][0], result.inline_keyboard[i][j].text)
+                self.assertEqual(source[i][j][1], result.inline_keyboard[i][j].callback_data)
+
+
+class TestSummonResponseKeyboard(BaseTestCase):
+    def test_basic_keyboard(self):
+        result = build_summon_response_keyboard('activity_name')
+        self.assertTrue(isinstance(result, InlineKeyboardMarkup))
+        self.assertEqual(1, len(result.inline_keyboard))
+        self.assertEqual(3, len(result.inline_keyboard[0]))
+
+        expected = ['p_accept activity_name', 'p_accept_later activity_name', 'p_decline activity_name']
+        for i in range(0, 3):
+            self.assertEqual(expected[i], result.inline_keyboard[0][i].callback_data)
+
+
+class TestEditCallbackMessage(BaseTestCase):
+    def test_empty_callback(self):
+        edit_callback_message(self._mm_update, text='Some text')
+
+    def test_basic_callback(self):
+        self._mm_update.callback_query = MagicMock()
+        edit_callback_message(self._mm_update, text='Some text', reply_markup='Markup')
+        self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text')
+        self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')
+
+
 class TestPersonalCommand(BaseTestCase):
     def test_callback_query(self):
         update = Update(0, callback_query=create_autospec(CallbackQuery))
