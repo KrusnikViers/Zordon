@@ -1,8 +1,5 @@
-from unittest.mock import MagicMock
-
-from .base_test import BaseTestCase
-
 from app.handlers.activity import *
+from .base_test import BaseTestCase
 
 
 class TestActivityHandlers(BaseTestCase):
@@ -32,7 +29,7 @@ class TestActivityHandlers(BaseTestCase):
         on_new_with_data(self._mm_bot, self._mm_update, self.user_1)
         Activity.get(name='test_name', owner=self.user_1)
 
-    def test_new_with_data_basic(self):
+    def test_new_with_data_bad_name(self):
         self.set_message_text('bad name?')
         on_new_with_data(self._mm_bot, self._mm_update, self.user_1)
         with self.assertRaises(Activity.DoesNotExist):

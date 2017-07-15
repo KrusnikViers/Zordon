@@ -1,8 +1,5 @@
-from unittest.mock import MagicMock
-
-from .base_test import BaseTestCase
-
 from app.handlers.participant import *
+from .base_test import BaseTestCase
 
 
 class TestParticipantHandlers(BaseTestCase):

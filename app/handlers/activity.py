@@ -1,9 +1,8 @@
 import telegram as tg
-import peewee as pw
 
-from .utils import *
-from ..models import *
 import app.handlers.user as u
+from ..models import *
+from .utils import *
 
 
 def _build_list_keyboard(available_actions: set)->tg.InlineKeyboardMarkup:

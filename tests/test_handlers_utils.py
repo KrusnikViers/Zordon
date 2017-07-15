@@ -1,9 +1,9 @@
 from telegram import CallbackQuery
-from unittest.mock import create_autospec, MagicMock, PropertyMock
-from .base_test import BaseTestCase
+from unittest.mock import create_autospec, MagicMock
 
 from app.definitions import superuser_login
 from app.handlers.utils import *
+from .base_test import BaseTestCase
 
 
 class TestUserKeyboard(BaseTestCase):

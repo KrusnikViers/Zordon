@@ -54,8 +54,8 @@ def on_cancel(bot: Bot, update: Update, user: User):
     user.pending_action = pending_user_actions['none']
     user.save()
     cancel_replies = {
-        'a_new': 'New activity adding cancelled.',
-        'u_report': 'Reporting cancelled',
+        pending_user_actions['a_new']: 'New activity adding cancelled.',
+        pending_user_actions['u_report']: 'Reporting cancelled',
     }
     return cancel_replies[cancelled_action], build_default_keyboard(user)
 

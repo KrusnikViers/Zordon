@@ -1,8 +1,5 @@
-from unittest.mock import MagicMock
-
-from .base_test import BaseTestCase
-
 from app.handlers.subscription import *
+from .base_test import BaseTestCase
 
 
 class TestParticipantHandlers(BaseTestCase):
@@ -42,7 +39,7 @@ class TestParticipantHandlers(BaseTestCase):
 
     def test_delete_with_data_wrong_activity(self):
         Subscription.create(activity=self.activity, user=self.user_1)
-        self.set_callback_data(self.user_1.telegram_user_id, 's_new non_existing')
-        on_new_with_data(self._mm_bot, self._mm_update)
+        self.set_callback_data(self.user_1.telegram_user_id, 's_delete non_existing')
+        on_delete_with_data(self._mm_bot, self._mm_update)
         self.assertTrue(Subscription.select((Subscription.activity == self.activity) &
                                             (Subscription.user == self.user_1)).exists())

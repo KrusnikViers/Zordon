@@ -1,7 +1,6 @@
+from telegram import Update, CallbackQuery, Message
 from unittest import TestCase
 from unittest.mock import MagicMock, create_autospec
-from telegram import Update, CallbackQuery, Message
-
 
 from app.models import *
 
