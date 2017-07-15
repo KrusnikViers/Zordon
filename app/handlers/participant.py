@@ -6,7 +6,7 @@ from .utils import *
 
 @personal_command('p_summon')
 def on_summon(bot: tg.Bot, update: tg.Update, user: User):
-    activities = Activity.select().join(Subscription).where(Subscription.user == user)
+    activities = Activity.select()
     if not activities.exists():
         return 'No activities available'
     return 'Select activity for summon:', build_inline_keyboard([[(x.name, 'p_summon ' + x.name)] for x in activities])
