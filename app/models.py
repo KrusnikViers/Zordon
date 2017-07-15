@@ -45,9 +45,6 @@ class User(_BaseModel):
         return self.telegram_login == superuser_login
 
     def send_message(self, bot: Bot, *args, **kwargs):
-        if self.is_disabled_chat:
-            return
-
         try:
             bot.send_message(self.telegram_user_id, *args, parse_mode='Markdown', **kwargs)
         except TelegramError:
@@ -112,16 +109,15 @@ class Participant(_BaseModel):
 
     @classmethod
     def select_participants_for_activity(cls, activity: Activity, user: User):
-        return User.select().join(cls).where((cls.activity == activity) &
-                                             (cls.user != user) &
-                                             (cls.is_accepted is True))
+        return User.select().where(~User.is_disabled_chat).join(Participant).where((Participant.activity == activity) &
+                                                                                   (Participant.user != user) &
+                                                                                   (Participant.is_accepted == True))
 
     @classmethod
     def select_subscribers_for_activity(cls, activity: Activity):
         return (User.select().where((User.is_active) & (~User.is_disabled_chat))
                     .join(Subscription).where(Subscription.activity == activity).switch(User)
-                    .join(Participant, pw.JOIN_LEFT_OUTER).where((Participant.activity == activity) &
-                                                                 (Participant.id.is_null(True))))
+                    .join(Participant, pw.JOIN_LEFT_OUTER).where(Participant.id.is_null(True)))
 
     @classmethod
     def response_to_summon(cls, bot: Bot, user: User, activity: Activity, join_mode: str):

@@ -1,5 +1,5 @@
 from telegram.ext import Updater, Dispatcher
-from unittest import TestCase
+from .base_test import BaseTestCase
 from unittest.mock import create_autospec, patch
 
 
@@ -12,8 +12,9 @@ with patch('telegram.ext.Updater', new=updater_mock):
     import app.zordon
 
 
-class TestLaunch(TestCase):
+class TestLaunch(BaseTestCase):
     def setUp(self):
+        super(TestLaunch, self).setUp()
         updater_mock.reset_mock()
 
     def test_launch(self):
