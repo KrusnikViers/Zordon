@@ -19,6 +19,10 @@ class BaseTestCase(TestCase):
         self._mm_update.callback_query = None
         self._mm_update.message = None
 
+    class Any:
+        def __eq__(self, other):
+            return True
+
     def call_handler_with_mock(self, handler, user: object):
         if user:
             handler(self._mm_bot, self._mm_update, user)
