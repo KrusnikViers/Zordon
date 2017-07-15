@@ -10,20 +10,23 @@ class TestParticipantHandlers(BaseTestCase):
         self.user_1 = User.create(telegram_user_id=20, rights_level=1)
 
     def test_full_information_basic(self):
+        activity = Activity.create(name='test', owner=self.user_0)
+        Subscription.create(activity=activity, user=self.user_1)
+        Participant.create(activity=activity, user=self.superuser, report_time=datetime.datetime.now())
         on_full_information(self._mm_bot, self._mm_update, self.superuser)
 
     def test_promote_basic(self):
-        self.set_callback_data(self.superuser.telegram_user_id, 'su_promote')
+        self.set_callback_data(self.superuser, 'su_promote')
         on_promote(self._mm_bot, self._mm_update)
 
     def test_promote_with_data_basic(self):
-        self.set_callback_data(self.superuser.telegram_user_id, 'su_promote ' + str(self.user_0.telegram_user_id))
+        self.set_callback_data(self.superuser, 'su_promote ' + str(self.user_0.telegram_user_id))
         on_promote_with_data(self._mm_bot, self._mm_update)
 
     def test_demote_basic(self):
-        self.set_callback_data(self.superuser.telegram_user_id, 'su_demote')
+        self.set_callback_data(self.superuser, 'su_demote')
         on_demote(self._mm_bot, self._mm_update)
 
     def test_demote_with_data_basic(self):
-        self.set_callback_data(self.superuser.telegram_user_id, 'su_demote ' + str(self.user_1.telegram_user_id))
+        self.set_callback_data(self.superuser, 'su_demote ' + str(self.user_1.telegram_user_id))
         on_demote_with_data(self._mm_bot, self._mm_update)

@@ -47,7 +47,7 @@ def on_promote(bot: Bot, update: Update, user: User):
         return 'No users to promote'
 
     return ('Select user to promote:',
-            build_inline_keyboard([[(x.telegram_login, 'su_promote ' + x.telegram_user_id)] for x in users]))
+            build_inline_keyboard([[(x.telegram_login, 'su_promote ' + str(x.telegram_user_id))] for x in users]))
 
 
 @callback_only
@@ -74,7 +74,7 @@ def on_demote(bot: Bot, update: Update, user: User):
         return 'No users to demote'
 
     return ('Select user to demote:',
-            build_inline_keyboard([[(x.telegram_login, 'su_demote ' + x.telegram_user_id)] for x in users]))
+            build_inline_keyboard([[(x.telegram_login, 'su_demote ' + str(x.telegram_user_id))] for x in users]))
 
 
 @callback_only

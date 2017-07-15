@@ -44,17 +44,17 @@ class TestActivityHandlers(BaseTestCase):
 
     def test_delete_with_data_basic(self):
         Activity.create(name='test', owner=self.user_1)
-        self.set_callback_data(self.user_1.telegram_user_id, 'a_delete test')
+        self.set_callback_data(self.user_1, 'a_delete test')
         on_delete_with_data(self._mm_bot, self._mm_update)
         self.assertFalse(Activity.select().where(Activity.name == 'test').exists())
 
     def test_delete_with_data_no_activity(self):
-        self.set_callback_data(self.user_1.telegram_user_id, 'a_delete non_existing')
+        self.set_callback_data(self.user_1, 'a_delete non_existing')
         on_delete_with_data(self._mm_bot, self._mm_update)
 
     def test_delete_with_data_not_enough_rights(self):
         Activity.create(name='test', owner=self.user_1)
-        usual_user = User.create(telegram_user_id=12345)
-        self.set_callback_data(usual_user.telegram_user_id, 'a_delete test')
+        usual_user = User.create(telegram_user_id=12345, rights_level=1)  # Also RL1, but not owner
+        self.set_callback_data(usual_user, 'a_delete test')
         on_delete_with_data(self._mm_bot, self._mm_update)
         self.assertTrue(Activity.select().where(Activity.name == 'test').exists())
