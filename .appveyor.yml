@@ -8,6 +8,7 @@ environment:
     DATABASE_URL: "postgres://postgres:Password12!@127.0.0.1:5432/test_db"
     SUPERUSER_LOGIN: "ZTestSuperuser"
     TELEGRAM_TOKEN: "ZTestToken"
+    COOLDOWN_TIME: "10"
     PGUSER: "postgres"
     PGPASSWORD: "Password12!"
 

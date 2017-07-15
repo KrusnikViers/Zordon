@@ -4,15 +4,15 @@ import app.handlers.user as u
 from ..models import *
 from .utils import *
 
+buttons = [
+    ('s_new', 'Subscribe',),
+    ('s_delete', 'Unsubscribe',),
+    ('p_summon', 'Summon friends'),
+    ('a_new', 'Create activity',),
+    ('a_delete', 'Delete existing',),
+]
 
 def _build_list_keyboard(available_actions: set)->tg.InlineKeyboardMarkup:
-    buttons = [
-        ('a_new', 'Create new',),
-        ('a_delete', 'Delete existing',),
-        ('s_new', 'Subscribe',),
-        ('s_delete', 'Unsubscribe',),
-        ('p_summon', 'Summon friends'),
-    ]
     return build_inline_keyboard([[(name, command)] for command, name in buttons if command in available_actions])
 
 
@@ -23,11 +23,10 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
         available_actions.add('a_new')
 
     # Selecting activities
-    activities = (Activity
-                  .select(Activity, Subscription)
-                  .join(Subscription, pw.JOIN_LEFT_OUTER)
-                  .where((Subscription.id.is_null(True)) | (Subscription.user == user))
-                  .order_by(Activity.name))
+    activities = (Activity.select(Activity, Subscription)
+                          .join(Subscription, pw.JOIN_LEFT_OUTER,
+                                on=((Subscription.activity == Activity.id) & (Subscription.user == user)))
+                          .order_by(Activity.name))
     if not activities.exists():
         return 'Activities list is empty', _build_list_keyboard(available_actions)
 
@@ -40,9 +39,8 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
     response = 'Available activities:'
     for activity in activities:
         response += '\n\n*{0}*'.format(activity.name)
-
         is_subscribed = activity.subscription.id is not None
-        available_actions.add('s_new' if is_subscribed else 's_delete')
+        available_actions.add('s_delete' if is_subscribed else 's_new')
         if activity.has_right_to_remove(user):
             available_actions.add('a_delete')
         if is_subscribed:
