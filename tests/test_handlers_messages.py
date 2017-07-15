@@ -28,7 +28,6 @@ import app.handlers.utils as h_utils
 class TestMessagesHandlers(BaseTestCase):
     def setUp(self):
         super(TestMessagesHandlers, self).setUp()
-        self._mm_update.message = MagicMock()
         for mock in _mock_handlers.values():
             mock.reset_mock()
 
@@ -41,19 +40,20 @@ class TestMessagesHandlers(BaseTestCase):
 
     def test_message_routing_none(self):
         user = User.create(telegram_user_id=0)
+        self.set_message_text('Not alias')
         h_messages.message_handler(self._mm_bot, self._mm_update, user)
         self._check_invoked_times(0)
 
     def test_message_routing_activity_new(self):
         user = User.create(telegram_user_id=0, pending_action=pending_user_actions['a_new'])
-        self._mm_update.message.text = 'Not alias'
+        self.set_message_text('Not alias')
         h_messages.message_handler(self._mm_bot, self._mm_update, user)
         self._check_invoked_times(1)
         _mock_handlers['activity_on_new_with_data'].assert_called_once_with(self._mm_bot, self._mm_update, user)
 
     def test_message_routing_report(self):
         user = User.create(telegram_user_id=0, pending_action=pending_user_actions['u_report'])
-        self._mm_update.message.text = 'Not alias'
+        self.set_message_text('Not alias')
         h_messages.message_handler(self._mm_bot, self._mm_update, user)
         self._check_invoked_times(1)
         _mock_handlers['user_on_report_with_data'].assert_called_once_with(self._mm_bot, self._mm_update, user)
@@ -64,7 +64,7 @@ class TestMessagesHandlers(BaseTestCase):
         count = 0  # Each keyboard button should add unique call
         for row in markup.keyboard:
             for button in row:
-                self._mm_update.message.text = button.text
+                self.set_message_text(button.text)
                 h_messages.message_handler(self._mm_bot, self._mm_update, user)
                 count += 1
                 self._check_invoked_times(count)

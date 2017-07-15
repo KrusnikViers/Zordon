@@ -31,7 +31,7 @@ def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('p_accept')
 def on_accept_now_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.get_from_callback_data(update.callback_query.data)
+    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
     edit_callback_message(update, 'Responding...')
     if not activity:
         return error
@@ -58,7 +58,7 @@ def on_accept_later_with_data(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('p_decline')
 def on_decline_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.get_from_callback_data(update.callback_query.data)
+    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
     edit_callback_message(update, 'Responding...')
     if not activity:
         return error
