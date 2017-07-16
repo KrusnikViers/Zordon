@@ -1,10 +1,11 @@
 # Zordon Telegram Bot
 _Gathers together the most powerful kittens, pandas and capybaras in the Universe to fight against evil and boredom. Or, at least, to play Overwatch._
 
-[![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg?branch=master&style=flat-square)](https://travis-ci.org/KrusnikViers/Zordon)
-[![Build status](https://ci.appveyor.com/api/projects/status/5ek9c42yy2usr23h?svg=true&style=flat-square)](https://ci.appveyor.com/project/KrusnikViers/zordon)
-[![Code Climate](https://codeclimate.com/github/KrusnikViers/Zordon/badges/gpa.svg?style=flat-square)](https://codeclimate.com/github/KrusnikViers/Zordon)
-[![Coverage Status](https://coveralls.io/repos/github/KrusnikViers/Zordon/badge.svg?branch=master&style=flat-square)](https://coveralls.io/github/KrusnikViers/Zordon?branch=master)
+[![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg?branch=master)](https://travis-ci.org/KrusnikViers/Zordon)
+[![Build status](https://ci.appveyor.com/api/projects/status/5ek9c42yy2usr23h?svg=true)](https://ci.appveyor.com/project/KrusnikViers/zordon)
+[![Code Climate](https://codeclimate.com/github/KrusnikViers/Zordon/badges/gpa.svg)](https://codeclimate.com/github/KrusnikViers/Zordon)
+[![Coverage - Coveralls](https://coveralls.io/repos/github/KrusnikViers/Zordon/badge.svg?branch=master)](https://coveralls.io/github/KrusnikViers/Zordon?branch=master)
+[![Coverage - CodeCov](https://codecov.io/gh/KrusnikViers/Zordon/branch/master/graph/badge.svg)](https://codecov.io/gh/KrusnikViers/Zordon)
 
 To run bot, you have to set necessary environment variables and run `python run_bot.py`. Tests can be run via `python -m unittests` in root directory.
 
