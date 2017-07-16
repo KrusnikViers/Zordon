@@ -34,9 +34,14 @@ install:
   - "python --version"
   - "pip install --disable-pip-version-check --user --upgrade pip"
   - "pip install -r requirements.txt"
+  - "pip install codecov coveralls"
 
 before_test:
   - "createdb test_db"
 
 test_script:
-  - "python -m unittest"
+  - "coverage run --source=app -m unittest"
+
+after_test:
+  - "codecov"
+  - "coveralls"
