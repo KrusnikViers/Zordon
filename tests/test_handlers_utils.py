@@ -73,7 +73,8 @@ class TestEditCallbackMessage(BaseTestCase):
     def test_basic_callback(self):
         self._mm_update.callback_query = MagicMock()
         edit_callback_message(self._mm_update, text='Some text', reply_markup='Markup')
-        self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text')
+        self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text',
+                                                                                 parse_mode='Markdown')
         self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')
 
 

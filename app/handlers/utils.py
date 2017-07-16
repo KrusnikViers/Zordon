@@ -35,7 +35,7 @@ def edit_callback_message(update: Update, text, reply_markup=None):
     if not update.callback_query:
         return
     if text:
-        update.callback_query.edit_message_text(text=text)
+        update.callback_query.edit_message_text(text=text, parse_mode='Markdown')
     if reply_markup:
         update.callback_query.edit_message_reply_markup(reply_markup=reply_markup)
 
