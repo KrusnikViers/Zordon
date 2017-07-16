@@ -27,24 +27,30 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
 
     user_activities = Activity.select().join(Subscription).where(Subscription.user == user)
     other_activities_count = Activity.select(Activity.name).where(Activity.id.not_in(user_activities)).count()
-    Participant.clear_inactive()
-    user_activities = pw.prefetch(user_activities, Participant, User)
-    if user_activities:
-        available_actions = available_actions.union({'p_summon', 's_delete'})
 
-    response = ''
     if not user_activities:
         response = 'You have not subscribed to any activities.'
-    for activity in user_activities:
-        if response:
-            response += '\n\n'
-        response += '{0}'.format(activity.name_md())
-        if activity.has_right_to_remove(user):
-            response += '\n created by you'
-            available_actions.add('a_delete')
-        if activity.participant_set_prefetch:
-            online_users = [participant.user.telegram_login for participant in activity.participant_set_prefetch]
-            response += '\n joined now: ' + ' '.join(online_users)
+    else:
+        Participant.clear_inactive()
+        user_activities = pw.prefetch(user_activities, Participant.select().join(User))
+        user_activities = pw.prefetch(user_activities, (Subscription.select().join(User)
+                                                        .where((User.is_active == True) &
+                                                               (User.is_disabled_chat == False))))
+
+        available_actions = available_actions.union({'p_summon', 's_delete'})
+        activity_records = []
+        for activity in user_activities:
+            record = '{0}'.format(activity.name_md())
+            if activity.has_right_to_remove(user):
+                record += '\n created by you'
+                available_actions.add('a_delete')
+            record += '\n {0} active subscribers'.format(len(activity.subscription_set_prefetch))
+            if activity.participant_set_prefetch:
+                online_users = [participant.user.telegram_login for participant in activity.participant_set_prefetch]
+                record += '\n joined now: ' + ' '.join(online_users)
+            activity_records.append(record)
+        response = '\n\n'.join(activity_records)
+
     if other_activities_count:
         response += '\n\n*{0}* activities not in your subscriptions.'.format(other_activities_count)
         available_actions.add('s_new')
