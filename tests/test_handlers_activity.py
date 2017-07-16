@@ -10,6 +10,8 @@ class TestActivityHandlers(BaseTestCase):
     def test_list_basic(self):
         activity = Activity.create(name='test', owner=self.user_1)
         Subscription.create(activity=activity, user=self.user_1)
+        another_activity = Activity.create(name='another', owner=self.user_1)
+        Subscription.create(activity=another_activity, user=self.user_1)
         Participant.create(activity=activity, user=self.user_1, report_time=datetime.datetime.now())
         on_list(self._mm_bot, self._mm_update, self.user_1)
 
