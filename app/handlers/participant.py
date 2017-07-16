@@ -19,7 +19,7 @@ def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
     edit_callback_message(update, 'Summoning...')
     if not activity:
         return error
-    Participant.response_to_summon(bot, user, activity, 'join')
+    Participant.response_to_summon(bot, user, activity, 'p_summon')
     for inactive_user in Participant.select_subscribers_for_activity(activity):
         inactive_user.send_message(bot,
                                    text='{0} is summoning you for {1}'.format(user.telegram_login, activity.name_md()),

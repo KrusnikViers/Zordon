@@ -128,7 +128,8 @@ class Participant(_BaseModel):
         is_accepted = join_mode != 'p_decline'
         messages = {'p_accept': '{0} join you in {1}',
                     'p_accept_later': '{0} will join you in {1} in a short while',
-                    'p_decline': '{0} declined summon for {1}'}
+                    'p_decline': '{0} declined summon for {1}',
+                    'p_summon': '{0} join you in {1} with new summon call'}
         participant, was_created = cls.get_or_create(activity=activity, user=user,
                                                      defaults={'report_time': datetime.datetime.now(),
                                                                'is_accepted': is_accepted})

@@ -33,6 +33,12 @@ class TestParticipantHandlers(BaseTestCase):
         self.set_callback_data(self.user_1, 'p_summon ' + self.activity.name)
         on_summon_with_data(self._mm_bot, self._mm_update)
 
+    def test_second_summon_to_activity(self):
+        Participant.create(user=self.user_1, activity=self.activity, report_time=datetime.datetime.now())
+        user = User.create(telegram_user_id=12345, rights_level=1)
+        self.set_callback_data(user, 'p_summon ' + self.activity.name)
+        self.call_handler_with_mock(on_summon_with_data)
+
     def test_summon_with_data_non_existing_activity(self):
         self.set_callback_data(self.user_1, 'p_summon non_existing')
         on_summon_with_data(self._mm_bot, self._mm_update)

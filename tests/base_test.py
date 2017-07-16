@@ -38,7 +38,7 @@ class BaseTestCase(TestCase):
                         return False
             return True
 
-    def call_handler_with_mock(self, handler, user: object):
+    def call_handler_with_mock(self, handler, user=None):
         if user:
             handler(self._mm_bot, self._mm_update, user)
         else:
