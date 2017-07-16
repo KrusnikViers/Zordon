@@ -38,9 +38,6 @@ class TestUserKeyboard(BaseTestCase):
 
 
 class TestInlineKeyboard(BaseTestCase):
-    def test_empty_keyboard(self):
-        self.assertEqual(None, build_inline_keyboard([[]]))
-
     def test_basic_keyboard(self):
         source = [[('t11', 'cb11'), ('t12', 'cb12')], [('t21', 'c21')]]
         result = build_inline_keyboard(source)

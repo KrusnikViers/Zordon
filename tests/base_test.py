@@ -28,14 +28,10 @@ class BaseTestCase(TestCase):
             self.expectations = expectations
 
         def __eq__(self, other):
-            if len(self.expectations) != len(other.inline_keyboard):
+            other_keyboard = [[x.callback_data for x in row] for row in other.inline_keyboard]
+            if other_keyboard != self.expectations:
+                print('{0} vs {1}'.format(self.expectations, other_keyboard))
                 return False
-            for row_i in range(0, len(self.expectations)):
-                if len(other.inline_keyboard[row_i]) != len(self.expectations[row_i]):
-                    return False
-                for i in range(0, len(self.expectations[row_i])):
-                    if other.inline_keyboard[row_i][i].callback_data != self.expectations[row_i][i]:
-                        return False
             return True
 
     def call_handler_with_mock(self, handler, user=None):

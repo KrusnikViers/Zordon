@@ -5,10 +5,8 @@ from ..definitions import commands_set, pending_user_actions
 
 
 def build_inline_keyboard(buttons: list):
-    if not buttons or not buttons[0]:
-        return None
     return InlineKeyboardMarkup(
-        [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons])
+        [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons if row])
 
 
 def build_default_keyboard(user: User):

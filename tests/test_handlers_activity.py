@@ -14,7 +14,10 @@ class TestActivityHandlers(BaseTestCase):
         on_list(self._mm_bot, self._mm_update, self.user_1)
 
     def test_list_empty(self):
-        on_list(self._mm_bot, self._mm_update, self.user_1)
+        self.call_handler_with_mock(on_list, self.user_1)
+        self._mm_bot.send_message.assert_called_once_with(self.user_1.telegram_user_id,
+                                                          parse_mode='Markdown', text=self.Any(),
+                                                          reply_markup=self.KeyboardMatcher([['a_new']]))
 
     def test_list_keyboard(self):
         activity = Activity.create(name='test', owner=self.user_1)
@@ -24,11 +27,9 @@ class TestActivityHandlers(BaseTestCase):
         self._mm_bot.send_message.assert_called_once_with(user.telegram_user_id,
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
-                                                          reply_markup=self.KeyboardMatcher(
-                                                              [['s_new'], ['a_new'], ['p_summon']]
-                                                          ))
+                                                          reply_markup=self.KeyboardMatcher([['s_new'], ['a_new']]))
 
-    def test_list_keyboard(self):
+    def test_list_keyboard_full(self):
         activities = [Activity.create(name=str(x), owner=self.user_1) for x in range(0, 2)]
         Subscription.create(activity=activities[0], user=self.user_1)
         self.call_handler_with_mock(on_list, self.user_1)
@@ -36,11 +37,9 @@ class TestActivityHandlers(BaseTestCase):
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
                                                           reply_markup=self.KeyboardMatcher(
-                                                              [['s_new'],
-                                                               ['s_delete'],
-                                                               ['p_summon'],
-                                                               ['a_new'],
-                                                               ['a_delete']]))
+                                                              [['p_summon'],
+                                                               ['s_new', 's_delete'],
+                                                               ['a_new', 'a_delete']]))
 
     def test_new_basic(self):
         on_new(self._mm_bot, self._mm_update, self.user_1)

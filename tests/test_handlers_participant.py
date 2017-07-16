@@ -12,16 +12,6 @@ class TestParticipantHandlers(BaseTestCase):
     def test_summon_basic(self):
         on_summon(self._mm_bot, self._mm_update, self.user_1)
 
-    def test_summon_without_subscription(self):
-        Subscription.delete().execute()
-        self.call_handler_with_mock(on_summon, self.user_1)
-        self._mm_bot.send_message.assert_called_once_with(self.user_1.telegram_user_id,
-                                                          text=self.Any(),
-                                                          parse_mode='Markdown',
-                                                          reply_markup=self.KeyboardMatcher([
-                                                              ['p_summon test']
-                                                          ]))
-
     def test_summon_no_activities(self):
         Activity.delete().execute()
         on_summon(self._mm_bot, self._mm_update, self.user_1)

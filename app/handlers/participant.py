@@ -6,7 +6,7 @@ from .utils import *
 
 @personal_command('p_summon')
 def on_summon(bot: tg.Bot, update: tg.Update, user: User):
-    activities = Activity.select()
+    activities = Activity.select(Activity.name).join(Subscription).where(Subscription.user == user)
     if not activities.exists():
         return 'No activities available'
     return 'Select activity for summon:', build_inline_keyboard([[(x.name, 'p_summon ' + x.name)] for x in activities])
@@ -16,16 +16,18 @@ def on_summon(bot: tg.Bot, update: tg.Update, user: User):
 @personal_command('p_summon')
 def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
-    edit_callback_message(update, 'Summoning...')
     if not activity:
         return error
     Participant.response_to_summon(bot, user, activity, 'p_summon')
+    inactive_users = Participant.select_subscribers_for_activity(activity)
+    if not inactive_users:
+        return 'There are no users to answer your call'
     for inactive_user in Participant.select_subscribers_for_activity(activity):
         inactive_user.send_message(bot,
                                    text='{0} is summoning you for {1}'.format(user.telegram_login, activity.name_md()),
                                    reply_markup=build_summon_response_keyboard(activity.name))
-    return 'Invitations to {0} sent to {1} users'.format(activity.name_md(),
-                                                         Participant.select_subscribers_for_activity(activity).count())
+    return 'Invitations to {0} was sent to {1}'.format(activity.name_md(),
+                                                       ', '.join([x.telegram_login for x in inactive_users]))
 
 
 @callback_only

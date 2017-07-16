@@ -4,53 +4,52 @@ import app.handlers.user as u
 from ..models import *
 from .utils import *
 
-buttons = [
-    ('s_new', 'Subscribe',),
-    ('s_delete', 'Unsubscribe',),
-    ('p_summon', 'Summon friends'),
-    ('a_new', 'Create activity',),
-    ('a_delete', 'Delete existing',),
-]
 
-
-def _build_list_keyboard(available_actions: set)->tg.InlineKeyboardMarkup:
-    return build_inline_keyboard([[(name, command)] for command, name in buttons if command in available_actions])
+def _build_list_keyboard(user: User, available_actions: set)->tg.InlineKeyboardMarkup:
+    activity_list_full_keyboard = [
+        [('p_summon', 'Summon friends')],
+        [('s_new', 'Subscribe...'), ('s_delete', 'Unsubscribe...')],
+        [('a_new', 'Create new...'), ('a_delete', 'Delete...')]
+    ]
+    keyboard = [
+        [(name, command) for command, name in row
+         if (command in available_actions) and user.has_right_to(command)]
+        for row in activity_list_full_keyboard
+    ]
+    return build_inline_keyboard(keyboard)
 
 
 @personal_command('a_list')
 def on_list(bot: tg.Bot, update: tg.Update, user: User):
-    available_actions = set()
-    if user.has_right_to('a_new'):
-        available_actions.add('a_new')
+    available_actions = {'a_new'}
+    if not Activity.select().exists():
+        return 'Activities list is empty', _build_list_keyboard(user, available_actions)
 
-    # Selecting activities
-    activities = (Activity.select(Activity, Subscription)
-                          .join(Subscription, pw.JOIN_LEFT_OUTER,
-                                on=((Subscription.activity == Activity.id) & (Subscription.user == user)))
-                          .order_by(Activity.name))
-    if not activities.exists():
-        return 'Activities list is empty', _build_list_keyboard(available_actions)
-
-    # Prefetching other necessary data, to prevent multiple queries for every activity
+    user_activities = Activity.select().join(Subscription).where(Subscription.user == user)
+    other_activities_count = Activity.select(Activity.name).where(Activity.id.not_in(user_activities)).count()
     Participant.clear_inactive()
-    activities = pw.prefetch(activities, Participant, User)
-    if user.has_right_to('p_summon'):
-        available_actions.add('p_summon')
+    user_activities = pw.prefetch(user_activities, Participant, User)
+    if user_activities:
+        available_actions = available_actions.union({'p_summon', 's_delete'})
 
-    response = 'Available activities:'
-    for activity in activities:
-        response += '\n\n{0}'.format(activity.name_md())
-        is_subscribed = activity.subscription.id is not None
-        available_actions.add('s_delete' if is_subscribed else 's_new')
+    response = ''
+    if not user_activities:
+        response = 'You have not subscribed to any activities.'
+    for activity in user_activities:
+        if response:
+            response += '\n\n'
+        response += '{0}'.format(activity.name_md())
         if activity.has_right_to_remove(user):
+            response += '\n created by you'
             available_actions.add('a_delete')
-        if is_subscribed:
-            response += '\n subscription active'
-
         if activity.participant_set_prefetch:
             online_users = [participant.user.telegram_login for participant in activity.participant_set_prefetch]
-            response += '\n online: ' + ' '.join(online_users)
-    return response, _build_list_keyboard(available_actions)
+            response += '\n joined now: ' + ' '.join(online_users)
+    if other_activities_count:
+        response += '\n\n*{0}* activities not in your subscriptions.'.format(other_activities_count)
+        available_actions.add('s_new')
+
+    return response, _build_list_keyboard(user, available_actions)
 
 
 @personal_command('a_new')
@@ -68,6 +67,7 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
     if not activity:
         return 'Choose another name: ' + error_message
 
+    Subscription.create(user=user, activity=activity)
     user.pending_action = pending_user_actions['none']
     user.save()
     User.send_message_to_superuser(bot, text='{0} created activity {1}'.format(user.telegram_login, activity.name_md()))
