@@ -25,7 +25,7 @@ class TestActivityHandlers(BaseTestCase):
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
                                                           reply_markup=self.KeyboardMatcher(
-                                                              ['s_new', 'a_new', 'p_summon']
+                                                              [['s_new'], ['a_new'], ['p_summon']]
                                                           ))
 
     def test_list_keyboard(self):
@@ -36,7 +36,11 @@ class TestActivityHandlers(BaseTestCase):
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
                                                           reply_markup=self.KeyboardMatcher(
-                                                              ['s_new', 's_delete', 'p_summon', 'a_new', 'a_delete']))
+                                                              [['s_new'],
+                                                               ['s_delete'],
+                                                               ['p_summon'],
+                                                               ['a_new'],
+                                                               ['a_delete']]))
 
     def test_new_basic(self):
         on_new(self._mm_bot, self._mm_update, self.user_1)

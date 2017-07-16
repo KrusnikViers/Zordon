@@ -18,9 +18,9 @@ class TestParticipantHandlers(BaseTestCase):
         self._mm_bot.send_message.assert_called_once_with(self.user_1.telegram_user_id,
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
-                                                          reply_markup=self.KeyboardMatcher(
+                                                          reply_markup=self.KeyboardMatcher([
                                                               ['p_summon test']
-                                                          ))
+                                                          ]))
 
     def test_summon_no_activities(self):
         Activity.delete().execute()

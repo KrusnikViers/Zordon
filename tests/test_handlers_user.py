@@ -1,3 +1,5 @@
+from unittest.mock import call
+
 from app.handlers.user import *
 from .base_test import BaseTestCase
 
@@ -25,10 +27,20 @@ class TestParticipantHandlers(BaseTestCase):
         self.call_handler_with_mock(on_activate, self.user_active)
 
     def test_activate_with_supressed_summons(self):
-        activity = Activity.create(name='superactivity', owner=self.superuser)
+        activity = Activity.create(name='act', owner=self.superuser)
+        another_activity = Activity.create(name='another', owner=self.superuser)
         Subscription.create(activity=activity, user=self.user_1_passive)
         Participant.create(activity=activity, user=self.superuser, report_time=datetime.datetime.now())
+        Participant.create(activity=activity, user=self.user_active, report_time=datetime.datetime.now())
         self.call_handler_with_mock(on_activate, self.user_1_passive)
+        # Mode change message and one invite to activity
+        self._mm_bot.send_message.assert_has_calls([
+            call(self.user_1_passive.telegram_user_id, parse_mode='Markdown', text=self.Any(),
+                 reply_markup=self.KeyboardMatcher([['p_accept act', 'p_accept_later act', 'p_decline act']])),
+            call(self.user_1_passive.telegram_user_id, parse_mode='Markdown', text=self.Any(),
+                 reply_markup=self.Any())
+        ])
+        self.assertEqual(2, self._mm_bot.send_message.call_count)
 
     def test_deactivate_basic(self):
         self.call_handler_with_mock(on_deactivate, self.user_active)

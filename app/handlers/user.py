@@ -1,4 +1,5 @@
 import telegram as tg
+import peewee as pw
 
 from .utils import *
 from ..models import *
@@ -22,8 +23,11 @@ def on_activate(bot: tg.Bot, update: tg.Update, user: User):
         return "*Active* mode already enabled."
 
     if not user.is_active:
-        suppressed_summons = (Activity.select().join(Subscription).where(Subscription.user == user).switch(Activity)
-                                               .join(Participant).aggregate_rows())
+        suppressed_summons = (Activity.select(Activity.name)
+                                      .join(Subscription).where(Subscription.user == user)
+                                      .switch(Activity)
+                                      .join(Participant)
+                                      .group_by(Activity).having(pw.fn.Count(Participant.id) > 0))
         for activity in suppressed_summons:
             user.send_message(bot,
                               text='Summon is active for {0}'.format(activity.name_md()),

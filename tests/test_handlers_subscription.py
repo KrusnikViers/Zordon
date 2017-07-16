@@ -24,7 +24,7 @@ class TestParticipantHandlers(BaseTestCase):
         self._mm_bot.send_message.assert_called_once_with(user_0.telegram_user_id,
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
-                                                          reply_markup=self.KeyboardMatcher(['s_new test']))
+                                                          reply_markup=self.KeyboardMatcher([['s_new test']]))
 
     def test_new_with_data_basic(self):
         another_user = User.create(telegram_user_id=12345)
@@ -50,7 +50,7 @@ class TestParticipantHandlers(BaseTestCase):
         self._mm_bot.send_message.assert_called_once_with(user_0.telegram_user_id,
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
-                                                          reply_markup=self.KeyboardMatcher(['s_delete test']))
+                                                          reply_markup=self.KeyboardMatcher([['s_delete test']]))
 
     def test_delete_with_data_basic(self):
         Subscription.create(activity=self.activity, user=self.user_1)
