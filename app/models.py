@@ -112,12 +112,14 @@ class Participant(_BaseModel):
 
     @classmethod
     def select_participants_for_activity(cls, activity: Activity, user: User):
+        Participant.clear_inactive()
         return User.select().where(~User.is_disabled_chat).join(Participant).where((Participant.activity == activity) &
                                                                                    (Participant.user != user) &
                                                                                    (Participant.is_accepted == True))
 
     @classmethod
     def select_subscribers_for_activity(cls, activity: Activity):
+        Participant.clear_inactive()
         return (User.select().where((User.is_active) & (~User.is_disabled_chat))
                     .join(Subscription).where(Subscription.activity == activity).switch(User)
                     .join(Participant, pw.JOIN_LEFT_OUTER).where(Participant.id.is_null(True)))

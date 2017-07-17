@@ -13,7 +13,7 @@ def on_new(bot: tg.Bot, update: tg.Update, user: User):
                   .where(Subscription.id.is_null(True))
                   .order_by(Activity.name))
     if not activities:
-        return 'No activities available for subscription'
+        return 'No activities available for subscription.'
 
     return ('Select activity to subscribe:',
             build_inline_keyboard([[(x.name, 's_new ' + x.name)] for x in activities]))
@@ -28,12 +28,15 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
 
     _, is_created = Subscription.get_or_create(activity=activity, user=user)
     if is_created:
-        Participant.clear_inactive()
-        if Participant.select(Participant).where(Participant.activity == activity).exists():
+        participants = Participant.select_participants_for_activity(activity, user)
+        if participants:
             user.send_message(bot,
-                              text='Summon is active for *{1}*',
+                              text='There is active {0} session!\n'
+                                   'Already joined: {1}\n'
+                                   'Want to join too?'.format(
+                                        activity.name_md(), ', '.join([p.telegram_login for p in participants])),
                               reply_markup=build_summon_response_keyboard(activity.name))
-    return 'Subscription to {0} enabled'.format(activity.name_md())
+    return 'Subscription to {0} enabled.'.format(activity.name_md())
 
 
 @personal_command('s_delete')
@@ -44,7 +47,7 @@ def on_delete(bot: tg.Bot, update: tg.Update, user: User):
                   .where(Subscription.user == user)
                   .order_by(Activity.name))
     if not activities.exists():
-        return 'No activities to unsubscribe from.'
+        return 'Subscriptions list is empty.'
 
     return ('Select activity to unsubscribe:',
             build_inline_keyboard([[(x.name, 's_delete ' + x.name)] for x in activities]))
@@ -58,4 +61,4 @@ def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return error
 
     Subscription.delete().where((Subscription.activity == activity) & (Subscription.user == user)).execute()
-    return 'Subscription to {0} disabled'.format(activity.name_md())
+    return 'Subscription to {0} disabled.'.format(activity.name_md())

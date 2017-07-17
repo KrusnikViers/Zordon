@@ -12,8 +12,9 @@ def on_status(bot: tg.Bot, update: tg.Update, user: User):
                                             "*Do not disturb* (summon notifications ignored)")
     if user.is_superuser():
         response += "\nSuperuser mode enabled. Use this power wisely."
-    elif user.rights_level > 0:
-        response += "\nEnabled rights to manage activities and summon other people."
+    else:
+        if user.rights_level > 0:
+            response += "\nYou have right to manage activities and summon other people."
     return response, build_default_keyboard(user)
 
 
@@ -23,14 +24,19 @@ def on_activate(bot: tg.Bot, update: tg.Update, user: User):
         return "*Active* mode already enabled."
 
     if not user.is_active:
-        suppressed_summons = (Activity.select(Activity.name)
+        suppressed_summons = (Activity.select()
                                       .join(Subscription).where(Subscription.user == user)
                                       .switch(Activity)
                                       .join(Participant)
                                       .group_by(Activity).having(pw.fn.Count(Participant.id) > 0))
+        suppressed_summons = pw.prefetch(suppressed_summons, Participant.select(Participant, User).join(User))
         for activity in suppressed_summons:
             user.send_message(bot,
-                              text='Summon is active for {0}'.format(activity.name_md()),
+                              text='There is active {0} session!\n'
+                                   'Already joined: {1}\n'
+                                   'Want to join too?'.format(
+                                        activity.name_md(),
+                                        ', '.join([p.user.telegram_login for p in activity.participant_set_prefetch])),
                               reply_markup=build_summon_response_keyboard(activity.name))
     user.is_active = True
     user.save()
@@ -43,7 +49,11 @@ def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
         return "*Do not disturb* mode already enabled."
 
     if user.is_active:
+        user_activities = Activity.select().join(Participant).where(Participant.user == user)
         Participant.delete().where(Participant.user == user).execute()
+        other_participants = User.select().join(Participant).where(Participant.activity.in_(user_activities))
+        for fellow_participant in other_participants:
+            fellow_participant.send_message('{0} became inactive and leaved all sessions.'.format(user.telegram_login))
     user.is_active = False
     user.save()
     return "Status updated to *Do not disturb*", build_default_keyboard(user)
@@ -71,7 +81,7 @@ def on_report(bot: Bot, update: Update, user: User):
 
     user.pending_action = pending_user_actions['u_report']
     user.save()
-    return 'Send report message (text only):', build_default_keyboard(user)
+    return 'Send me message to report (text only):', build_default_keyboard(user)
 
 
 @personal_command('u_report')
@@ -79,4 +89,4 @@ def on_report_with_data(bot: Bot, update: Update, user: User):
     user.pending_action = pending_user_actions['none']
     user.save()
     User.send_message_to_superuser(bot, text=update.message.text)
-    return 'Your message was sent to superuser', build_default_keyboard(user)
+    return 'Your message had been sent to superuser', build_default_keyboard(user)
