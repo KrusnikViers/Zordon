@@ -6,9 +6,12 @@ from ..definitions import commands_set, pending_user_actions
 
 class KeyboardBuild:
     @staticmethod
-    def inline(buttons: list):
-        return InlineKeyboardMarkup(
-            [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons if row])
+    def inline(buttons: list, cancel_button_name=None):
+        inline_keyboard = \
+            [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons if row]
+        if cancel_button_name:
+            inline_keyboard.append([InlineKeyboardButton(cancel_button_name, 'c_cancel')])
+        return InlineKeyboardMarkup(inline_keyboard)
 
     @staticmethod
     def default(user: User):

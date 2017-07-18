@@ -3,6 +3,7 @@ from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, F
 from .handlers.messages import message_handler
 
 import app.handlers.activity as a
+import app.handlers.common as c
 import app.handlers.participant as p
 import app.handlers.subscription as s
 import app.handlers.superuser as su
@@ -34,5 +35,7 @@ def set_handlers(dispatcher):
     dispatcher.add_handler(CallbackQueryHandler(su.on_promote_with_data, pattern="^su_promote\ .+$"))
     dispatcher.add_handler(CallbackQueryHandler(su.on_demote, pattern="^su_demote$"))
     dispatcher.add_handler(CallbackQueryHandler(su.on_demote_with_data, pattern="^su_demote\ .+$"))
+
+    dispatcher.add_handler(CallbackQueryHandler(c.on_abort, pattern='^c_abort$'))
 
     dispatcher.add_handler(MessageHandler(Filters.text, message_handler))

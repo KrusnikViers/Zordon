@@ -7,14 +7,15 @@ from .base_test import BaseTestCase
 class TestUserModel(BaseTestCase):
     def test_rights_usual(self):
         allowed_commands = {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 's_new', 's_delete',
-                            'p_accept', 'p_accept_later', 'p_decline', 'u_report'}
+                            'p_accept', 'p_accept_later', 'p_decline', 'u_report', 'c_abort'}
         user = User.create(telegram_user_id=0)
         for command in commands_set:
             self.assertEqual(user.has_right_to(command), (command in allowed_commands), msg=command)
 
     def test_rights_level_1(self):
         allowed_commands = {'u_status', 'u_activate', 'u_deactivate', 'u_cancel', 'a_list', 'a_new', 'a_delete',
-                            's_new', 's_delete', 'p_summon', 'p_accept', 'p_accept_later', 'p_decline', 'u_report'}
+                            's_new', 's_delete', 'p_summon', 'p_accept', 'p_accept_later', 'p_decline', 'u_report',
+                            'c_abort'}
         user = User.create(telegram_user_id=0, rights_level=1)
         for command in commands_set:
             self.assertEqual(user.has_right_to(command), (command in allowed_commands), msg=command)

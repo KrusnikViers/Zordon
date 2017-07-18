@@ -26,6 +26,8 @@ commands_by_level = [
         'p_accept',        # Accept summon call
         'p_accept_later',  # Accept summon with notification about being late
         'p_decline',       # Decline summon call
+
+        'c_abort',  # Remove message with this button attached
     },
     {
         'a_new',     # Create new activity
