@@ -10,7 +10,8 @@ def on_summon(bot: tg.Bot, update: tg.Update, user: User):
     if not activities.exists():
         return 'Activities list is empty.'
 
-    return 'Select activity for summon:', KeyboardBuild.inline([[(x.name, 'p_summon ' + x.name)] for x in activities])
+    return 'Select activity for summon:', KeyboardBuild.inline([[(x.name, 'p_summon ' + x.name)] for x in activities],
+                                                               'Close selection')
 
 
 @callback_only
@@ -18,7 +19,8 @@ def on_summon(bot: tg.Bot, update: tg.Update, user: User):
 def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity, error = Activity.try_to_get(CallbackUtil.get_data(update.callback_query.data))
     if not activity:
-        return error
+        CallbackUtil.edit(update, error)
+        return
 
     Participant.response_to_summon(bot, user, activity, 'p_summon')
     inactive_users = Participant.select_subscribers_for_activity(activity)

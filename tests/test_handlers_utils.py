@@ -61,11 +61,11 @@ class TestKeyboardBuilder(BaseTestCase):
 
 class TestEditCallbackMessage(BaseTestCase):
     def test_empty_callback(self):
-        CallbackUtil.edit(self._mm_update, text='Some text')
+        CallbackUtil.edit(self._mm_update, 'Some text')
 
     def test_basic_callback(self):
         self._mm_update.callback_query = MagicMock()
-        CallbackUtil.edit(self._mm_update, text='Some text', reply_markup='Markup')
+        CallbackUtil.edit(self._mm_update, 'Some text', 'Markup')
         self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text',
                                                                                  parse_mode='Markdown')
         self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')

@@ -90,27 +90,33 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
 
 @personal_command('a_delete')
 def on_delete(bot: tg.Bot, update: tg.Update, user: User):
+    return _on_delete_impl(bot, update, user)
+
+
+def _on_delete_impl(bot: tg.Bot, update: tg.Update, user: User):
     activities = Activity.select().order_by(Activity.name)
     if not user.is_superuser():
         activities = activities.where(Activity.owner == user)
     if not activities.exists():
-        return 'Activities list is empty.'
+        return 'There are no activities you can remove.'
 
     return ('Select activity to remove:',
-            KeyboardBuild.inline([[(x.name, 'a_delete ' + x.name)] for x in activities]))
+            KeyboardBuild.inline([[(x.name, 'a_delete ' + x.name)] for x in activities], 'Close selection'))
 
 
 @callback_only
 @personal_command('a_delete')
 def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
     activity_name = CallbackUtil.get_data(update.callback_query.data)
-    CallbackUtil.edit(update, 'Attempting to remove activity *{0}*...'.format(activity_name))
     activity, error = Activity.try_to_get(activity_name)
     if not activity:
-        return error
+        CallbackUtil.edit(update, error)
+        return
 
     if not activity.has_right_to_remove(user):
-        return 'You have not enough rights to remove {0}.'.format(activity.name_md())
+        CallbackUtil.edit(update, 'You have not enough rights to remove {0}.'.format(activity.name_md()))
+        return
 
     activity.delete_instance()
+    CallbackUtil.edit(update, _on_delete_impl(bot, update, user))
     return 'Activity {0} successfully deleted!'.format(activity.name_md())

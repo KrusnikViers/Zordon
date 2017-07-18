@@ -10,7 +10,7 @@ class KeyboardBuild:
         inline_keyboard = \
             [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons if row]
         if cancel_button_name:
-            inline_keyboard.append([InlineKeyboardButton(cancel_button_name, 'c_cancel')])
+            inline_keyboard.append([InlineKeyboardButton(cancel_button_name, callback_data='c_abort')])
         return InlineKeyboardMarkup(inline_keyboard)
 
     @staticmethod
@@ -36,11 +36,16 @@ class KeyboardBuild:
 
 class CallbackUtil:
     @staticmethod
-    def edit(update: Update, text, reply_markup=None):
+    def edit(update: Update, new_data, reply_markup=None):
         if not update.callback_query:
             return
-        if text:
-            update.callback_query.edit_message_text(text=text, parse_mode='Markdown')
+        # Unpack first argument, is data passed as tuple
+        if isinstance(new_data, tuple):
+            assert not reply_markup
+            new_data, reply_markup = new_data
+
+        if new_data:
+            update.callback_query.edit_message_text(text=new_data, parse_mode='Markdown')
         if reply_markup:
             update.callback_query.edit_message_reply_markup(reply_markup=reply_markup)
 
