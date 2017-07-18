@@ -51,7 +51,8 @@ class TestParticipantHandlers(BaseTestCase):
         self._mm_bot.send_message.assert_called_once_with(user_0.telegram_user_id,
                                                           text=self.Any(),
                                                           parse_mode='Markdown',
-                                                          reply_markup=self.KeyboardMatcher([['s_delete test']]))
+                                                          reply_markup=self.KeyboardMatcher([['s_delete test'],
+                                                                                             ['c_abort']]))
 
     def test_delete_with_data_basic(self):
         Subscription.create(activity=self.activity, user=self.user_1)
