@@ -22,16 +22,17 @@ def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
 
     Participant.response_to_summon(bot, user, activity, 'p_summon')
     inactive_users = Participant.select_subscribers_for_activity(activity)
-    if not inactive_users:
-        return 'There are no users to answer your summon.'
-
     for inactive_user in Participant.select_subscribers_for_activity(activity):
         inactive_user.send_message(bot,
                                    text='{0} is summoning you for {1}!'.format(user.telegram_login, activity.name_md()),
                                    reply_markup=build_summon_response_keyboard(activity.name))
+
     participants = Participant.select_participants_for_activity(activity, user)
     if participants:
-        user.send(bot, text='Already joined: ' + ', '.join([p.telegram_login for p in participants]))
+        user.send_message(bot, text='Already joined: ' + ', '.join([p.telegram_login for p in participants]))
+
+    if not inactive_users:
+        return 'There are no more users to be invited.'
     return 'Invitations to {0} was sent to: {1}'.format(activity.name_md(),
                                                         ', '.join([x.telegram_login for x in inactive_users]))
 

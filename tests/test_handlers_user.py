@@ -28,7 +28,7 @@ class TestParticipantHandlers(BaseTestCase):
 
     def test_activate_with_supressed_summons(self):
         activity = Activity.create(name='act', owner=self.superuser)
-        another_activity = Activity.create(name='another', owner=self.superuser)
+        Activity.create(name='another', owner=self.superuser)
         Subscription.create(activity=activity, user=self.user_1_passive)
         Participant.create(activity=activity, user=self.superuser, report_time=datetime.datetime.now())
         Participant.create(activity=activity, user=self.user_active, report_time=datetime.datetime.now())
@@ -44,6 +44,25 @@ class TestParticipantHandlers(BaseTestCase):
 
     def test_deactivate_basic(self):
         self.call_handler_with_mock(on_deactivate, self.user_active)
+
+    def test_deactivate_during_join(self):
+        activities = [Activity.create(name='activity {0}'.format(i), owner=self.superuser) for i in range(0, 3)]
+        another_user = User.create(telegram_user_id=12345)
+
+        Participant.create(activity=activities[0], user=self.user_active, report_time=datetime.datetime.now())
+        Participant.create(activity=activities[0], user=self.superuser, report_time=datetime.datetime.now())
+        Participant.create(activity=activities[1], user=self.user_active, report_time=datetime.datetime.now())
+        Participant.create(activity=activities[1], user=self.superuser, report_time=datetime.datetime.now())
+
+        Participant.create(activity=activities[2], user=another_user, report_time=datetime.datetime.now())
+        Participant.create(activity=activities[2], user=self.superuser, report_time=datetime.datetime.now())
+
+        self.call_handler_with_mock(on_deactivate, self.user_active)
+        self.assertEqual(2, self._mm_bot.send_message.call_count)
+        self._mm_bot.send_message.assert_has_calls([
+            call(self.superuser.telegram_user_id, parse_mode='Markdown', text=self.Any()),
+            call(self.user_active.telegram_user_id, parse_mode='Markdown', text=self.Any(), reply_markup=self.Any())
+        ])
 
     def test_deactivate_again(self):
         self.call_handler_with_mock(on_deactivate, self.user_1_passive)

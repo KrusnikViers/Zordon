@@ -50,10 +50,14 @@ def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
 
     if user.is_active:
         user_activities = Activity.select().join(Participant).where(Participant.user == user)
-        Participant.delete().where(Participant.user == user).execute()
-        other_participants = User.select().join(Participant).where(Participant.activity.in_(user_activities))
+        other_participants = (User.select().where(User.telegram_user_id != user.telegram_user_id)
+                                  .join(Participant).where(Participant.activity.in_(user_activities))
+                                  .group_by(User))
         for fellow_participant in other_participants:
-            fellow_participant.send_message('{0} became inactive and leaved all sessions.'.format(user.telegram_login))
+            fellow_participant.send_message(bot,
+                                            text='{0} became inactive and leaved all sessions.'.format(
+                                                user.telegram_login))
+        Participant.delete().where(Participant.user == user).execute()
     user.is_active = False
     user.save()
     return "Status updated to *Do not disturb*", build_default_keyboard(user)
