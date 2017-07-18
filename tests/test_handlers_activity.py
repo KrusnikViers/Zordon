@@ -22,10 +22,9 @@ class TestActivityHandlers(BaseTestCase):
         Subscription.create(activity=activities[1], user=users[1])
         Subscription.create(activity=activities[1], user=users[2])
 
-        Participant.create(activity=activities[0], user=users[0], report_time=datetime.datetime.now())
-        Participant.create(activity=activities[0], user=users[1], report_time=datetime.datetime.now(),
-                           is_accepted=False)
-        Participant.create(activity=activities[0], user=users[2], report_time=datetime.datetime.now())
+        Participant.create(activity=activities[0], user=users[0])
+        Participant.create(activity=activities[0], user=users[1], is_accepted=False)
+        Participant.create(activity=activities[0], user=users[2])
         self.call_handler_with_mock(on_list, self.user_1)
 
     def test_list_empty(self):

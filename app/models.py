@@ -100,7 +100,7 @@ class Activity(_BaseModel):
 
 class Participant(_BaseModel):
     """ User, agreed to take part in some activity """
-    report_time = pw.TimestampField()
+    report_time = pw.TimestampField(default=datetime.datetime.now)
     is_accepted = pw.BooleanField(default=True)
     user = pw.ForeignKeyField(User, on_delete='CASCADE')
     activity = pw.ForeignKeyField(Activity, on_delete='CASCADE')
@@ -133,8 +133,7 @@ class Participant(_BaseModel):
                     'p_decline': '{0} declined summon for {1}',
                     'p_summon': '{0} join you in {1} with new summon call'}
         participant, was_created = cls.get_or_create(activity=activity, user=user,
-                                                     defaults={'report_time': datetime.datetime.now(),
-                                                               'is_accepted': is_accepted})
+                                                     defaults={'is_accepted': is_accepted})
         if was_created or is_accepted is not participant.is_accepted:
             for active_user in cls.select_participants_for_activity(activity, user):
                 active_user.send_message(bot, text=messages[join_mode].format(user.telegram_login, activity.name_md()))

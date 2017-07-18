@@ -12,7 +12,7 @@ class TestParticipantHandlers(BaseTestCase):
     def test_full_information_basic(self):
         activity = Activity.create(name='test', owner=self.user_0)
         Subscription.create(activity=activity, user=self.user_1)
-        Participant.create(activity=activity, user=self.superuser, report_time=datetime.datetime.now())
+        Participant.create(activity=activity, user=self.superuser)
         on_full_information(self._mm_bot, self._mm_update, self.superuser)
 
     def test_promote_basic(self):

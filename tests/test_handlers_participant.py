@@ -26,7 +26,7 @@ class TestParticipantHandlers(BaseTestCase):
         on_summon_with_data(self._mm_bot, self._mm_update)
 
     def test_second_summon_to_activity(self):
-        Participant.create(user=self.user_1, activity=self.activity, report_time=datetime.datetime.now())
+        Participant.create(user=self.user_1, activity=self.activity)
         user = User.create(telegram_user_id=12345, rights_level=1)
         self.set_callback_data(user, 'p_summon ' + self.activity.name)
         self.call_handler_with_mock(on_summon_with_data)
@@ -44,21 +44,21 @@ class TestParticipantHandlers(BaseTestCase):
     def test_accept_basic(self):
         user = User.create(telegram_user_id=12345)
         Subscription.create(user=user, activity=self.activity)
-        Participant.create(user=user, activity=self.activity, report_time=datetime.datetime.now())
+        Participant.create(user=user, activity=self.activity)
         self.set_callback_data(self.user_1, 'p_accept ' + self.activity.name)
         on_accept_now_with_data(self._mm_bot, self._mm_update)
 
     def test_accept_later_basic(self):
         user = User.create(telegram_user_id=12345)
         Subscription.create(user=user, activity=self.activity)
-        Participant.create(user=user, activity=self.activity, report_time=datetime.datetime.now())
+        Participant.create(user=user, activity=self.activity)
         self.set_callback_data(self.user_1, 'p_accept_later ' + self.activity.name)
         on_accept_later_with_data(self._mm_bot, self._mm_update)
 
     def test_decline_basic(self):
         user = User.create(telegram_user_id=12345)
         Subscription.create(user=user, activity=self.activity)
-        Participant.create(user=user, activity=self.activity, report_time=datetime.datetime.now())
+        Participant.create(user=user, activity=self.activity)
         self.set_callback_data(self.user_1, 'p_decline ' + self.activity.name)
         on_decline_with_data(self._mm_bot, self._mm_update)
 

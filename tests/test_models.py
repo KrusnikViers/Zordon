@@ -131,7 +131,7 @@ class TestParticipantModel(BaseTestCase):
         for user in self.users:
             case = user.telegram_user_id % (len(self.activities) + 1)
             if case < len(self.activities):
-                Participant.create(activity=self.activities[case], user=user, report_time=datetime.datetime.now())
+                Participant.create(activity=self.activities[case], user=user)
         # Only 10th user - zero user does not count itself
         self.assertEqual(1, Participant.select_participants_for_activity(self.activities[0], self.users[0]).count())
         # 1st, 6th and 11th users
@@ -143,7 +143,7 @@ class TestParticipantModel(BaseTestCase):
             taking_part = user.telegram_user_id % 3 == 0
             Subscription.create(activity=activity, user=user)
             if taking_part:
-                Participant.create(activity=activity, user=user, report_time=datetime.datetime.now())
+                Participant.create(activity=activity, user=user)
 
         # 4th and 8th users (zero and 12 users are already participants)
         self.assertEqual(2, Participant.select_subscribers_for_activity(self.activities[0]).count())
@@ -157,8 +157,8 @@ class TestParticipantModel(BaseTestCase):
             self.assertTrue(participant.telegram_user_id in {7, 11})
 
     def test_response_to_summon(self):
-        prev = Participant.create(activity=self.activities[0], user=self.users[1], report_time=datetime.datetime.now())
-        cur = Participant.create(activity=self.activities[0], user=self.users[0], report_time=datetime.datetime.now())
+        prev = Participant.create(activity=self.activities[0], user=self.users[1])
+        cur = Participant.create(activity=self.activities[0], user=self.users[0])
         bot_mock = create_autospec(Bot)
 
         Participant.response_to_summon(bot_mock, self.users[0], self.activities[0], 'p_decline')

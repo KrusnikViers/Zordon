@@ -28,7 +28,7 @@ class TestParticipantHandlers(BaseTestCase):
 
     def test_new_with_data_basic(self):
         another_user = User.create(telegram_user_id=12345)
-        Participant.create(activity=self.activity, user=another_user, report_time=datetime.datetime.now())
+        Participant.create(activity=self.activity, user=another_user)
         self.set_callback_data(self.user_1, 's_new ' + self.activity.name)
         on_new_with_data(self._mm_bot, self._mm_update)
 
