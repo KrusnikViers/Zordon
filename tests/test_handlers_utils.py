@@ -6,7 +6,7 @@ from app.handlers.utils import *
 from .base_test import BaseTestCase
 
 
-class TestUserKeyboard(BaseTestCase):
+class TestKeyboardBuilder(BaseTestCase):
     def _check_keyboard_expectations(self, keyboard, expected_buttons):
         self.assertEqual(len(keyboard), len(expected_buttons))
         for row_index in range(0, len(keyboard)):
@@ -18,29 +18,27 @@ class TestUserKeyboard(BaseTestCase):
     def test_inactive_user_keyboard(self):
         expected_keyboard_commands = [['Ready', 'Status'], ['Activities list', 'Report bug']]
         user = User.create(telegram_user_id=0, is_active=False)
-        self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(KeyboardBuild.default(user).keyboard, expected_keyboard_commands)
 
     def test_usual_user_keyboard(self):
         expected_keyboard_commands = [['Do not disturb', 'Status'], ['Activities list', 'Report bug']]
         user = User.create(telegram_user_id=0)
-        self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(KeyboardBuild.default(user).keyboard, expected_keyboard_commands)
 
     def test_keyboard_rights_level_1(self):
         expected_keyboard_commands = [['Do not disturb', 'Status'], ['Activities list', 'Summon friends', 'Report bug']]
         user = User.create(telegram_user_id=0, rights_level=1)
-        self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(KeyboardBuild.default(user).keyboard, expected_keyboard_commands)
 
     def test_superuser_keyboard(self):
         expected_keyboard_commands = [['Do not disturb', 'Status'],
                                       ['Activities list', 'Summon friends', 'Report bug', 'Full information']]
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
-        self._check_keyboard_expectations(build_default_keyboard(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(KeyboardBuild.default(user).keyboard, expected_keyboard_commands)
 
-
-class TestInlineKeyboard(BaseTestCase):
-    def test_basic_keyboard(self):
+    def test_basic_inline_keyboard(self):
         source = [[('t11', 'cb11'), ('t12', 'cb12')], [('t21', 'c21')]]
-        result = build_inline_keyboard(source)
+        result = KeyboardBuild.inline(source)
         self.assertTrue(isinstance(result, InlineKeyboardMarkup))
         self.assertEqual(len(source), len(result.inline_keyboard))
         for i in range(0, len(source)):
@@ -50,10 +48,8 @@ class TestInlineKeyboard(BaseTestCase):
                 self.assertEqual(source[i][j][0], result.inline_keyboard[i][j].text)
                 self.assertEqual(source[i][j][1], result.inline_keyboard[i][j].callback_data)
 
-
-class TestSummonResponseKeyboard(BaseTestCase):
-    def test_basic_keyboard(self):
-        result = build_summon_response_keyboard('activity_name')
+    def test_basic_summon_response_keyboard(self):
+        result = KeyboardBuild.summon_response('activity_name')
         self.assertTrue(isinstance(result, InlineKeyboardMarkup))
         self.assertEqual(1, len(result.inline_keyboard))
         self.assertEqual(3, len(result.inline_keyboard[0]))
@@ -65,11 +61,11 @@ class TestSummonResponseKeyboard(BaseTestCase):
 
 class TestEditCallbackMessage(BaseTestCase):
     def test_empty_callback(self):
-        edit_callback_message(self._mm_update, text='Some text')
+        CallbackUtil.edit(self._mm_update, text='Some text')
 
     def test_basic_callback(self):
         self._mm_update.callback_query = MagicMock()
-        edit_callback_message(self._mm_update, text='Some text', reply_markup='Markup')
+        CallbackUtil.edit(self._mm_update, text='Some text', reply_markup='Markup')
         self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text',
                                                                                  parse_mode='Markdown')
         self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')

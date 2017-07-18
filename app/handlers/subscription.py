@@ -16,13 +16,13 @@ def on_new(bot: tg.Bot, update: tg.Update, user: User):
         return 'No activities available for subscription.'
 
     return ('Select activity to subscribe:',
-            build_inline_keyboard([[(x.name, 's_new ' + x.name)] for x in activities]))
+            KeyboardBuild.inline([[(x.name, 's_new ' + x.name)] for x in activities]))
 
 
 @callback_only
 @personal_command('s_new')
 def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
+    activity, error = Activity.try_to_get(CallbackUtil.get_data(update.callback_query.data))
     if not activity:
         return error
 
@@ -35,7 +35,7 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
                                    'Already joined: {1}\n'
                                    'Want to join too?'.format(
                                         activity.name_md(), ', '.join([p.telegram_login for p in participants])),
-                              reply_markup=build_summon_response_keyboard(activity.name))
+                              reply_markup=KeyboardBuild.summon_response(activity.name))
     return 'Subscription to {0} enabled.'.format(activity.name_md())
 
 
@@ -50,13 +50,13 @@ def on_delete(bot: tg.Bot, update: tg.Update, user: User):
         return 'Subscriptions list is empty.'
 
     return ('Select activity to unsubscribe:',
-            build_inline_keyboard([[(x.name, 's_delete ' + x.name)] for x in activities]))
+            KeyboardBuild.inline([[(x.name, 's_delete ' + x.name)] for x in activities]))
 
 
 @callback_only
 @personal_command('s_delete')
 def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
+    activity, error = Activity.try_to_get(CallbackUtil.get_data(update.callback_query.data))
     if not activity:
         return error
 

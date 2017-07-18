@@ -15,7 +15,7 @@ def on_status(bot: tg.Bot, update: tg.Update, user: User):
     else:
         if user.rights_level > 0:
             response += "\nYou have right to manage activities and summon other people."
-    return response, build_default_keyboard(user)
+    return response, KeyboardBuild.default(user)
 
 
 @personal_command('u_activate')
@@ -37,10 +37,10 @@ def on_activate(bot: tg.Bot, update: tg.Update, user: User):
                                    'Want to join too?'.format(
                                         activity.name_md(),
                                         ', '.join([p.user.telegram_login for p in activity.participant_set_prefetch])),
-                              reply_markup=build_summon_response_keyboard(activity.name))
+                              reply_markup=KeyboardBuild.summon_response(activity.name))
     user.is_active = True
     user.save()
-    return "Status updated to *Active*", build_default_keyboard(user)
+    return "Status updated to *Active*", KeyboardBuild.default(user)
 
 
 @personal_command('u_deactivate')
@@ -60,13 +60,13 @@ def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
         Participant.delete().where(Participant.user == user).execute()
     user.is_active = False
     user.save()
-    return "Status updated to *Do not disturb*", build_default_keyboard(user)
+    return "Status updated to *Do not disturb*", KeyboardBuild.default(user)
 
 
 @personal_command('u_cancel')
 def on_cancel(bot: Bot, update: Update, user: User):
     if user.pending_action == pending_user_actions['none']:
-        return 'Nothing to be cancelled.', build_default_keyboard(user)
+        return 'Nothing to be cancelled.', KeyboardBuild.default(user)
 
     cancelled_action = user.pending_action
     user.pending_action = pending_user_actions['none']
@@ -75,7 +75,7 @@ def on_cancel(bot: Bot, update: Update, user: User):
         pending_user_actions['a_new']: 'New activity adding cancelled.',
         pending_user_actions['u_report']: 'Reporting cancelled',
     }
-    return cancel_replies[cancelled_action], build_default_keyboard(user)
+    return cancel_replies[cancelled_action], KeyboardBuild.default(user)
 
 
 @personal_command('u_report')
@@ -85,7 +85,7 @@ def on_report(bot: Bot, update: Update, user: User):
 
     user.pending_action = pending_user_actions['u_report']
     user.save()
-    return 'Send me message to report (text only):', build_default_keyboard(user)
+    return 'Send me message to report (text only):', KeyboardBuild.default(user)
 
 
 @personal_command('u_report')
@@ -93,4 +93,4 @@ def on_report_with_data(bot: Bot, update: Update, user: User):
     user.pending_action = pending_user_actions['none']
     user.save()
     User.send_message_to_superuser(bot, text=update.message.text)
-    return 'Your message had been sent to superuser', build_default_keyboard(user)
+    return 'Your message had been sent to superuser', KeyboardBuild.default(user)

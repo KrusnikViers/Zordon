@@ -11,8 +11,8 @@ def on_full_information(bot: Bot, update: Update, user: User):
         response += "\n{0} : rights {1}, pending {2}, active: {3}, disabled: {4}".format(
             raw_user.telegram_login, raw_user.rights_level, raw_user.pending_action, raw_user.is_active,
             raw_user.is_disabled_chat)
-    user.send_message(bot, text=response, reply_markup=build_inline_keyboard([[('Promote', 'su_promote'),
-                                                                               ('Demote', 'su_demote')]]))
+    user.send_message(bot, text=response, reply_markup=KeyboardBuild.inline([[('Promote', 'su_promote'),
+                                                                              ('Demote', 'su_demote')]]))
 
     # Activities
     activities = Activity.select(Activity, User).join(User)
@@ -47,7 +47,7 @@ def on_promote(bot: Bot, update: Update, user: User):
         return 'No users to promote'
 
     return ('Select user to promote:',
-            build_inline_keyboard([[(x.telegram_login, 'su_promote ' + str(x.telegram_user_id))] for x in users]))
+            KeyboardBuild.inline([[(x.telegram_login, 'su_promote ' + str(x.telegram_user_id))] for x in users]))
 
 
 @callback_only
@@ -58,16 +58,16 @@ def on_promote_with_data(bot: Bot, update: Update, user: User):
         'You have been promoted!\n\nRights to manage activities and summon friends added.',
     ]
 
-    telegram_id = get_info_from_callback_data(update.callback_query.data)
+    telegram_id = CallbackUtil.get_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
-    edit_callback_message(update, 'Promoting...')
+    CallbackUtil.edit(update, 'Promoting...')
     if selected_user.rights_level == len(commands_by_level) - 1:
         return selected_user.telegram_login + ' has maximum rights already'
     selected_user.rights_level += 1
     selected_user.save()
     selected_user.send_message(bot,
                                text=promote_messages[selected_user.rights_level],
-                               reply_markup=build_default_keyboard(selected_user))
+                               reply_markup=KeyboardBuild.default(selected_user))
     return '{0} promoted to rights level {1}'.format(selected_user.telegram_login, selected_user.rights_level)
 
 
@@ -79,7 +79,7 @@ def on_demote(bot: Bot, update: Update, user: User):
         return 'No users to demote'
 
     return ('Select user to demote:',
-            build_inline_keyboard([[(x.telegram_login, 'su_demote ' + str(x.telegram_user_id))] for x in users]))
+            KeyboardBuild.inline([[(x.telegram_login, 'su_demote ' + str(x.telegram_user_id))] for x in users]))
 
 
 @callback_only
@@ -90,14 +90,14 @@ def on_demote_with_data(bot: Bot, update: Update, user: User):
         '',
     ]
 
-    telegram_id = get_info_from_callback_data(update.callback_query.data)
+    telegram_id = CallbackUtil.get_data(update.callback_query.data)
     selected_user = User.get(User.telegram_user_id == telegram_id)
-    edit_callback_message(update, 'Demoting...')
+    CallbackUtil.edit(update, 'Demoting...')
     if selected_user.rights_level == 0:
         return selected_user.telegram_login + ' has default rights already'
     selected_user.rights_level -= 1
     selected_user.save()
     selected_user.send_message(bot,
                                text=demote_messages[selected_user.rights_level],
-                               reply_markup=build_default_keyboard(selected_user))
+                               reply_markup=KeyboardBuild.default(selected_user))
     return '{0} demoted to rights level {1}'.format(selected_user.telegram_login, selected_user.rights_level)

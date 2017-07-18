@@ -16,7 +16,7 @@ def _build_list_keyboard(user: User, available_actions: set)->tg.InlineKeyboardM
          if (command in available_actions) and user.has_right_to(command)]
         for row in activity_list_full_keyboard
     ]
-    return build_inline_keyboard(keyboard)
+    return KeyboardBuild.inline(keyboard)
 
 
 @personal_command('a_list')
@@ -72,7 +72,7 @@ def on_new(bot: tg.Bot, update: tg.Update, user: User):
         u.on_cancel(bot, update, user)
     user.pending_action = pending_user_actions['a_new']
     user.save()
-    return 'Send me name for activity to create:', build_default_keyboard(user)
+    return 'Send me name for activity to create:', KeyboardBuild.default(user)
 
 
 @personal_command('a_new')
@@ -85,7 +85,7 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
     user.pending_action = pending_user_actions['none']
     user.save()
     User.send_message_to_superuser(bot, text='{0} created activity {1}'.format(user.telegram_login, activity.name_md()))
-    return 'Activity {0} created!'.format(activity.name_md()), build_default_keyboard(user)
+    return 'Activity {0} created!'.format(activity.name_md()), KeyboardBuild.default(user)
 
 
 @personal_command('a_delete')
@@ -97,14 +97,14 @@ def on_delete(bot: tg.Bot, update: tg.Update, user: User):
         return 'Activities list is empty.'
 
     return ('Select activity to remove:',
-            build_inline_keyboard([[(x.name, 'a_delete ' + x.name)] for x in activities]))
+            KeyboardBuild.inline([[(x.name, 'a_delete ' + x.name)] for x in activities]))
 
 
 @callback_only
 @personal_command('a_delete')
 def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity_name = get_info_from_callback_data(update.callback_query.data)
-    edit_callback_message(update, 'Attempting to remove activity *{0}*...'.format(activity_name))
+    activity_name = CallbackUtil.get_data(update.callback_query.data)
+    CallbackUtil.edit(update, 'Attempting to remove activity *{0}*...'.format(activity_name))
     activity, error = Activity.try_to_get(activity_name)
     if not activity:
         return error

@@ -10,13 +10,13 @@ def on_summon(bot: tg.Bot, update: tg.Update, user: User):
     if not activities.exists():
         return 'Activities list is empty.'
 
-    return 'Select activity for summon:', build_inline_keyboard([[(x.name, 'p_summon ' + x.name)] for x in activities])
+    return 'Select activity for summon:', KeyboardBuild.inline([[(x.name, 'p_summon ' + x.name)] for x in activities])
 
 
 @callback_only
 @personal_command('p_summon')
 def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
+    activity, error = Activity.try_to_get(CallbackUtil.get_data(update.callback_query.data))
     if not activity:
         return error
 
@@ -25,7 +25,7 @@ def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
     for inactive_user in Participant.select_subscribers_for_activity(activity):
         inactive_user.send_message(bot,
                                    text='{0} is summoning you for {1}!'.format(user.telegram_login, activity.name_md()),
-                                   reply_markup=build_summon_response_keyboard(activity.name))
+                                   reply_markup=KeyboardBuild.summon_response(activity.name))
 
     participants = Participant.select_participants_for_activity(activity, user)
     if participants:
@@ -40,15 +40,14 @@ def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('p_accept')
 def on_accept_now_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
+    activity, error = Activity.try_to_get(CallbackUtil.get_data(update.callback_query.data))
     if not activity:
-        edit_callback_message(update, error)
+        CallbackUtil.edit(update, error)
         return
 
     Participant.response_to_summon(bot, user, activity, 'p_accept')
-    edit_callback_message(update,
-                          'Invitation to {0} accepted!'.format(activity.name_md()),
-                          build_summon_response_keyboard(activity.name, True))
+    CallbackUtil.edit(update, 'Invitation to {0} accepted!'.format(activity.name_md()),
+                      KeyboardBuild.summon_response(activity.name, True))
     participants = Participant.select_participants_for_activity(activity, user)
     if participants:
         return 'Other joined: ' + ', '.join([p.telegram_login for p in participants])
@@ -57,15 +56,14 @@ def on_accept_now_with_data(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('p_accept_later')
 def on_accept_later_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
+    activity, error = Activity.try_to_get(CallbackUtil.get_data(update.callback_query.data))
     if not activity:
-        edit_callback_message(update, error)
+        CallbackUtil.edit(update, error)
         return
 
     Participant.response_to_summon(bot, user, activity, 'p_accept_later')
-    edit_callback_message(update,
-                          'Invitation to {0} accepted!'.format(activity.name_md()),
-                          build_summon_response_keyboard(activity.name, True))
+    CallbackUtil.edit(update, 'Invitation to {0} accepted!'.format(activity.name_md()),
+                      KeyboardBuild.summon_response(activity.name, True))
     participants = Participant.select_participants_for_activity(activity, user)
     if participants:
         return 'Other joined: ' + ', '.join([p.telegram_login for p in participants])
@@ -74,12 +72,11 @@ def on_accept_later_with_data(bot: tg.Bot, update: tg.Update, user: User):
 @callback_only
 @personal_command('p_decline')
 def on_decline_with_data(bot: tg.Bot, update: tg.Update, user: User):
-    activity, error = Activity.try_to_get(get_info_from_callback_data(update.callback_query.data))
+    activity, error = Activity.try_to_get(CallbackUtil.get_data(update.callback_query.data))
     if not activity:
-        edit_callback_message(update, error)
+        CallbackUtil.edit(update, error)
         return
 
     Participant.response_to_summon(bot, user, activity, 'p_decline')
-    edit_callback_message(update,
-                          'Invitation to {0} declined. Next time then!'.format(activity.name_md()),
-                          build_summon_response_keyboard(activity.name, False))
+    CallbackUtil.edit(update, 'Invitation to {0} declined. Next time then!'.format(activity.name_md()),
+                      KeyboardBuild.summon_response(activity.name, False))

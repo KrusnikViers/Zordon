@@ -4,51 +4,52 @@ from ..models import User
 from ..definitions import commands_set, pending_user_actions
 
 
-def build_inline_keyboard(buttons: list):
-    return InlineKeyboardMarkup(
-        [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons if row])
+class KeyboardBuild:
+    @staticmethod
+    def inline(buttons: list):
+        return InlineKeyboardMarkup(
+            [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons if row])
+
+    @staticmethod
+    def default(user: User):
+        buttons = [['Do not disturb' if user.is_active else 'Ready', 'Status'], ['Activities list', 'Report bug']]
+        if user.pending_action != pending_user_actions['none']:
+            buttons[0].insert(0, 'Cancel action')
+        if user.has_right_to('p_summon'):
+            buttons[1].insert(1, 'Summon friends')
+        if user.has_right_to('su_full_information'):
+            buttons[1].append('Full information')
+        return ReplyKeyboardMarkup([[KeyboardButton(x) for x in row] for row in buttons], resize_keyboard=True)
+
+    @staticmethod
+    def summon_response(activity_name: str, is_selected_accept=None):
+        buttons = [[]]
+        if not is_selected_accept:
+            buttons[0] += [('Join now', 'p_accept ' + activity_name), ('Coming', 'p_accept_later ' + activity_name)]
+        if is_selected_accept or is_selected_accept is None:
+            buttons[0].append(('Decline', 'p_decline ' + activity_name))
+        return KeyboardBuild.inline(buttons)
 
 
-def build_default_keyboard(user: User):
-    buttons = [['Do not disturb' if user.is_active else 'Ready', 'Status'], ['Activities list', 'Report bug']]
-    if user.pending_action != pending_user_actions['none']:
-        buttons[0].insert(0, 'Cancel action')
-    if user.has_right_to('p_summon'):
-        buttons[1].insert(1, 'Summon friends')
-    if user.has_right_to('su_full_information'):
-        buttons[1].append('Full information')
-    return ReplyKeyboardMarkup([[KeyboardButton(x) for x in row] for row in buttons], resize_keyboard=True)
+class CallbackUtil:
+    @staticmethod
+    def edit(update: Update, text, reply_markup=None):
+        if not update.callback_query:
+            return
+        if text:
+            update.callback_query.edit_message_text(text=text, parse_mode='Markdown')
+        if reply_markup:
+            update.callback_query.edit_message_reply_markup(reply_markup=reply_markup)
 
+    @staticmethod
+    def get_data(callback_data: str)->str:
+        return callback_data.split(' ', 1)[1]
 
-def build_summon_response_keyboard(activity_name: str, is_selected_accept=None):
-    buttons = [[]]
-    if not is_selected_accept:
-        buttons[0] += [('Join now', 'p_accept ' + activity_name), ('Coming', 'p_accept_later ' + activity_name)]
-    if is_selected_accept or is_selected_accept is None:
-        buttons[0].append(('Decline', 'p_decline ' + activity_name))
-    return build_inline_keyboard(buttons)
-
-
-def edit_callback_message(update: Update, text, reply_markup=None):
-    if not update.callback_query:
-        return
-    if text:
-        update.callback_query.edit_message_text(text=text, parse_mode='Markdown')
-    if reply_markup:
-        update.callback_query.edit_message_reply_markup(reply_markup=reply_markup)
-
-
-def get_info_from_callback_data(callback_data: str)->str:
-    return callback_data.split(' ', 1)[1]
-
-
-def send_response(user: User, bot: Bot, response):
-    if not response:
-        return
-    if isinstance(response, tuple):
-        user.send_message(bot, text=response[0], reply_markup=response[1])
-    else:
-        user.send_message(bot, text=response)
+    @staticmethod
+    def remove_message(bot: Bot, update: Update):
+        if not bot.delete_message(chat_id=update.callback_query.message.chat_id,
+                                  message_id=update.callback_query.message.message_id):
+            CallbackUtil.edit(update, 'Message is not valid any more')
 
 
 def callback_only(decorated_handler):
@@ -56,6 +57,15 @@ def callback_only(decorated_handler):
         if update.callback_query:
             return decorated_handler(bot, update)
     return handler_wrapper
+
+
+def _send_response(user: User, bot: Bot, response):
+    if not response:
+        return
+    if isinstance(response, tuple):
+        user.send_message(bot, text=response[0], reply_markup=response[1])
+    else:
+        user.send_message(bot, text=response)
 
 
 def personal_command(command=None):
@@ -78,8 +88,8 @@ def personal_command(command=None):
                     User.send_message_to_superuser(bot, text='{0} joined'.format(user.telegram_login))
 
             if command and not user.has_right_to(command):
-                send_response(user, bot, ('Not enough rights', build_default_keyboard(user)))
+                _send_response(user, bot, ('Not enough rights', KeyboardBuild.default(user)))
             else:
-                send_response(user, bot, decorated_handler(bot, update, user))
+                _send_response(user, bot, decorated_handler(bot, update, user))
         return decorated_handler_wrapper
     return personal_command_impl
