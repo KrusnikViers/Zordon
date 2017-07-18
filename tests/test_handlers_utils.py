@@ -70,6 +70,18 @@ class TestEditCallbackMessage(BaseTestCase):
                                                                                  parse_mode='Markdown')
         self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')
 
+    def test_packed_data(self):
+        self._mm_update.callback_query = MagicMock()
+        CallbackUtil.edit(self._mm_update, ('Some text', 'Markup'))
+        self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text',
+                                                                                 parse_mode='Markdown')
+        self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')
+
+    def test_wrong_packed_data(self):
+        self._mm_update.callback_query = MagicMock()
+        with self.assertRaises(AssertionError):
+            CallbackUtil.edit(self._mm_update, ('Some text', 'Markup'), 'Another Markup?')
+
 
 class TestPersonalCommand(BaseTestCase):
     def test_callback_query(self):
