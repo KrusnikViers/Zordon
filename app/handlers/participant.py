@@ -10,7 +10,7 @@ def on_summon(bot: tg.Bot, update: tg.Update, user: User):
     if not activities.exists():
         return 'Activities list is empty.'
 
-    return 'Select activity for summon:', KeyboardBuild.inline([[(x.name, 'p_summon ' + x.name)] for x in activities],
+    return '*Select activity for summon:*', KeyboardBuild.inline([[(x.name, 'p_summon ' + x.name)] for x in activities],
                                                                'Close selection')
 
 

@@ -36,18 +36,21 @@ class KeyboardBuild:
 
 class CallbackUtil:
     @staticmethod
-    def edit(update: Update, new_data, reply_markup=None):
+    def edit(update: Update, text: str, reply_markup=None):
         if not update.callback_query:
             return
-        # Unpack first argument, is data passed as tuple
-        if isinstance(new_data, tuple):
-            assert not reply_markup
-            new_data, reply_markup = new_data
 
-        if new_data:
-            update.callback_query.edit_message_text(text=new_data, parse_mode='Markdown')
+        if text:
+            update.callback_query.edit_message_text(text=text, parse_mode='Markdown')
         if reply_markup:
             update.callback_query.edit_message_reply_markup(reply_markup=reply_markup)
+
+    @staticmethod
+    def update_selection(bot: Bot, update: Update, new_data):
+        if isinstance(new_data, tuple):
+            CallbackUtil.edit(update, *new_data)
+        else:
+            CallbackUtil.remove_message(bot, update)
 
     @staticmethod
     def get_data(callback_data: str)->str:

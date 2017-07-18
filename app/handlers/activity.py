@@ -100,7 +100,7 @@ def _on_delete_impl(bot: tg.Bot, update: tg.Update, user: User):
     if not activities.exists():
         return 'There are no activities you can remove.'
 
-    return ('Select activity to remove:',
+    return ('*Select activity to remove:*',
             KeyboardBuild.inline([[(x.name, 'a_delete ' + x.name)] for x in activities], 'Close selection'))
 
 
@@ -118,5 +118,5 @@ def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return
 
     activity.delete_instance()
-    CallbackUtil.edit(update, _on_delete_impl(bot, update, user))
+    CallbackUtil.update_selection(bot, update, _on_delete_impl(bot, update, user))
     return 'Activity {0} successfully deleted!'.format(activity.name_md())

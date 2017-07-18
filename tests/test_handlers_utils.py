@@ -59,28 +59,31 @@ class TestKeyboardBuilder(BaseTestCase):
             self.assertEqual(expected[i], result.inline_keyboard[0][i].callback_data)
 
 
-class TestEditCallbackMessage(BaseTestCase):
-    def test_empty_callback(self):
+class TestCallbackUtils(BaseTestCase):
+    def test_edit_empty_callback(self):
         CallbackUtil.edit(self._mm_update, 'Some text')
 
-    def test_basic_callback(self):
+    def test_edit_basic_callback(self):
         self._mm_update.callback_query = MagicMock()
         CallbackUtil.edit(self._mm_update, 'Some text', 'Markup')
         self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text',
                                                                                  parse_mode='Markdown')
         self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')
 
-    def test_packed_data(self):
+    def test_update_selection_with_packed_data(self):
         self._mm_update.callback_query = MagicMock()
-        CallbackUtil.edit(self._mm_update, ('Some text', 'Markup'))
+        CallbackUtil.update_selection(self._mm_bot, self._mm_update, ('Some text', 'Markup'))
         self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text',
                                                                                  parse_mode='Markdown')
         self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')
 
-    def test_wrong_packed_data(self):
-        self._mm_update.callback_query = MagicMock()
-        with self.assertRaises(AssertionError):
-            CallbackUtil.edit(self._mm_update, ('Some text', 'Markup'), 'Another Markup?')
+    def test_update_selection_with_error_text(self):
+        self.set_callback_data(User.create(telegram_user_id=0), '')
+        CallbackUtil.update_selection(self._mm_bot, self._mm_update, 'Some text without markup')
+        self.assertFalse(self._mm_update.callback_query.edit_message_text.called)
+        self._mm_bot.delete_message.assert_called_once_with(
+            chat_id=self._mm_update.callback_query.message.chat_id,
+            message_id=self._mm_update.callback_query.message.message_id)
 
 
 class TestPersonalCommand(BaseTestCase):

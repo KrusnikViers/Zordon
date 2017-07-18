@@ -44,8 +44,13 @@ class BaseTestCase(TestCase):
         self._mm_update.effective_user = create_autospec(Update.effective_user)
         self._mm_update.effective_user.id = user.telegram_user_id
         self._mm_update.effective_user.name = user.telegram_login
+
         self._mm_update.callback_query = create_autospec(CallbackQuery)
         self._mm_update.callback_query.data = data
+        self._mm_update.callback_query.message = MagicMock()
+        self._mm_update.callback_query.message.chat_id = 123
+        self._mm_update.callback_query.message.message_id = 456
+        self._mm_bot.delete_message.return_value = True
 
     def set_message_text(self, text):
         self._mm_update.message = create_autospec(Message)

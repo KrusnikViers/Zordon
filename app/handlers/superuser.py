@@ -50,7 +50,7 @@ def _on_promote_impl(bot: Bot, update: Update, user: User):
     if not users.exists():
         return 'No users to promote'
 
-    return ('Select user to promote:',
+    return ('*Select user to promote:*',
             KeyboardBuild.inline([[(x.telegram_login, 'su_promote ' + str(x.telegram_user_id))] for x in users],
                                  'Close selection'))
 
@@ -72,7 +72,7 @@ def on_promote_with_data(bot: Bot, update: Update, user: User):
     selected_user.send_message(bot,
                                text=promote_messages[selected_user.rights_level],
                                reply_markup=KeyboardBuild.default(selected_user))
-    CallbackUtil.edit(update, _on_promote_impl(bot, update, user))
+    CallbackUtil.update_selection(bot, update, _on_promote_impl(bot, update, user))
     return '{0} promoted to rights level {1}'.format(selected_user.telegram_login, selected_user.rights_level)
 
 
@@ -87,7 +87,7 @@ def _on_demote_impl(bot: Bot, update: Update, user: User):
     if not users.exists():
         return 'No users to demote'
 
-    return ('Select user to demote:',
+    return ('*Select user to demote:*',
             KeyboardBuild.inline([[(x.telegram_login, 'su_demote ' + str(x.telegram_user_id))] for x in users],
                                  'Close selection'))
 
@@ -109,5 +109,5 @@ def on_demote_with_data(bot: Bot, update: Update, user: User):
     selected_user.send_message(bot,
                                text=demote_messages[selected_user.rights_level],
                                reply_markup=KeyboardBuild.default(selected_user))
-    CallbackUtil.edit(update, _on_demote_impl(bot, update, user))
+    CallbackUtil.update_selection(bot, update, _on_demote_impl(bot, update, user))
     return '{0} demoted to rights level {1}'.format(selected_user.telegram_login, selected_user.rights_level)

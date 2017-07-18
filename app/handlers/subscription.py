@@ -19,7 +19,7 @@ def _on_new_impl(bot: tg.Bot, update: tg.Update, user: User):
     if not activities:
         return 'No activities available for subscription.'
 
-    return ('Select activity to subscribe:',
+    return ('*Select activity to subscribe:*',
             KeyboardBuild.inline([[(x.name, 's_new ' + x.name)] for x in activities], 'Close selection'))
 
 
@@ -42,7 +42,7 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
                                         activity.name_md(), ', '.join([p.telegram_login for p in participants])),
                               reply_markup=KeyboardBuild.summon_response(activity.name))
 
-    CallbackUtil.edit(update, _on_new_impl(bot, update, user))
+    CallbackUtil.update_selection(bot, update, _on_new_impl(bot, update, user))
     return 'Subscription to {0} enabled.'.format(activity.name_md())
 
 
@@ -60,7 +60,7 @@ def _on_delete_impl(bot: tg.Bot, update: tg.Update, user: User):
     if not activities.exists():
         return 'Subscriptions list is empty.'
 
-    return ('Select activity to unsubscribe:',
+    return ('*Select activity to unsubscribe:*',
             KeyboardBuild.inline([[(x.name, 's_delete ' + x.name)] for x in activities], 'Close selection'))
 
 
@@ -72,5 +72,5 @@ def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return error
 
     Subscription.delete().where((Subscription.activity == activity) & (Subscription.user == user)).execute()
-    CallbackUtil.edit(update, _on_delete_impl(bot, update, user))
+    CallbackUtil.update_selection(bot, update, _on_delete_impl(bot, update, user))
     return 'Subscription to {0} disabled.'.format(activity.name_md())
