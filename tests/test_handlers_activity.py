@@ -8,17 +8,25 @@ class TestActivityHandlers(BaseTestCase):
         self.user_1 = User.create(telegram_user_id=1, rights_level=1, telegram_login='basic_user')
 
     def test_list_basic(self):
-        activity = Activity.create(name='test', owner=self.user_1)
-        Subscription.create(activity=activity, user=self.user_1)
-        another_activity = Activity.create(name='another', owner=self.user_1)
-        Subscription.create(activity=another_activity, user=self.user_1)
-        Participant.create(activity=activity, user=self.user_1, report_time=datetime.datetime.now())
-        user_0 = User.create(telegram_user_id=12345, telegram_login='user_0')
-        Subscription.create(activity=activity, user=user_0)
-        Participant.create(activity=activity, user=user_0, report_time=datetime.datetime.now(), is_accepted=False)
-        user_1 = User.create(telegram_user_id=12346, telegram_login='user_1')
-        Subscription.create(activity=activity, user=user_1)
-        on_list(self._mm_bot, self._mm_update, self.user_1)
+        users = [User.create(telegram_user_id=12345 + i, telegram_login=str(i)) for i in range(0, 3)]
+        activities = [Activity.create(name='activity ' + str(i), owner=users[i]) for i in range(0, 3)]
+
+        users[1].is_active = False
+        users[1].save()
+
+        Subscription.create(activity=activities[0], user=self.user_1) # Not responded
+        Subscription.create(activity=activities[1], user=self.user_1)  # Not responded
+        Subscription.create(activity=activities[0], user=users[0])
+        Subscription.create(activity=activities[0], user=users[1])
+        Subscription.create(activity=activities[1], user=users[0])
+        Subscription.create(activity=activities[1], user=users[1])
+        Subscription.create(activity=activities[1], user=users[2])
+
+        Participant.create(activity=activities[0], user=users[0], report_time=datetime.datetime.now())
+        Participant.create(activity=activities[0], user=users[1], report_time=datetime.datetime.now(),
+                           is_accepted=False)
+        Participant.create(activity=activities[0], user=users[2], report_time=datetime.datetime.now())
+        self.call_handler_with_mock(on_list, self.user_1)
 
     def test_list_empty(self):
         self.call_handler_with_mock(on_list, self.user_1)

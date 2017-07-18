@@ -33,7 +33,10 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
     else:
         Participant.clear_inactive()
         user_activities = pw.prefetch(user_activities, Participant.select().join(User))
-        not_responded_subscribers = (Subscription.select().join(Participant,
+        not_responded_subscribers = (Subscription.select().join(User).where((User.is_active == True) &
+                                                                            (User.is_disabled_chat == False))
+                                                          .switch(Subscription)
+                                                          .join(Participant,
                                                                 pw.JOIN_LEFT_OUTER,
                                                                 on=((Participant.activity == Subscription.activity) &
                                                                     (Participant.user == Subscription.user)))
@@ -50,9 +53,9 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
             if activity.participant_set_prefetch:
                 online_users = [participant.user.telegram_login for participant in activity.participant_set_prefetch]
                 record += '\n joined now: ' + ', '.join(online_users)
-                record += '\n *{0}* more users have not responded yet'.format(len(activity.subscription_set_prefetch))
+                record += '\n have not responded: *{0}*'.format(len(activity.subscription_set_prefetch))
             else:
-                record += '\n {0} active subscribers'.format(len(activity.subscription_set_prefetch))
+                record += '\n active subscribers: *{0}*'.format(len(activity.subscription_set_prefetch))
             activity_records.append(record)
         response = '\n\n'.join(activity_records)
 
