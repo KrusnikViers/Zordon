@@ -4,11 +4,3 @@ languages:
 exclude_paths:
 - "tests/*"
 - "app/migrations/*"
-
-engines:
-  radon:
-    enabled: true
-    checks:
-      # Radon cyclomatic complexity checks generating too many false positive results
-      Complexity:
-        enabled: false
