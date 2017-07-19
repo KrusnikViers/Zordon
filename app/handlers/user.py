@@ -27,9 +27,11 @@ def on_activate(bot: tg.Bot, update: tg.Update, user: User):
         suppressed_summons = (Activity.select()
                                       .join(Subscription).where(Subscription.user == user)
                                       .switch(Activity)
-                                      .join(Participant)
+                                      .join(Participant).where(Participant.is_accepted == True)
                                       .group_by(Activity).having(pw.fn.Count(Participant.id) > 0))
-        suppressed_summons = pw.prefetch(suppressed_summons, Participant.select(Participant, User).join(User))
+        suppressed_summons = pw.prefetch(suppressed_summons, (Participant.select(Participant, User)
+                                                                         .where(Participant.is_accepted == True)
+                                                                         .join(User)))
         for activity in suppressed_summons:
             user.send_message(bot,
                               text='There is active {0} session!\n'
