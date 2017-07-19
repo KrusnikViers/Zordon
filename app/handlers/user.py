@@ -51,7 +51,8 @@ def on_deactivate(bot: tg.Bot, update: tg.Update, user: User):
     if user.is_active:
         user_activities = Activity.select().join(Participant).where(Participant.user == user)
         other_participants = (User.select().where(User.telegram_user_id != user.telegram_user_id)
-                                  .join(Participant).where(Participant.activity.in_(user_activities))
+                                  .join(Participant).where((Participant.activity.in_(user_activities)) &
+                                                           (Participant.is_accepted == True))
                                   .group_by(User))
         for fellow_participant in other_participants:
             fellow_participant.send_message(bot,

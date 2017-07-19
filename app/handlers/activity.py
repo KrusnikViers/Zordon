@@ -51,9 +51,11 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
                 record += '\n owned by you'
                 available_actions.add('a_delete')
             if activity.participant_set_prefetch:
-                online_users = [participant.user.telegram_login for participant in activity.participant_set_prefetch]
-                record += '\n joined now: ' + ', '.join(online_users)
-                record += '\n have not responded: *{0}*'.format(len(activity.subscription_set_prefetch))
+                joined_users = [x.user.telegram_login for x in activity.participant_set_prefetch if x.is_accepted]
+                record += '\n joined now: ' + ', '.join(joined_users)
+                declined_users = [x.user.telegram_login for x in activity.participant_set_prefetch if not x.is_accepted]
+                record += '\n declined: ' + ', '.join(declined_users)
+                record += '\n not responded: *{0}*'.format(len(activity.subscription_set_prefetch))
             else:
                 record += '\n active subscribers: *{0}*'.format(len(activity.subscription_set_prefetch))
             activity_records.append(record)
