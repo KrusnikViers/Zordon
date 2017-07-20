@@ -46,7 +46,7 @@ class User(_BaseModel):
 
     def send_message(self, bot: Bot, *args, **kwargs):
         try:
-            bot.send_message(self.telegram_user_id, *args, parse_mode='Markdown', **kwargs)
+            bot.send_message(self.telegram_user_id, *args, **kwargs)
         except TelegramError:
             User.send_message_to_superuser(bot, text='{0} disabled chat'.format(self.telegram_login))
             self.is_disabled_chat = True
@@ -72,13 +72,13 @@ class Activity(_BaseModel):
         max_length = 25
         new_activity_name = new_activity_name.strip()
         if len(new_activity_name) > max_length:
-            return None, 'name should be no longer than *{0}* characters.'.format(max_length)
+            return None, 'name should be no longer than {0} characters.'.format(max_length)
         if len(new_activity_name) == 0:
             return None, 'name is empty.'
         if not re.match("^[\w\ \_\.\-]*$", new_activity_name):
             return None, 'allowed only alphanumeric characters, spaces and `_.-`'
         if cls.select().where(cls.name == new_activity_name).exists():
-            return None, 'activity with name *{0}* already exists.'.format(new_activity_name)
+            return None, 'activity with name {0} already exists.'.format(new_activity_name)
         return cls.create(name=new_activity_name, owner=owner), ''
 
     @classmethod
@@ -86,7 +86,7 @@ class Activity(_BaseModel):
         try:
             activity = Activity.get(Activity.name == activity_name)
         except Activity.DoesNotExist:
-            return None, 'Activity *{0}* not found.'.format(activity_name)
+            return None, 'Activity {0} not found.'.format(activity_name)
         return activity, None
 
     def has_right_to_remove(self, user: User):
@@ -95,7 +95,7 @@ class Activity(_BaseModel):
         return False
 
     def name_md(self):
-        return '*{0}*'.format(self.name)
+        return '{0}'.format(self.name)
 
 
 class Participant(_BaseModel):

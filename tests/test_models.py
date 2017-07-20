@@ -31,8 +31,7 @@ class TestUserModel(BaseTestCase):
         user.send_message(bot_mock, text='test_text', reply_markup='test_markup')
         bot_mock.send_message.assert_called_once_with(chat_id=12345,
                                                       text='test_text',
-                                                      reply_markup='test_markup',
-                                                      parse_mode='Markdown')
+                                                      reply_markup='test_markup')
         self.assertFalse(user.is_disabled_chat)
 
     def test_send_message_with_exception(self):
@@ -42,8 +41,7 @@ class TestUserModel(BaseTestCase):
         user.send_message(bot_mock, text='test_text', reply_markup='test_markup')
         bot_mock.send_message.assert_called_once_with(chat_id=12345,
                                                       text='test_text',
-                                                      reply_markup='test_markup',
-                                                      parse_mode='Markdown')
+                                                      reply_markup='test_markup')
         self.assertTrue(user.is_disabled_chat)
 
     def test_send_message_to_superuser(self):
@@ -52,8 +50,7 @@ class TestUserModel(BaseTestCase):
         superuser = User.create(telegram_user_id=123, telegram_login=superuser_login)
         user.send_message_to_superuser(bot_mock, text='test_text')
         bot_mock.send_message.assert_called_once_with(chat_id=123,
-                                                      text='test_text',
-                                                      parse_mode='Markdown')
+                                                      text='test_text')
         self.assertFalse(user.is_disabled_chat)
         self.assertFalse(superuser.is_disabled_chat)
 
@@ -163,6 +160,6 @@ class TestParticipantModel(BaseTestCase):
         bot_mock = create_autospec(Bot)
 
         Participant.response_to_summon(bot_mock, self.users[0], self.activities[0], 'p_decline')
-        bot_mock.send_message.assert_called_once_with(chat_id=1, parse_mode='Markdown', text=' declined summon for *0*')
+        bot_mock.send_message.assert_called_once_with(chat_id=1, text=' declined summon for 0')
         cur = Participant.get(activity=self.activities[0], user=self.users[0])
         self.assertFalse(cur.is_accepted)

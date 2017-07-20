@@ -55,14 +55,14 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
                 record += '\n joined now: ' + ', '.join(joined_users)
                 declined_users = [x.user.telegram_login for x in activity.participant_set_prefetch if not x.is_accepted]
                 record += '\n declined: ' + ', '.join(declined_users)
-                record += '\n not responded: *{0}*'.format(len(activity.subscription_set_prefetch))
+                record += '\n not responded: {0}'.format(len(activity.subscription_set_prefetch))
             else:
-                record += '\n active subscribers: *{0}*'.format(len(activity.subscription_set_prefetch))
+                record += '\n active subscribers: {0}'.format(len(activity.subscription_set_prefetch))
             activity_records.append(record)
         response = '\n\n'.join(activity_records)
 
     if other_activities_count:
-        response += '\n\n*{0}* more activities available to subscribe.'.format(other_activities_count)
+        response += '\n\n{0} more activities available to subscribe.'.format(other_activities_count)
         available_actions.add('s_new')
 
     return response, _build_list_keyboard(user, available_actions)
@@ -102,7 +102,7 @@ def _on_delete_impl(bot: tg.Bot, update: tg.Update, user: User):
     if not activities.exists():
         return 'There are no activities you can remove.'
 
-    return ('*Select activity to remove:*',
+    return ('Select activity to remove:',
             KeyboardBuild.inline([[(x.name, 'a_delete ' + x.name)] for x in activities], 'Close selection'))
 
 
