@@ -23,7 +23,6 @@ class TestParticipantHandlers(BaseTestCase):
         self.call_handler_with_mock(on_new, user_0)
         self._mm_bot.send_message.assert_called_once_with(user_0.telegram_user_id,
                                                           text=self.Any(),
-                                                          parse_mode='Markdown',
                                                           reply_markup=self.KeyboardMatcher([['s_new test'],
                                                                                              ['c_abort']]))
 
@@ -50,7 +49,6 @@ class TestParticipantHandlers(BaseTestCase):
         self.call_handler_with_mock(on_delete, user_0)
         self._mm_bot.send_message.assert_called_once_with(user_0.telegram_user_id,
                                                           text=self.Any(),
-                                                          parse_mode='Markdown',
                                                           reply_markup=self.KeyboardMatcher([['s_delete test'],
                                                                                              ['c_abort']]))
 

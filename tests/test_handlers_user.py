@@ -35,9 +35,9 @@ class TestParticipantHandlers(BaseTestCase):
         self.call_handler_with_mock(on_activate, self.user_1_passive)
         # Mode change message and one invite to activity
         self._mm_bot.send_message.assert_has_calls([
-            call(self.user_1_passive.telegram_user_id, parse_mode='Markdown', text=self.Any(),
+            call(self.user_1_passive.telegram_user_id, text=self.Any(),
                  reply_markup=self.KeyboardMatcher([['p_accept act', 'p_accept_later act', 'p_decline act']])),
-            call(self.user_1_passive.telegram_user_id, parse_mode='Markdown', text=self.Any(),
+            call(self.user_1_passive.telegram_user_id, text=self.Any(),
                  reply_markup=self.Any())
         ])
         self.assertEqual(2, self._mm_bot.send_message.call_count)
@@ -60,8 +60,8 @@ class TestParticipantHandlers(BaseTestCase):
         self.call_handler_with_mock(on_deactivate, self.user_active)
         self.assertEqual(2, self._mm_bot.send_message.call_count)
         self._mm_bot.send_message.assert_has_calls([
-            call(self.superuser.telegram_user_id, parse_mode='Markdown', text=self.Any()),
-            call(self.user_active.telegram_user_id, parse_mode='Markdown', text=self.Any(), reply_markup=self.Any())
+            call(self.superuser.telegram_user_id, text=self.Any()),
+            call(self.user_active.telegram_user_id, text=self.Any(), reply_markup=self.Any())
         ])
 
     def test_deactivate_again(self):

@@ -19,7 +19,7 @@ def _on_new_impl(bot: tg.Bot, update: tg.Update, user: User):
     if not activities:
         return 'No activities available for subscription.'
 
-    return ('*Select activity to subscribe:*',
+    return ('Select activity to subscribe:',
             KeyboardBuild.inline([[(x.name, 's_new ' + x.name)] for x in activities], 'Close selection'))
 
 
@@ -60,7 +60,7 @@ def _on_delete_impl(bot: tg.Bot, update: tg.Update, user: User):
     if not activities.exists():
         return 'Subscriptions list is empty.'
 
-    return ('*Select activity to unsubscribe:*',
+    return ('Select activity to unsubscribe:',
             KeyboardBuild.inline([[(x.name, 's_delete ' + x.name)] for x in activities], 'Close selection'))
 
 

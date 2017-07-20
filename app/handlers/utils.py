@@ -41,7 +41,7 @@ class CallbackUtil:
             return
 
         if text:
-            update.callback_query.edit_message_text(text=text, parse_mode='Markdown')
+            update.callback_query.edit_message_text(text=text)
         if reply_markup:
             update.callback_query.edit_message_reply_markup(reply_markup=reply_markup)
 

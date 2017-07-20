@@ -21,4 +21,4 @@ class TestCommonHandlers(BaseTestCase):
         self._mm_bot.delete_message.assert_called_once_with(
             chat_id=self._mm_update.callback_query.message.chat_id,
             message_id=self._mm_update.callback_query.message.message_id)
-        self._mm_bot.callback_query.edit_message_text.assert_called_once_with(text=self.Any(), parse_mode='Markdown')
+        self._mm_bot.callback_query.edit_message_text.assert_called_once_with(text=self.Any())

@@ -66,15 +66,13 @@ class TestCallbackUtils(BaseTestCase):
     def test_edit_basic_callback(self):
         self._mm_update.callback_query = MagicMock()
         CallbackUtil.edit(self._mm_update, 'Some text', 'Markup')
-        self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text',
-                                                                                 parse_mode='Markdown')
+        self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text')
         self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')
 
     def test_update_selection_with_packed_data(self):
         self._mm_update.callback_query = MagicMock()
         CallbackUtil.update_selection(self._mm_bot, self._mm_update, ('Some text', 'Markup'))
-        self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text',
-                                                                                 parse_mode='Markdown')
+        self._mm_update.callback_query.edit_message_text.assert_called_once_with(text='Some text')
         self._mm_update.callback_query.edit_message_reply_markup.assert_called_once_with(reply_markup='Markup')
 
     def test_update_selection_with_error_text(self):

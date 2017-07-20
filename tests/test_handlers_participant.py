@@ -33,8 +33,8 @@ class TestParticipantHandlers(BaseTestCase):
 
         # Additional message to report about already joined user_1
         self._mm_bot.send_message.assert_has_calls([
-            call(user.telegram_user_id, text=self.Any(), parse_mode='Markdown'),
-            call(user.telegram_user_id, text=self.Any(), parse_mode='Markdown'),
+            call(user.telegram_user_id, text=self.Any()),
+            call(user.telegram_user_id, text=self.Any()),
         ])
 
     def test_summon_with_data_non_existing_activity(self):

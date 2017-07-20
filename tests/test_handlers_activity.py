@@ -30,7 +30,7 @@ class TestActivityHandlers(BaseTestCase):
     def test_list_empty(self):
         self.call_handler_with_mock(on_list, self.user_1)
         self._mm_bot.send_message.assert_called_once_with(self.user_1.telegram_user_id,
-                                                          parse_mode='Markdown', text=self.Any(),
+                                                          text=self.Any(),
                                                           reply_markup=self.KeyboardMatcher([['a_new']]))
 
     def test_list_keyboard(self):
@@ -40,7 +40,6 @@ class TestActivityHandlers(BaseTestCase):
         self.call_handler_with_mock(on_list, user)
         self._mm_bot.send_message.assert_called_once_with(user.telegram_user_id,
                                                           text=self.Any(),
-                                                          parse_mode='Markdown',
                                                           reply_markup=self.KeyboardMatcher([['s_new'], ['a_new']]))
 
     def test_list_keyboard_full(self):
@@ -49,7 +48,6 @@ class TestActivityHandlers(BaseTestCase):
         self.call_handler_with_mock(on_list, self.user_1)
         self._mm_bot.send_message.assert_called_once_with(self.user_1.telegram_user_id,
                                                           text=self.Any(),
-                                                          parse_mode='Markdown',
                                                           reply_markup=self.KeyboardMatcher(
                                                               [['p_summon'],
                                                                ['s_new', 's_delete'],

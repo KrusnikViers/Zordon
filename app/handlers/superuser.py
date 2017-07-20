@@ -50,7 +50,7 @@ def _on_promote_impl(bot: Bot, update: Update, user: User):
     if not users.exists():
         return 'No users to promote'
 
-    return ('*Select user to promote:*',
+    return ('Select user to promote:',
             KeyboardBuild.inline([[(x.telegram_login, 'su_promote ' + str(x.telegram_user_id))] for x in users],
                                  'Close selection'))
 
@@ -87,7 +87,7 @@ def _on_demote_impl(bot: Bot, update: Update, user: User):
     if not users.exists():
         return 'No users to demote'
 
-    return ('*Select user to demote:*',
+    return ('Select user to demote:',
             KeyboardBuild.inline([[(x.telegram_login, 'su_demote ' + str(x.telegram_user_id))] for x in users],
                                  'Close selection'))
 
