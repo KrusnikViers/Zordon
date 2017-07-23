@@ -110,6 +110,11 @@ class Participant(_BaseModel):
         time_lower_bound = datetime.datetime.now() - datetime.timedelta(minutes=cooldown_time_minutes)
         cls.delete().where(cls.report_time < time_lower_bound).execute()
 
+        # Remove all sessions without active participants
+        active_session_activities = (Activity.select().join(Participant).where(Participant.is_accepted == True)
+                                             .group_by(Activity))
+        cls.delete().where(cls.activity.not_in(active_session_activities)).execute()
+
     @classmethod
     def select_participants_for_activity(cls, activity: Activity, user: User):
         Participant.clear_inactive()

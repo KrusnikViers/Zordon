@@ -125,6 +125,20 @@ class TestParticipantModel(BaseTestCase):
         Participant.clear_inactive()
         self.assertEqual(9, Participant.select().count())
 
+    def test_clear_inactive_and_declined(self):
+        self.assertLess(len(self.activities), len(self.users))
+        n = len(self.activities)
+        for i in range(0, n):
+            for j in range(0, n):
+                # Two last activities won't have any accepted participants
+                Participant.create(activity=self.activities[i], user=self.users[j], is_accepted=(i + 1 < j))
+        Participant.clear_inactive()
+        for i in range(0, n):
+            if i + 2 < n:
+                self.assertEqual(n, Participant.select().where(Participant.activity == self.activities[i]).count())
+            else:
+                self.assertFalse(Participant.select().where(Participant.activity == self.activities[i]).exists())
+
     def test_select_participants(self):
         for user in self.users:
             case = user.telegram_user_id % (len(self.activities) + 1)
