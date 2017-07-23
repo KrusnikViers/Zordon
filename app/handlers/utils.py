@@ -1,37 +1,7 @@
 from telegram import Update, Bot, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
-from ..models import User
-from ..definitions import commands_set, pending_user_actions
-
-
-class KeyboardBuild:
-    @staticmethod
-    def inline(buttons: list, cancel_button_name=None):
-        inline_keyboard = \
-            [[InlineKeyboardButton(button[0], callback_data=button[1]) for button in row] for row in buttons if row]
-        if cancel_button_name:
-            inline_keyboard.append([InlineKeyboardButton(cancel_button_name, callback_data='c_abort')])
-        return InlineKeyboardMarkup(inline_keyboard)
-
-    @staticmethod
-    def default(user: User):
-        buttons = [['Do not disturb' if user.is_active else 'Ready', 'Status'], ['Activities list', 'Report bug']]
-        if user.pending_action != pending_user_actions['none']:
-            buttons[0].insert(0, 'Cancel action')
-        if user.has_right_to('p_summon'):
-            buttons[1].insert(1, 'Summon friends')
-        if user.has_right_to('su_full_information'):
-            buttons[1].append('Full information')
-        return ReplyKeyboardMarkup([[KeyboardButton(x) for x in row] for row in buttons], resize_keyboard=True)
-
-    @staticmethod
-    def summon_response(activity_name: str, is_selected_accept=None):
-        buttons = [[]]
-        if not is_selected_accept:
-            buttons[0] += [('Join now', 'p_accept ' + activity_name), ('Coming', 'p_accept_later ' + activity_name)]
-        if is_selected_accept or is_selected_accept is None:
-            buttons[0].append(('Decline', 'p_decline ' + activity_name))
-        return KeyboardBuild.inline(buttons)
+from ..definitions import commands_set
+from .misc.keyboard import *
 
 
 class CallbackUtil:
@@ -99,7 +69,7 @@ def personal_command(command=None):
                     User.send_message_to_superuser(bot, text='{0} joined'.format(user.telegram_login))
 
             if command and not user.has_right_to(command):
-                _send_response(user, bot, ('Not enough rights', KeyboardBuild.default(user)))
+                _send_response(user, bot, ('Not enough rights', UserKeyboard(user)))
             else:
                 _send_response(user, bot, decorated_handler(bot, update, user))
         return decorated_handler_wrapper

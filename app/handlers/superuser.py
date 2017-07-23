@@ -11,8 +11,8 @@ def on_full_information(bot: Bot, update: Update, user: User):
         response += "\n{0} : rights {1}, pending {2}, active: {3}, disabled: {4}".format(
             raw_user.telegram_login, raw_user.rights_level, raw_user.pending_action, raw_user.is_active,
             raw_user.is_disabled_chat)
-    user.send_message(bot, text=response, reply_markup=KeyboardBuild.inline([[('Promote', 'su_promote'),
-                                                                              ('Demote', 'su_demote')]]))
+    user.send_message(bot, text=response, reply_markup=InlineKeyboard([[('Promote', 'su_promote'),
+                                                                        ('Demote', 'su_demote')]]))
 
     # Activities
     activities = Activity.select(Activity, User).join(User)
@@ -51,8 +51,8 @@ def _on_promote_impl(bot: Bot, update: Update, user: User):
         return 'No users to promote'
 
     return ('Select user to promote:',
-            KeyboardBuild.inline([[(x.telegram_login, 'su_promote ' + str(x.telegram_user_id))] for x in users],
-                                 'Close selection'))
+            ClosableInlineKeyboard([[(x.telegram_login, 'su_promote ' + str(x.telegram_user_id))] for x in users],
+                                   'Close selection'))
 
 
 @callback_only
@@ -71,7 +71,7 @@ def on_promote_with_data(bot: Bot, update: Update, user: User):
     selected_user.save()
     selected_user.send_message(bot,
                                text=promote_messages[selected_user.rights_level],
-                               reply_markup=KeyboardBuild.default(selected_user))
+                               reply_markup=UserKeyboard(selected_user))
     CallbackUtil.update_selection(bot, update, _on_promote_impl(bot, update, user))
     return '{0} promoted to rights level {1}'.format(selected_user.telegram_login, selected_user.rights_level)
 
@@ -88,8 +88,8 @@ def _on_demote_impl(bot: Bot, update: Update, user: User):
         return 'No users to demote'
 
     return ('Select user to demote:',
-            KeyboardBuild.inline([[(x.telegram_login, 'su_demote ' + str(x.telegram_user_id))] for x in users],
-                                 'Close selection'))
+            ClosableInlineKeyboard([[(x.telegram_login, 'su_demote ' + str(x.telegram_user_id))] for x in users],
+                                   'Close selection'))
 
 
 @callback_only
@@ -108,6 +108,6 @@ def on_demote_with_data(bot: Bot, update: Update, user: User):
     selected_user.save()
     selected_user.send_message(bot,
                                text=demote_messages[selected_user.rights_level],
-                               reply_markup=KeyboardBuild.default(selected_user))
+                               reply_markup=UserKeyboard(selected_user))
     CallbackUtil.update_selection(bot, update, _on_demote_impl(bot, update, user))
     return '{0} demoted to rights level {1}'.format(selected_user.telegram_login, selected_user.rights_level)

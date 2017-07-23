@@ -70,9 +70,9 @@ class TestMessagesHandlers(BaseTestCase):
     def test_message_routing_keyboard_aliases(self):
         with HandlersMocker() as mockers:
             import app.handlers.messages as h_messages
-            from app.handlers.utils import KeyboardBuild
+            from app.handlers.misc.keyboard import UserKeyboard
             user = User.create(telegram_user_id=0, telegram_login=superuser_login)
-            markup = KeyboardBuild.default(user)  # Superuser keyboard has the biggest number of controls
+            markup = UserKeyboard(user)  # Superuser keyboard has the biggest number of controls
             count = 0  # Each keyboard button should add unique call
             for row in markup.keyboard:
                 for button in row:

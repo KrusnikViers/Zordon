@@ -16,29 +16,30 @@ class TestKeyboardBuilder(BaseTestCase):
                                  expected_buttons[row_index][button_index])
 
     def test_inactive_user_keyboard(self):
-        expected_keyboard_commands = [['Ready', 'Status'], ['Activities list', 'Report bug']]
+        expected_keyboard_commands = [['Ready', 'Activities']]
         user = User.create(telegram_user_id=0, is_active=False)
-        self._check_keyboard_expectations(KeyboardBuild.default(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(UserKeyboard(user).keyboard, expected_keyboard_commands)
 
     def test_usual_user_keyboard(self):
-        expected_keyboard_commands = [['Do not disturb', 'Status'], ['Activities list', 'Report bug']]
+        expected_keyboard_commands = [['Do not disturb', 'Activities']]
         user = User.create(telegram_user_id=0)
-        self._check_keyboard_expectations(KeyboardBuild.default(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(UserKeyboard(user).keyboard, expected_keyboard_commands)
 
     def test_keyboard_rights_level_1(self):
-        expected_keyboard_commands = [['Do not disturb', 'Status'], ['Activities list', 'Summon friends', 'Report bug']]
+        expected_keyboard_commands = [['Do not disturb', 'Activities'], ['Summon']]
         user = User.create(telegram_user_id=0, rights_level=1)
-        self._check_keyboard_expectations(KeyboardBuild.default(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(UserKeyboard(user).keyboard, expected_keyboard_commands)
 
     def test_superuser_keyboard(self):
-        expected_keyboard_commands = [['Do not disturb', 'Status'],
-                                      ['Activities list', 'Summon friends', 'Report bug', 'Full information']]
+        expected_keyboard_commands = [['Do not disturb', 'Activities'],
+                                      ['Summon'],
+                                      ['Info']]
         user = User.create(telegram_user_id=0, telegram_login=superuser_login)
-        self._check_keyboard_expectations(KeyboardBuild.default(user).keyboard, expected_keyboard_commands)
+        self._check_keyboard_expectations(UserKeyboard(user).keyboard, expected_keyboard_commands)
 
     def test_basic_inline_keyboard(self):
         source = [[('t11', 'cb11'), ('t12', 'cb12')], [('t21', 'c21')]]
-        result = KeyboardBuild.inline(source)
+        result = InlineKeyboard(source)
         self.assertTrue(isinstance(result, InlineKeyboardMarkup))
         self.assertEqual(len(source), len(result.inline_keyboard))
         for i in range(0, len(source)):
@@ -49,7 +50,7 @@ class TestKeyboardBuilder(BaseTestCase):
                 self.assertEqual(source[i][j][1], result.inline_keyboard[i][j].callback_data)
 
     def test_basic_summon_response_keyboard(self):
-        result = KeyboardBuild.summon_response('activity_name')
+        result = ResponseInlineKeyboard('activity_name')
         self.assertTrue(isinstance(result, InlineKeyboardMarkup))
         self.assertEqual(1, len(result.inline_keyboard))
         self.assertEqual(3, len(result.inline_keyboard[0]))

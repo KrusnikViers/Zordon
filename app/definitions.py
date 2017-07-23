@@ -42,6 +42,17 @@ commands_for_superuser = {
     'su_full_information',  # Get all information from DB
 }
 
+command_text_aliases = {
+    'Cancel input': 'u_cancel',
+    'Do not disturb': 'u_deactivate',
+    'Ready': 'u_activate',
+    'Status': 'u_status',
+    'Activities': 'a_list',
+    'Summon': 'p_summon',
+    'Report': 'u_report',
+    'Info': 'su_full_information',
+}
+
 commands_set = commands_for_superuser
 for commands_on_level in commands_by_level:
     commands_set = commands_set.union(commands_on_level)

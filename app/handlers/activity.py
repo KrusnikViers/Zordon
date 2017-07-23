@@ -11,12 +11,14 @@ def _build_list_keyboard(user: User, available_actions: set)->tg.InlineKeyboardM
         [('s_new', 'Subscribe...'), ('s_delete', 'Unsubscribe...')],
         [('a_new', 'Create new...'), ('a_delete', 'Delete...')]
     ]
-    keyboard = [
-        [(name, command) for command, name in row
-         if (command in available_actions) and user.has_right_to(command)]
-        for row in activity_list_full_keyboard
-    ]
-    return KeyboardBuild.inline(keyboard)
+    markup = []
+    for row in activity_list_full_keyboard:
+        markup_row = [(name, command) for command, name in row
+                      if (command in available_actions) and user.has_right_to(command)]
+        if markup_row:
+            markup.append(markup_row)
+    if markup:
+        return InlineKeyboard(markup)
 
 
 @personal_command('a_list')
@@ -74,7 +76,7 @@ def on_new(bot: tg.Bot, update: tg.Update, user: User):
         u.on_cancel(bot, update, user)
     user.pending_action = pending_user_actions['a_new']
     user.save()
-    return 'Send me name for activity to create:', KeyboardBuild.default(user)
+    return 'Send me name for activity to create:', UserKeyboard(user)
 
 
 @personal_command('a_new')
@@ -87,7 +89,7 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
     user.pending_action = pending_user_actions['none']
     user.save()
     User.send_message_to_superuser(bot, text='{0} created activity {1}'.format(user.telegram_login, activity.name_md()))
-    return 'Activity {0} created!'.format(activity.name_md()), KeyboardBuild.default(user)
+    return 'Activity {0} created!'.format(activity.name_md()), UserKeyboard(user)
 
 
 @personal_command('a_delete')
@@ -103,7 +105,7 @@ def _on_delete_impl(bot: tg.Bot, update: tg.Update, user: User):
         return 'There are no activities you can remove.'
 
     return ('Select activity to remove:',
-            KeyboardBuild.inline([[(x.name, 'a_delete ' + x.name)] for x in activities], 'Close selection'))
+            ClosableInlineKeyboard([[(x.name, 'a_delete ' + x.name)] for x in activities], 'Close selection'))
 
 
 @callback_only
