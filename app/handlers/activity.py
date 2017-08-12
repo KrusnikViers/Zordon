@@ -1,8 +1,8 @@
 import telegram as tg
 
+from app.models import *
+from app.handlers.utils import *
 import app.handlers.user as u
-from ..models import *
-from .utils import *
 
 
 def _build_list_keyboard(user: User, available_actions: set)->tg.InlineKeyboardMarkup:

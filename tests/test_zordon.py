@@ -1,7 +1,7 @@
 from telegram.ext import Updater, Dispatcher
 from unittest.mock import create_autospec, patch
 
-from .base_test import BaseTestCase
+from tests.base_test import BaseTestCase
 
 
 class UpdaterMock(Updater):

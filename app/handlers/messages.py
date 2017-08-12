@@ -1,8 +1,7 @@
 import telegram as tg
 
-from ..models import *
-from .utils import personal_command
-
+from app.handlers.utils import personal_command
+from app.models import *
 import app.handlers.activity as a
 import app.handlers.participant as p
 import app.handlers.superuser as su

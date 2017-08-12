@@ -1,8 +1,8 @@
-import logging
 from telegram.ext import Updater
+import logging
 
-from .commands import set_handlers
-from .definitions import telegram_token
+from app.commands import set_handlers
+from app.definitions import telegram_token
 
 
 class ZordonBot:

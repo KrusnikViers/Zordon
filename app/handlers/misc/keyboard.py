@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 
-from ...models import User
-from ...definitions import pending_user_actions, command_text_aliases
+from app.definitions import pending_user_actions, command_text_aliases
+from app.models import User
 
 
 class InlineKeyboard(InlineKeyboardMarkup):

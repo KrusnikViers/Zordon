@@ -1,7 +1,7 @@
-from telegram import Update, Bot, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import Update, Bot
 
-from ..definitions import commands_set
-from .misc.keyboard import *
+from app.definitions import commands_set
+from app.handlers.misc.keyboard import *
 
 
 class CallbackUtil:

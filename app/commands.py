@@ -1,14 +1,12 @@
 from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, Filters
 
-from .handlers.messages import message_handler
-
+from app.handlers.messages import message_handler
 import app.handlers.activity as a
 import app.handlers.common as c
 import app.handlers.participant as p
 import app.handlers.subscription as s
 import app.handlers.superuser as su
 import app.handlers.user as u
-
 
 
 def set_handlers(dispatcher):

@@ -1,7 +1,7 @@
 from unittest.mock import create_autospec
 
 from app.models import *
-from .base_test import BaseTestCase
+from tests.base_test import BaseTestCase
 
 
 class TestUserModel(BaseTestCase):

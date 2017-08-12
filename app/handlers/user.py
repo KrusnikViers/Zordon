@@ -1,8 +1,7 @@
 import telegram as tg
-import peewee as pw
 
-from .utils import *
-from ..models import *
+from app.handlers.utils import *
+from app.models import *
 
 
 @personal_command('u_status')

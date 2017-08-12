@@ -1,6 +1,6 @@
 import telegram as tg
 
-from .utils import *
+from app.handlers.utils import *
 
 
 @callback_only

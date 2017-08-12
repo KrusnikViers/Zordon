@@ -1,11 +1,11 @@
-import datetime
+from telegram import Bot, TelegramError
 from os.path import dirname, realpath, sep
+import datetime
 import peewee as pw
 import peewee_migrate as pwm
 import re
-from telegram import Bot, TelegramError
 
-from .definitions import *
+from app.definitions import *
 
 
 _database = pw.PostgresqlDatabase(database_credentials['NAME'],

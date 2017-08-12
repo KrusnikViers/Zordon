@@ -1,7 +1,7 @@
 import telegram as tg
 
-from ..models import *
-from .utils import *
+from app.handlers.utils import *
+from app.models import *
 
 
 @personal_command('s_new')
