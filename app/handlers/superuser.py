@@ -1,5 +1,8 @@
+from app.definitions import commands_by_level, superuser_login
 from app.handlers.utils import *
-from app.models import *
+from app.models.activity import Activity
+from app.models.participant import Participant
+from app.models.subscription import Subscription
 
 
 @personal_command('su_full_information')

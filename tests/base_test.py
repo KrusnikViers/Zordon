@@ -2,7 +2,10 @@ from telegram import Update, CallbackQuery, Message
 from unittest import TestCase
 from unittest.mock import MagicMock, create_autospec
 
-from app.models import *
+from app.models.activity import Activity
+from app.models.participant import Participant
+from app.models.subscription import Subscription
+from app.models.user import User
 
 
 class BaseTestCase(TestCase):

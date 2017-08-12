@@ -1,7 +1,10 @@
+import peewee as pw
 import telegram as tg
 
 from app.handlers.utils import *
-from app.models import *
+from app.models.activity import Activity
+from app.models.participant import Participant
+from app.models.subscription import Subscription
 
 
 @personal_command('s_new')

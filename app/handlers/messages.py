@@ -1,7 +1,8 @@
 import telegram as tg
 
+from app.definitions import command_text_aliases, pending_user_actions
 from app.handlers.utils import personal_command
-from app.models import *
+from app.models.user import User
 import app.handlers.activity as a
 import app.handlers.participant as p
 import app.handlers.superuser as su

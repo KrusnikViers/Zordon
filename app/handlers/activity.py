@@ -1,7 +1,10 @@
+import peewee as pw
 import telegram as tg
 
-from app.models import *
 from app.handlers.utils import *
+from app.models.activity import Activity
+from app.models.participant import Participant
+from app.models.subscription import Subscription
 import app.handlers.user as u
 
 
@@ -27,7 +30,7 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
     if not Activity.select().exists():
         return 'Activities list is empty.', _build_list_keyboard(user, available_actions)
 
-    user_activities = Activity.select().join(Subscription).where(Subscription.user == user)
+    user_activities = Activity.select().join(Subscription, on=Subscription.activity).where(Subscription.user == user)
     other_activities_count = Activity.select(Activity.name).where(Activity.id.not_in(user_activities)).count()
 
     if not user_activities:

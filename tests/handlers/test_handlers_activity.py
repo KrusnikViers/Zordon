@@ -14,7 +14,7 @@ class TestActivityHandlers(BaseTestCase):
         users[1].is_active = False
         users[1].save()
 
-        Subscription.create(activity=activities[0], user=self.user_1) # Not responded
+        Subscription.create(activity=activities[0], user=self.user_1)  # Not responded
         Subscription.create(activity=activities[1], user=self.user_1)  # Not responded
         Subscription.create(activity=activities[0], user=users[0])
         Subscription.create(activity=activities[0], user=users[1])

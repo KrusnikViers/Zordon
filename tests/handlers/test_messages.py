@@ -1,6 +1,7 @@
 from unittest.mock import patch, MagicMock
 
-from app.models import *
+from app.definitions import pending_user_actions, superuser_login
+from app.models.user import User
 from tests.base_test import BaseTestCase
 
 

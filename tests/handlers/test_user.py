@@ -1,5 +1,6 @@
 from unittest.mock import call
 
+from app.definitions import superuser_login
 from app.handlers.user import *
 from tests.base_test import BaseTestCase
 
