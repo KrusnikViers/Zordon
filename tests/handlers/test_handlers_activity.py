@@ -1,5 +1,5 @@
 from app.handlers.activity import *
-from .base_test import BaseTestCase
+from tests.base_test import BaseTestCase
 
 
 class TestActivityHandlers(BaseTestCase):

@@ -1,7 +1,7 @@
 from unittest.mock import patch, MagicMock
 
 from app.models import *
-from .base_test import BaseTestCase
+from tests.base_test import BaseTestCase
 
 
 # Setting up handlers mocks

@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from app.handlers.common import *
-from .base_test import BaseTestCase
+from tests.base_test import BaseTestCase
 
 
 class TestCommonHandlers(BaseTestCase):
