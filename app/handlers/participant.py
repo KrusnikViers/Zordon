@@ -28,7 +28,7 @@ def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
     inactive_users = Participant.select_subscribers_for_activity(activity)
     for inactive_user in Participant.select_subscribers_for_activity(activity):
         inactive_user.send_message(bot,
-                                   text='{0} is summoning you for {1}!'.format(user.telegram_login, activity.name_md()),
+                                   text='{0} is summoning you for {1}!'.format(user.telegram_login, activity.name),
                                    reply_markup=ResponseInlineKeyboard(activity.name))
 
     participants = Participant.select_participants_for_activity(activity, user)
@@ -37,7 +37,7 @@ def on_summon_with_data(bot: tg.Bot, update: tg.Update, user: User):
 
     if not inactive_users:
         return 'There are no more users to be invited.'
-    return 'Invitations to {0} was sent to: {1}'.format(activity.name_md(),
+    return 'Invitations to {0} was sent to: {1}'.format(activity.name,
                                                         ', '.join([x.telegram_login for x in inactive_users]))
 
 
@@ -50,7 +50,7 @@ def on_accept_now_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return
 
     Participant.response_to_summon(bot, user, activity, 'p_accept')
-    CallbackUtil.edit(update, 'Invitation to {0} accepted!'.format(activity.name_md()),
+    CallbackUtil.edit(update, 'Invitation to {0} accepted!'.format(activity.name),
                       ResponseInlineKeyboard(activity.name, True))
     participants = Participant.select_participants_for_activity(activity, user)
     if participants:
@@ -66,7 +66,7 @@ def on_accept_later_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return
 
     Participant.response_to_summon(bot, user, activity, 'p_accept_later')
-    CallbackUtil.edit(update, 'Invitation to {0} accepted!'.format(activity.name_md()),
+    CallbackUtil.edit(update, 'Invitation to {0} accepted!'.format(activity.name),
                       ResponseInlineKeyboard(activity.name, True))
     participants = Participant.select_participants_for_activity(activity, user)
     if participants:
@@ -82,5 +82,5 @@ def on_decline_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return
 
     Participant.response_to_summon(bot, user, activity, 'p_decline')
-    CallbackUtil.edit(update, 'Invitation to {0} declined. Next time then!'.format(activity.name_md()),
+    CallbackUtil.edit(update, 'Invitation to {0} declined. Next time then!'.format(activity.name),
                       ResponseInlineKeyboard(activity.name, False))

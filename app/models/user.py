@@ -1,10 +1,19 @@
 from telegram import Bot, TelegramError
+from peewee import BooleanField, IntegerField, TextField
 
 from app.definitions import commands_by_level, commands_set, superuser_login
-from app.models.base import UserBase as _Base, DefferedUser as _Deffered
+from app.models.base import BaseModel
 
 
-class User(_Base):
+class User(BaseModel):
+    """ Telegram user, signed for bot's services """
+    telegram_user_id = IntegerField(primary_key=True)
+    telegram_login = TextField(default='')
+    rights_level = IntegerField(default=0)
+    pending_action = IntegerField(default=0)
+    is_active = BooleanField(default=True)
+    is_disabled_chat = BooleanField(default=False)
+
     def has_right_to(self, command: str):
         assert command in commands_set
         if self.is_superuser():
@@ -33,6 +42,3 @@ class User(_Base):
             return
 
         superuser.send_message(bot, *args, **kwargs)
-
-
-_Deffered.set_model(User)

@@ -1,15 +1,21 @@
 from telegram import Bot
 import datetime
-import peewee as pw
+from peewee import BooleanField, ForeignKeyField, TimestampField, JOIN_LEFT_OUTER
 
 from app.definitions import cooldown_time_minutes
 from app.models.activity import Activity
-from app.models.base import ParticipantBase as _Base, DefferedParticipant as _Deffered
+from app.models.base import BaseModel
 from app.models.subscription import Subscription
 from app.models.user import User
 
 
-class Participant(_Base):
+class Participant(BaseModel):
+    """ User, agreed to take part in some activity """
+    report_time = TimestampField(default=datetime.datetime.now)
+    is_accepted = BooleanField(default=True)
+    user = ForeignKeyField(User, on_delete='CASCADE')
+    activity = ForeignKeyField(Activity, on_delete='CASCADE')
+
     @classmethod
     def clear_inactive(cls):
         time_lower_bound = datetime.datetime.now() - datetime.timedelta(minutes=cooldown_time_minutes)
@@ -32,7 +38,7 @@ class Participant(_Base):
         Participant.clear_inactive()
         return (User.select().where((User.is_active) & (~User.is_disabled_chat))
                 .join(Subscription).where(Subscription.activity == activity).switch(User)
-                .join(Participant, pw.JOIN_LEFT_OUTER).where(Participant.id.is_null(True)))
+                .join(Participant, JOIN_LEFT_OUTER).where(Participant.id.is_null(True)))
 
     @classmethod
     def response_to_summon(cls, bot: Bot, user: User, activity: Activity, join_mode: str):
@@ -46,11 +52,8 @@ class Participant(_Base):
                                                      defaults={'is_accepted': is_accepted})
         if was_created or is_accepted is not participant.is_accepted:
             for active_user in cls.select_participants_for_activity(activity, user):
-                active_user.send_message(bot, text=messages[join_mode].format(user.telegram_login, activity.name_md()))
+                active_user.send_message(bot, text=messages[join_mode].format(user.telegram_login, activity.name))
         if not was_created:
             participant.is_accepted = is_accepted
             participant.report_time = datetime.datetime.now()
             participant.save()
-
-
-_Deffered.set_model(Participant)

@@ -42,11 +42,11 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
                               text='There is active {0} session!\n'
                                    'Already joined: {1}\n'
                                    'Want to join too?'.format(
-                                        activity.name_md(), ', '.join([p.telegram_login for p in participants])),
+                                        activity.name, ', '.join([p.telegram_login for p in participants])),
                               reply_markup=ResponseInlineKeyboard(activity.name))
 
     CallbackUtil.update_selection(bot, update, _on_new_impl(bot, update, user))
-    return 'Subscription to {0} enabled.'.format(activity.name_md())
+    return 'Subscription to {0} enabled.'.format(activity.name)
 
 
 @personal_command('s_delete')
@@ -76,4 +76,4 @@ def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
 
     Subscription.delete().where((Subscription.activity == activity) & (Subscription.user == user)).execute()
     CallbackUtil.update_selection(bot, update, _on_delete_impl(bot, update, user))
-    return 'Subscription to {0} disabled.'.format(activity.name_md())
+    return 'Subscription to {0} disabled.'.format(activity.name)

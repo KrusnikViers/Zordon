@@ -39,7 +39,7 @@ def on_activate(bot: tg.Bot, update: tg.Update, user: User):
                               text='There is active {0} session!\n'
                                    'Already joined: {1}\n'
                                    'Want to join too?'.format(
-                                        activity.name_md(),
+                                        activity.name,
                                         ', '.join([p.user.telegram_login for p in activity.participant_set_prefetch])),
                               reply_markup=ResponseInlineKeyboard(activity.name))
     user.is_active = True

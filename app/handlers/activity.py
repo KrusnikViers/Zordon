@@ -51,7 +51,7 @@ def on_list(bot: tg.Bot, update: tg.Update, user: User):
         available_actions = available_actions.union({'p_summon', 's_delete'})
         activity_records = []
         for activity in user_activities:
-            record = '{0}'.format(activity.name_md())
+            record = '{0}'.format(activity.name)
             if activity.has_right_to_remove(user):
                 record += '\n owned by you'
                 available_actions.add('a_delete')
@@ -91,8 +91,8 @@ def on_new_with_data(bot: tg.Bot, update: tg.Update, user: User):
     Subscription.create(user=user, activity=activity)
     user.pending_action = pending_user_actions['none']
     user.save()
-    User.send_message_to_superuser(bot, text='{0} created activity {1}'.format(user.telegram_login, activity.name_md()))
-    return 'Activity {0} created!'.format(activity.name_md()), UserKeyboard(user)
+    User.send_message_to_superuser(bot, text='{0} created activity {1}'.format(user.telegram_login, activity.name))
+    return 'Activity {0} created!'.format(activity.name), UserKeyboard(user)
 
 
 @personal_command('a_delete')
@@ -121,9 +121,9 @@ def on_delete_with_data(bot: tg.Bot, update: tg.Update, user: User):
         return
 
     if not activity.has_right_to_remove(user):
-        CallbackUtil.edit(update, 'You have not enough rights to remove {0}.'.format(activity.name_md()))
+        CallbackUtil.edit(update, 'You have not enough rights to remove {0}.'.format(activity.name))
         return
 
     activity.delete_instance()
     CallbackUtil.update_selection(bot, update, _on_delete_impl(bot, update, user))
-    return 'Activity {0} successfully deleted!'.format(activity.name_md())
+    return 'Activity {0} successfully deleted!'.format(activity.name)

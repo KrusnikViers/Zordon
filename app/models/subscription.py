@@ -1,8 +1,11 @@
-from app.models.base import SubscriptionBase as _Base, DefferedSubscription as _Deffered
+from peewee import ForeignKeyField
+
+from app.models.activity import Activity
+from app.models.base import BaseModel
+from app.models.user import User
 
 
-class Subscription(_Base):
-    pass
-
-
-_Deffered.set_model(Subscription)
+class Subscription(BaseModel):
+    """ User, receiving notifications and able to call other users for activity """
+    user = ForeignKeyField(User, on_delete='CASCADE')
+    activity = ForeignKeyField(Activity, on_delete='CASCADE')

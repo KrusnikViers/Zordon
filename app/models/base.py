@@ -3,7 +3,7 @@ import datetime
 import peewee as pw
 import peewee_migrate as pwm
 
-from app.definitions import *
+from app.definitions import database_credentials
 
 
 def _get_database():
@@ -17,59 +17,11 @@ def _get_database():
     router.run()
     return database
 
-# Deffered bare models should be set up in corresponding model files
-DefferedUser = pw.DeferredRelation()
-DefferedActivity = pw.DeferredRelation()
-DefferedParticipant = pw.DeferredRelation()
-DefferedSubscription = pw.DeferredRelation()
 
-
-class _BaseModel(pw.Model):
+class BaseModel(pw.Model):
     """ Base model, that uses PostgreSQL database """
     def __init__(self, *args, **kwargs):
-        super(_BaseModel, self).__init__(*args, **kwargs)
+        super(BaseModel, self).__init__(*args, **kwargs)
 
     class Meta:
         database = _get_database()
-
-
-class UserBase(_BaseModel):
-    """ Telegram user, signed for bot's services """
-    telegram_user_id = pw.IntegerField(primary_key=True)
-    telegram_login = pw.TextField(default='')
-    rights_level = pw.IntegerField(default=0)
-    pending_action = pw.IntegerField(default=0)
-    is_active = pw.BooleanField(default=True)
-    is_disabled_chat = pw.BooleanField(default=False)
-
-    class Meta:
-        db_table = 'user'
-
-
-class ActivityBase(_BaseModel):
-    """ Some activity, to which users can be invited """
-    name = pw.TextField(unique=True)
-    owner = pw.ForeignKeyField(DefferedUser, on_delete='CASCADE')
-
-    class Meta:
-        db_table = 'activity'
-
-
-class ParticipantBase(_BaseModel):
-    """ User, agreed to take part in some activity """
-    report_time = pw.TimestampField(default=datetime.datetime.now)
-    is_accepted = pw.BooleanField(default=True)
-    user = pw.ForeignKeyField(DefferedUser, on_delete='CASCADE')
-    activity = pw.ForeignKeyField(DefferedActivity, on_delete='CASCADE')
-
-    class Meta:
-        db_table = 'participant'
-
-
-class SubscriptionBase(_BaseModel):
-    """ User, receiving notifications and able to call other users for activity """
-    user = pw.ForeignKeyField(DefferedUser, on_delete='CASCADE')
-    activity = pw.ForeignKeyField(DefferedActivity, on_delete='CASCADE')
-
-    class Meta:
-        db_table = 'subscription'
