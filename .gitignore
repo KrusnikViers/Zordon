@@ -4,3 +4,6 @@ __pycache__/
 
 # IDE directories
 .idea/
+
+# Virtual environment
+venv/
