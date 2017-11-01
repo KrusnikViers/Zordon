@@ -1,5 +1,5 @@
 # Every update of this values should be tagged in git and means new version, available for deployment.
-version_major = 1
+version_major = 2
 version_minor = 0
 version_patch = 0
 

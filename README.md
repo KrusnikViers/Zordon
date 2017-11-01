@@ -7,8 +7,6 @@ _Gathers together the most powerful kittens, pandas and capybaras in the Univers
 [![Coverage - Coveralls](https://coveralls.io/repos/github/KrusnikViers/Zordon/badge.svg?branch=master)](https://coveralls.io/github/KrusnikViers/Zordon?branch=master)
 [![Coverage - CodeCov](https://codecov.io/gh/KrusnikViers/Zordon/branch/master/graph/badge.svg?branch=master)](https://codecov.io/gh/KrusnikViers/Zordon)
 
-To run bot, you have to set necessary environment variables and run `python run_bot.py`. Tests can be run via `python -m unittests` in root directory.
-
 ### Dependencies:
 
 * Python 3.5 or newer
@@ -17,7 +15,14 @@ To run bot, you have to set necessary environment variables and run `python run_
 
 ### Environment variables:
 
-* `TELEGRAM_TOKEN` - Access token for Telegram Bot. Should be received from @BotFather during bot registration.
-* `DATABASE_URL` - DSN-formatted complete URL of PostgreSQL database. DSN-format: _postgres://user:password@host:port/database_name_.
-* `SUPERUSER_LOGIN` - Username of only user with unlimited access.
-* `COOLDOWN_TIME` (optional) - Duration (in minutes) of time period, while user considered as participant of activity.
+* `ZORDON_DATABASE` - DSN-formatted complete URL of PostgreSQL database. DSN-format: _postgres://user:password@host:port/database_name_.
+* `ZORDON_TOKEN` - Access token for Telegram Bot. Should be received from @BotFather during bot registration.
+* `ZORDON_SUPERUSER` - Username of only user with unlimited access.
+* `ZORDON_VERBOSITY` (optional) - logging verbosity level. Possible values are `SILENT`, `INFO`, `DEBUG` and `FULL`.
+
+### How to run
+
+All scripts should be executed from root directory of the project.
+* Run bot: `python scripts/run_bot.py`. All required environment variables must be set and valid.
+* Run tests: `python -m unittests`. All required environment variables must be set, database must exist.
+* Create DB migrations: `python scripts/make_migrations.py`. Database variable must be set and valid.
