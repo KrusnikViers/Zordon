@@ -1,5 +1,4 @@
-from telegram.ext import Updater, Dispatcher
-from unittest.mock import create_autospec, patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from tests.base_test import BaseTestCase
 
