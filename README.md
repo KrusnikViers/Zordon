@@ -1,11 +1,11 @@
 # Zordon Telegram Bot
 _Gathers together the most powerful kittens, pandas and capybaras in the Universe to fight against evil and boredom. Or, at least, to play Overwatch._
 
-[![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg?branch=master)](https://travis-ci.org/KrusnikViers/Zordon)
-[![Build status](https://ci.appveyor.com/api/projects/status/5ek9c42yy2usr23h?branch=master&svg=true)](https://ci.appveyor.com/project/KrusnikViers/zordon)
-[![Code Climate](https://codeclimate.com/github/KrusnikViers/Zordon/badges/gpa.svg?branch=master)](https://codeclimate.com/github/KrusnikViers/Zordon)
-[![Coverage - Coveralls](https://coveralls.io/repos/github/KrusnikViers/Zordon/badge.svg?branch=master)](https://coveralls.io/github/KrusnikViers/Zordon?branch=master)
-[![Coverage - CodeCov](https://codecov.io/gh/KrusnikViers/Zordon/branch/master/graph/badge.svg?branch=master)](https://codecov.io/gh/KrusnikViers/Zordon)
+[![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg?branch=wp-2.0)](https://travis-ci.org/KrusnikViers/Zordon)
+[![Build status](https://ci.appveyor.com/api/projects/status/5ek9c42yy2usr23h?branch=wp-2.0&svg=true)](https://ci.appveyor.com/project/KrusnikViers/zordon)
+[![Code Climate](https://codeclimate.com/github/KrusnikViers/Zordon/badges/gpa.svg?branch=wp-2.0)](https://codeclimate.com/github/KrusnikViers/Zordon)
+[![Coverage - Coveralls](https://coveralls.io/repos/github/KrusnikViers/Zordon/badge.svg?branch=wp-2.0)](https://coveralls.io/github/KrusnikViers/Zordon?branch=master)
+[![Coverage - CodeCov](https://codecov.io/gh/KrusnikViers/Zordon/branch/master/graph/badge.svg?branch=wp-2.0)](https://codecov.io/gh/KrusnikViers/Zordon)
 
 ### Dependencies:
 

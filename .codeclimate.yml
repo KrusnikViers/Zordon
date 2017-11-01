@@ -2,5 +2,6 @@ languages:
   Python: true
 
 exclude_paths:
-- "tests/*"
 - "app/models/migrations/*"
+- "scripts/*"
+- "tests/*"

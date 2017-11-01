@@ -21,9 +21,10 @@ before_script:
 
 env:
   global:
-    - DATABASE_URL="postgres://postgres:@127.0.0.1:5432/zordon_test_db"
-    - SUPERUSER_LOGIN="ZTestSuperuser"
-    - TELEGRAM_TOKEN="ZTestToken"
+    - ZORDON_DATABASE="postgres://postgres:@127.0.0.1:5432/zordon_test_db"
+    - ZORDON_SUPERUSER="ZTestSuperuser"
+    - ZORDON_TOKEN="ZTestToken"
+    - ZORDON_VERBOSITY="FULL"
 
 script:
   - coverage run --source=app -m unittest
