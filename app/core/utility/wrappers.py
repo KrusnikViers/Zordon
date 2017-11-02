@@ -1,41 +1,47 @@
 from telegram import Bot, Update
 
 from app.core import commands
+from app.core.utility import report
 from app.models.all import *
+from app.settings import credentials, database
 
 
-def _get_user(bot: Bot, update: Update) -> User:
+def _get_and_validate_user(bot: Bot, update: Update) -> User:
     user, is_created = User.get_or_create(telegram_id=update.effective_user.id,
                                           defaults={'login': update.effective_user.name})
+    # Validate all user information
     if is_created:
-        superuser = User.maybe_get(rights_level=commands.superuser_rights_level)
-        if superuser:
-            superuser.send_message(bot, text='User {} joined!'.format(user.login))
-    elif user.status == user.statuses['disabled_chat']:
-        user.status = user.statuses['active']
+        user.rights = commands.superuser_rights_level if user.login == credentials.superuser else 0
+        report.send(bot, 'User {0} has joined with rights level: {1}'.format(user.login, user.rights))
         user.save()
-        superuser = User.maybe_get(rights_level=commands.superuser_rights_level)
-        if superuser:
-            superuser.send_message(bot, text='User {} rejoined!'.format(user.login))
     if user.login != update.effective_user.name:
-        user.telegram_login = update.effective_user.name
+        report.send(bot, 'User {0} has updated login from {1}'.format(update.effective_user.name, user.login))
+        user.login = update.effective_user.name
+        user.save()
+    if user.status == user.statuses['disabled_chat']:
+        report.send('User {} has rejoined.'.format(user.login))
+        user.status = user.statuses['active']
         user.save()
     return user
 
 
 def personal_command(command: str):
     def personal_command_impl(decorated_handler):
+        @database.database.atomic()
         def decorated_handler_wrapper(bot: Bot, update: Update, user=None):
             # If command was received from callback query, mark it as received.
             if update.callback_query:
                 update.callback_query.answer()
 
+            # Get user, if it was not fetched earlier.
             if not user:
-                user = _get_user(bot, update)
+                user = _get_and_validate_user(bot, update)
 
+            # Check user rights, and, if everything is ok, call handler itself.
             if not user.able(command):
                 user.send_message(text='Sorry, but you have not enough rights.')
-            else:
-                decorated_handler(bot, update, user)
+                return
+
+            decorated_handler(bot, update, user)
         return decorated_handler_wrapper
     return personal_command_impl
