@@ -1,6 +1,7 @@
-from peewee import IntegerField, TextField
+from peewee import BooleanField, IntegerField, TextField
 from telegram import Bot, TelegramError
 
+from app.core import commands
 from app.settings import database
 
 
@@ -9,6 +10,7 @@ class User(database.BaseModel):
     telegram_id = IntegerField(unique=True)
     login = TextField(default='')
     rights = IntegerField(default=0)
+    mobile_layout = BooleanField(default=False)
 
     statuses = {
         'disabled_chat': 0,
@@ -21,6 +23,9 @@ class User(database.BaseModel):
         'none': 0,
     }
     pending_action = IntegerField(default=pending_actions['none'])
+
+    def able(self, command_identifier) -> bool:
+        return self.rights >= commands.get(command_identifier).rights_level
 
     def send_message(self, bot: Bot, *args, **kwargs):
         try:

@@ -13,6 +13,7 @@ class Subscription(database.BaseModel):
 
     reply_states = {
         'none': 0,
+        'call': 1,
         'accept': 100,
         'accept_delayed': 101,
         'decline': 200,
