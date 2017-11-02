@@ -28,7 +28,7 @@ class BaseModel(peewee.Model):
         database = database
 
     @classmethod
-    def maybe_get(cls, *args, **kwargs) -> object:
+    def maybe_get(cls, *args, **kwargs):
         try:
             result = cls.get(*args, **kwargs)
         except cls.DoesNotExist:

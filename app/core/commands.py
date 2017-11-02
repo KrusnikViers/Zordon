@@ -50,7 +50,9 @@ class Command:
 
 def get(identifier) -> Command:
     """ Returns Command object, determining if identifier is string/integer and searching by name/code """
-    if isinstance(identifier, str):
+    if isinstance(identifier, Command):
+        return identifier
+    elif isinstance(identifier, str):
         return Command.by_name[identifier]
     elif isinstance(identifier, int):
         return Command.by_code[identifier]
