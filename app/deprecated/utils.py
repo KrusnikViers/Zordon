@@ -1,7 +1,7 @@
+from app.core.misc.keyboard import *
 from telegram import Update, Bot
 
-from app.definitions import commands_set
-from app.handlers.misc.keyboard import *
+from app.deprecated.definitions import commands_set
 
 
 class CallbackUtil:

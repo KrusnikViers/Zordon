@@ -1,8 +1,8 @@
 import telegram as tg
-
-from app.handlers.utils import *
-from app.models.activity import Activity
 from app.models.participant import Participant
+
+from app.deprecated.utils import *
+from app.models.activity import Activity
 from app.models.subscription import Subscription
 
 

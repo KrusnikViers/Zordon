@@ -1,11 +1,11 @@
 import peewee as pw
 import telegram as tg
-
-from app.handlers.utils import *
-from app.models.activity import Activity
+from app.core.utils import *
 from app.models.participant import Participant
+
+import app.deprecated.user as u
+from app.models.activity import Activity
 from app.models.subscription import Subscription
-import app.handlers.user as u
 
 
 def _build_list_keyboard(user: User, available_actions: set)->tg.InlineKeyboardMarkup:

@@ -1,7 +1,8 @@
-from app.definitions import commands_by_level, superuser_login
-from app.handlers.utils import *
-from app.models.activity import Activity
 from app.models.participant import Participant
+
+from app.deprecated.definitions import commands_by_level, superuser_login
+from app.deprecated.utils import *
+from app.models.activity import Activity
 from app.models.subscription import Subscription
 
 

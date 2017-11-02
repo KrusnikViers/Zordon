@@ -1,12 +1,12 @@
+import app.core.activity as a
+import app.core.common as c
+import app.core.participant as p
+import app.core.subscription as s
+import app.core.superuser as su
+from app.core.messages import message_handler
 from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, Filters
 
-from app.handlers.messages import message_handler
-import app.handlers.activity as a
-import app.handlers.common as c
-import app.handlers.participant as p
-import app.handlers.subscription as s
-import app.handlers.superuser as su
-import app.handlers.user as u
+import app.deprecated.user as u
 
 
 def set_handlers(dispatcher):

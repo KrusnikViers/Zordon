@@ -1,12 +1,12 @@
+import app.core.activity as a
+import app.core.participant as p
+import app.core.superuser as su
 import telegram as tg
+from app.core.utils import personal_command
 
-from app.definitions import command_text_aliases, pending_user_actions
-from app.handlers.utils import personal_command
+import app.deprecated.user as u
+from app.deprecated.definitions import command_text_aliases, pending_user_actions
 from app.models.user import User
-import app.handlers.activity as a
-import app.handlers.participant as p
-import app.handlers.superuser as su
-import app.handlers.user as u
 
 
 @personal_command()
