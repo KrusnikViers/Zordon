@@ -2,7 +2,6 @@ languages:
   Python: true
 
 exclude_paths:
-- "app/deprecated/*"
 - "app/models/migrations/*"
 - "scripts/*"
 - "tests/*"
