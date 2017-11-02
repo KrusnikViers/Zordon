@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+
+#: app/core/handlers/user.py:11
+msgid "rl_desc_0"
+msgstr "Basic"
+
+#: app/core/handlers/user.py:12
+msgid "rl_desc_1"
+msgstr "Advanced"
+
+#: app/core/handlers/user.py:13
+msgid "rl_desc_s"
+msgstr "Superuser"
+
+#: app/core/handlers/user.py:15
+msgid "enabled_p"
+msgstr "Enabled"
+
+#: app/core/handlers/user.py:15
+msgid "disabled_p"
+msgstr "Disabled"
+
+#: app/core/handlers/user.py:16
+msgid "user_menu_text {login} {rights} {mode} {lang}"
+msgstr ""
+"Greetings, {login}.\n"
+"Rights level: {rights}\n"
+"Notifications: {mode}\n"
+"Language: {lang}"
+
+#: app/core/utility/keyboard.py:19
+msgid "act_menu_title"
+msgstr "Main menu"
+
+#: app/core/utility/keyboard.py:20
+msgid "act_subscriptions_title"
+msgstr "My activities"
+
+#: app/core/utility/keyboard.py:21
+msgid "cancel"
+msgstr "Cancel"
+
+#: app/core/utility/keyboard.py:22
+msgid "user_menu_title"
+msgstr "Profile"
+
+#: app/core/utility/wrappers.py:47
+msgid "rl_forbidden"
+msgstr "Access forbidden: Not enough rights"
+
+#: app/locale/translations.py:15
+msgid "lang_auto"
+msgstr "English (auto)"

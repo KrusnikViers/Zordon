@@ -5,7 +5,8 @@ from app.models.user import User
 
 
 def error_handler(bot: Bot, update: Update, error: TelegramError):
-    send(bot, 'Telegram error reported:\n{0}\nUpdate:\n{1}'.format(str(error), update.to_json()))
+    text = 'I: Error: ' + str(error) + ', update:\n' + str(update)
+    send(bot, text)
 
 
 def send(bot: Bot, text: str):

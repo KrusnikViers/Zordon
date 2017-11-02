@@ -26,3 +26,10 @@ All scripts should be executed from root directory of the project.
 * Run bot: `python scripts/run_bot.py`. All required environment variables must be set and valid.
 * Run tests: `python -m unittests`. All required environment variables must be set, database must exist.
 * Create DB migrations: `python scripts/make_migrations.py`. Database variable must be set and valid.
+
+### How to translate
+
+Project uses usual `gettext` internationalization mechanism. Common way to work with translations is via `babel` package: `pip install babel`.
+
+* Template file generation: `pybabel extract -o app/locale/<lang>/LC_MESSAGES/common.po --input-dirs=app`
+* Template file compilation: `pybabel compile -o app/locale/<lang>/LC_MESSAGES/common.mo -i app/locale/<lang>/LC_MESSAGES/common.po`

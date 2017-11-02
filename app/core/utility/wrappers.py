@@ -2,6 +2,7 @@ from telegram import Bot, Update
 
 from app.core import commands
 from app.core.utility import report
+from app.locale import translations
 from app.models.all import *
 from app.settings import credentials, database
 
@@ -12,16 +13,19 @@ def _get_and_validate_user(bot: Bot, update: Update) -> User:
     # Validate all user information
     if is_created:
         user.rights = commands.superuser_rights_level if user.login == credentials.superuser else 0
-        report.send(bot, 'User {0} has joined with rights level: {1}'.format(user.login, user.rights))
+        report.send(bot, 'I: {0} joined; rights: {1}'.format(user.login, user.rights))
         user.save()
+
     if user.login != update.effective_user.name:
-        report.send(bot, 'User {0} has updated login from {1}'.format(update.effective_user.name, user.login))
+        report.send(bot, 'I: {0} -> {1}'.format(user.login, update.effective_user.name))
         user.login = update.effective_user.name
         user.save()
+
     if user.status == user.statuses['disabled_chat']:
-        report.send('User {} has rejoined.'.format(user.login))
+        report.send(bot, 'I: {} rejoined'.format(user.login))
         user.status = user.statuses['active']
         user.save()
+
     return user
 
 
@@ -38,10 +42,10 @@ def personal_command(command: str):
                 user = _get_and_validate_user(bot, update)
 
             # Check user rights, and, if everything is ok, call handler itself.
+            translations.get(update, user).install()
             if not user.able(command):
-                user.send_message(text='Sorry, but you have not enough rights.')
-                return
-
-            decorated_handler(bot, update, user)
+                user.send_message(bot, text=_('rl_forbidden'))
+            else:
+                decorated_handler(bot, update, user)
         return decorated_handler_wrapper
     return personal_command_impl

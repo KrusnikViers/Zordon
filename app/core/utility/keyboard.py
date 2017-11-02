@@ -14,14 +14,14 @@ class InlineKeyboard(InlineKeyboardMarkup):
 
 
 class ChatKeyboard(ReplyKeyboardMarkup):
-    _aliases = {
-        'activity_menu': 'Activities menu',
-        'activity_subscriptions': 'My activities',
-        'system_cancel': 'Cancel',
-        'user_menu': 'Profile',
-    }
-
     def __init__(self, user: User):
+        aliases = {
+            'activity_menu': _('act_menu_title'),
+            'activity_subscriptions': _('act_subscriptions_title'),
+            'system_cancel': _('cancel'),
+            'user_menu': _('user_menu_title'),
+        }
+
         if user.pending_action != User.pending_actions['none']:
             markup = [['system_cancel']]
         elif user.mobile_layout:
@@ -30,4 +30,4 @@ class ChatKeyboard(ReplyKeyboardMarkup):
             markup = [['activity_subscriptions', 'activity_menu', 'user_menu']]
 
         super(ChatKeyboard, self).__init__(
-            [[KeyboardButton(self._aliases[command]) for command in row] for row in markup], resize_keyboard=True)
+            [[KeyboardButton(aliases[command]) for command in row] for row in markup], resize_keyboard=True)
