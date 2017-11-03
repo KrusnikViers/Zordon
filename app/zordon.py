@@ -1,9 +1,11 @@
 import logging
+
 from telegram.ext import Updater
 
+from app.common import credentials, verbosity
+from app.common.i18n import translations
 from app.core import commands, dispatcher
 from app.models.all import *
-from app.settings import credentials, verbosity
 
 
 class ZordonBot:
@@ -14,9 +16,10 @@ class ZordonBot:
     # Run background working threads and wait until they finished.
     # Worker threads will be stopped on signals SIGINT(2), SIGTERM(15) or SIGABRT(6).
     def run(self):
-        logging.info('Launching bot...')
+        logging.info('Configuring bot...')
         self._set_up_on_start()
         logging.info('Set up finished: ' + str(self.updater.bot.get_me()))
+        logging.info('Launching...')
         self.updater.start_polling()
         self.updater.idle()
         logging.info('Bot stopped working.')
@@ -31,3 +34,6 @@ class ZordonBot:
         User.update(rights=0).where((User.rights == commands.superuser_rights_level) &
                                     (User.login != credentials.superuser)).execute()
         User.update(rights=commands.superuser_rights_level).where(User.login == credentials.superuser).execute()
+
+        # Update and load translations
+        translations.load_translations()

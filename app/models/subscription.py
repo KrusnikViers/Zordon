@@ -1,9 +1,9 @@
 from datetime import datetime
 from peewee import IntegerField, ForeignKeyField, TextField, TimestampField
 
+from app.common import database
 from app.models.activity import Activity
 from app.models.user import User
-from app.settings import database
 
 
 class Subscription(database.BaseModel):

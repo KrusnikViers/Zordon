@@ -1,8 +1,8 @@
 from peewee import ForeignKeyField
 
+from app.common import database
 from app.models.activity import Activity
 from app.models.user import User
-from app.settings import database
 
 
 class ActivityAccess(database.BaseModel):

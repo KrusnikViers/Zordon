@@ -1,8 +1,8 @@
 from telegram import Bot, Update
-from telegram.ext import CommandHandler, CallbackQueryHandler
+from telegram.ext import CommandHandler
 
-from app.core.utility import wrappers, callbacks
-from app.locale import translations
+from app.common.i18n import translations
+from app.core.utility import wrappers
 from app.models.all import *
 
 

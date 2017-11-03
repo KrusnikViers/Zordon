@@ -1,0 +1,53 @@
+#: core/utility/keyboard.py:19
+msgid "act_menu_title"
+msgstr "Main menu"
+
+#: core/utility/keyboard.py:20
+msgid "act_subscriptions_title"
+msgstr "My activities"
+
+#: core/utility/keyboard.py:21
+msgid "cancel"
+msgstr "Cancel"
+
+#: core/handlers/user.py:16
+msgid "disabled_p"
+msgstr "Disabled"
+
+#: core/handlers/user.py:16
+msgid "enabled_p"
+msgstr "Enabled"
+
+#: common/i18n/translations.py:22
+msgid "lang_auto"
+msgstr "English (auto)"
+
+#: core/handlers/user.py:12
+msgid "rl_desc_0"
+msgstr "Basic"
+
+#: core/handlers/user.py:13
+msgid "rl_desc_1"
+msgstr "Full"
+
+#: core/handlers/user.py:14
+msgid "rl_desc_s"
+msgstr "Superuser"
+
+#: core/utility/wrappers.py:47
+msgid "rl_forbidden"
+msgstr "Access forbidden: Not enough rights"
+
+#: core/handlers/user.py:17
+msgid "user_menu_text {login} {rights} {mode} {lang}"
+msgstr ""
+"{login} profile parameters\n"
+"\n"
+"Notifications: {mode}\n"
+"Access: {rights}\n"
+"Lang.: {lang}"
+
+#: core/utility/keyboard.py:22
+msgid "user_menu_title"
+msgstr "Profile"
+

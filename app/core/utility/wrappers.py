@@ -1,10 +1,10 @@
 from telegram import Bot, Update
 
+from app.common import credentials, database
+from app.common.i18n import translations
 from app.core import commands
 from app.core.utility import report
-from app.locale import translations
 from app.models.all import *
-from app.settings import credentials, database
 
 
 def _get_and_validate_user(bot: Bot, update: Update) -> User:

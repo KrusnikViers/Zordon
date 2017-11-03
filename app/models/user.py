@@ -1,8 +1,8 @@
 from peewee import BooleanField, IntegerField, TextField
 from telegram import Bot, TelegramError
 
+from app.common import database
 from app.core import commands
-from app.settings import database
 
 
 class User(database.BaseModel):

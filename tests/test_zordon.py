@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock, patch
 
+from app.common import credentials
 from app.core import commands
 from app.models.all import *
-from app.settings import credentials
 from tests.base_test import BaseTestCase
 
 
@@ -11,7 +11,7 @@ with patch('telegram.ext.Updater', new=updater_mock):
     import app.zordon
 
 
-class TestLaunch(BaseTestCase):
+class TestZordon(BaseTestCase):
     def test_launch(self):
         zordon_bot = app.zordon.ZordonBot()
         zordon_bot.run()

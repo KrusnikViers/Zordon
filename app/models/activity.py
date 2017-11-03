@@ -2,7 +2,7 @@ from enum import Enum
 from peewee import BooleanField, ForeignKeyField, TextField, TimestampField
 import re
 
-from app.settings import database
+from app.common import database
 from app.models.user import User
 
 
