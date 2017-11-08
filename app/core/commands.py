@@ -63,6 +63,11 @@ def get(identifier) -> Command:
     # Should not reach this place.
     assert False
 
+
+def str_code(identifier) -> str:
+    """ Returns Command code, casted to string type """
+    return str(get(identifier).code)
+
 # Implementation.
 #################
 

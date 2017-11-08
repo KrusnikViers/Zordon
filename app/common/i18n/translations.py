@@ -17,17 +17,6 @@ def load_translations():
         _translations[language] = gettext.translation('zordon', localedir=str(updater.locale_dir), languages=[language])
 
 
-def get_full_name(locale_code: str) -> str:
-    if locale_code == 'auto':
-        return _('lang_auto')
-    elif locale_code == 'ru':
-        return 'Русский'
-    elif locale_code == 'en':
-        return 'English'
-    # Should not reach this place.
-    assert False
-
-
 def get(update: Update, user: User):
     if user.locale != 'auto':
         language_code = user.locale

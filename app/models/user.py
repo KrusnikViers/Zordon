@@ -11,6 +11,7 @@ class User(database.BaseModel):
     login = TextField(default='')
     rights = IntegerField(default=0)
     mobile_layout = BooleanField(default=False)
+    # Possible locale values: 'en', 'ru', 'auto'.
     locale = TextField(default='auto')
 
     statuses = {

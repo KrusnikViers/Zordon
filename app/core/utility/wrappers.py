@@ -44,7 +44,7 @@ def personal_command(command: str):
             # Check user rights, and, if everything is ok, call handler itself.
             translations.get(update, user).install()
             if not user.able(command):
-                user.send_message(bot, text=_('rl_forbidden'))
+                user.send_message(bot, text=_('system_forbidden'))
             else:
                 decorated_handler(bot, update, user)
         return decorated_handler_wrapper

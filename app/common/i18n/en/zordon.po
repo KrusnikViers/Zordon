@@ -1,51 +1,76 @@
 #: core/utility/keyboard.py:19
-msgid "act_menu_title"
-msgstr "Main menu"
+msgid "activity_menu_title"
+msgstr "All activities"
 
 #: core/utility/keyboard.py:20
-msgid "act_subscriptions_title"
+msgid "activity_subscriptions_title"
 msgstr "My activities"
 
 #: core/utility/keyboard.py:21
-msgid "cancel"
+msgid "system_cancel"
 msgstr "Cancel"
 
-#: core/handlers/user.py:16
-msgid "disabled_p"
-msgstr "Disabled"
-
-#: core/handlers/user.py:16
-msgid "enabled_p"
-msgstr "Enabled"
-
-#: common/i18n/translations.py:22
-msgid "lang_auto"
-msgstr "English (auto)"
-
-#: core/handlers/user.py:12
-msgid "rl_desc_0"
-msgstr "Basic"
-
-#: core/handlers/user.py:13
-msgid "rl_desc_1"
-msgstr "Full"
-
-#: core/handlers/user.py:14
-msgid "rl_desc_s"
-msgstr "Superuser"
+#: core/handlers/user.py:30 core/handlers/user.py:52
+msgid "system_close"
+msgstr "Close"
 
 #: core/utility/wrappers.py:47
-msgid "rl_forbidden"
+msgid "system_forbidden"
 msgstr "Access forbidden: Not enough rights"
 
-#: core/handlers/user.py:17
-msgid "user_menu_text {login} {rights} {mode} {lang}"
+#: core/handlers/user.py:27
+msgid "system_lang_name"
+msgstr "English"
+
+#: core/handlers/user.py:49
+msgid "user_change_language_kb_auto"
+msgstr "Auto detect"
+
+#: core/handlers/user.py:50
+msgid "user_change_language_kb_en"
+msgstr "English"
+
+#: core/handlers/user.py:51
+msgid "user_change_language_kb_ru"
+msgstr "Русский"
+
+#: core/handlers/user.py:27
+msgid "user_menu_kb_lang {lang} {auto}"
+msgstr "Language: {lang} {auto}"
+
+#: core/handlers/user.py:23
+msgid "user_menu_kb_lang_auto_mark"
+msgstr " (auto)"
+
+#: core/handlers/user.py:25
+msgid "user_menu_kb_status {status}"
+msgstr "Notifications: {status}"
+
+#: core/handlers/user.py:12
+msgid "user_menu_rights_desc_0"
+msgstr "Restricted access"
+
+#: core/handlers/user.py:13
+msgid "user_menu_rights_desc_1"
+msgstr "Approved user"
+
+#: core/handlers/user.py:14
+msgid "user_menu_rights_desc_2"
+msgstr "Administrator"
+
+#: core/handlers/user.py:18
+msgid "user_menu_status_desc_active"
+msgstr "Enabled"
+
+#: core/handlers/user.py:19
+msgid "user_menu_status_desc_do_not_disturb"
+msgstr "Disabled"
+
+#: core/handlers/user.py:22
+msgid "user_menu_text {login} {rights}"
 msgstr ""
-"{login} profile parameters\n"
-"\n"
-"Notifications: {mode}\n"
-"Access: {rights}\n"
-"Lang.: {lang}"
+"Profile {login}\n"
+"{rights}"
 
 #: core/utility/keyboard.py:22
 msgid "user_menu_title"

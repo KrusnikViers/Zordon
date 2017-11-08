@@ -1,51 +1,76 @@
 #: core/utility/keyboard.py:19
-msgid "act_menu_title"
-msgstr "Главное меню"
+msgid "activity_menu_title"
+msgstr "Все мероприятия"
 
 #: core/utility/keyboard.py:20
-msgid "act_subscriptions_title"
-msgstr "Мои активности"
+msgid "activity_subscriptions_title"
+msgstr "Мои подписки"
 
 #: core/utility/keyboard.py:21
-msgid "cancel"
+msgid "system_cancel"
 msgstr "Отмена"
 
-#: core/handlers/user.py:16
-msgid "disabled_p"
-msgstr "Отключены"
-
-#: core/handlers/user.py:16
-msgid "enabled_p"
-msgstr "Включены"
-
-#: common/i18n/translations.py:22
-msgid "lang_auto"
-msgstr "Русский (авт.)"
-
-#: core/handlers/user.py:12
-msgid "rl_desc_0"
-msgstr "Базовый"
-
-#: core/handlers/user.py:13
-msgid "rl_desc_1"
-msgstr "Полный"
-
-#: core/handlers/user.py:14
-msgid "rl_desc_s"
-msgstr "Суперпользователь"
+#: core/handlers/user.py:30 core/handlers/user.py:52
+msgid "system_close"
+msgstr "Закрыть"
 
 #: core/utility/wrappers.py:47
-msgid "rl_forbidden"
-msgstr "Доступ запрещен: недостаточно прав"
+msgid "system_forbidden"
+msgstr "Доступ запрещён: недостаточно прав"
 
-#: core/handlers/user.py:17
-msgid "user_menu_text {login} {rights} {mode} {lang}"
+#: core/handlers/user.py:27
+msgid "system_lang_name"
+msgstr "Русский"
+
+#: core/handlers/user.py:49
+msgid "user_change_language_kb_auto"
+msgstr "Определять автоматически"
+
+#: core/handlers/user.py:50
+msgid "user_change_language_kb_en"
+msgstr "English"
+
+#: core/handlers/user.py:51
+msgid "user_change_language_kb_ru"
+msgstr "Русский"
+
+#: core/handlers/user.py:27
+msgid "user_menu_kb_lang {lang} {auto}"
+msgstr "Язык: {lang}{auto}"
+
+#: core/handlers/user.py:23
+msgid "user_menu_kb_lang_auto_mark"
+msgstr " (авт.)"
+
+#: core/handlers/user.py:25
+msgid "user_menu_kb_status {status}"
+msgstr "Уведомления: {status}"
+
+#: core/handlers/user.py:12
+msgid "user_menu_rights_desc_0"
+msgstr "Только базовые функции"
+
+#: core/handlers/user.py:13
+msgid "user_menu_rights_desc_1"
+msgstr "Полный доступ"
+
+#: core/handlers/user.py:14
+msgid "user_menu_rights_desc_2"
+msgstr "Администратор"
+
+#: core/handlers/user.py:18
+msgid "user_menu_status_desc_active"
+msgstr "Включены"
+
+#: core/handlers/user.py:19
+msgid "user_menu_status_desc_do_not_disturb"
+msgstr "Отключены"
+
+#: core/handlers/user.py:22
+msgid "user_menu_text {login} {rights}"
 msgstr ""
-"Настройки профиля {login}\n"
-"\n"
-"Уведомления: {mode}\n"
-"Доступ: {rights}\n"
-"Язык: {lang}"
+"Пользователь {login}\n"
+"{rights}"
 
 #: core/utility/keyboard.py:22
 msgid "user_menu_title"

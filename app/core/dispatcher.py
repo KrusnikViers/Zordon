@@ -2,7 +2,7 @@ import logging
 from telegram.ext import Dispatcher
 
 from app.core.utility import report
-from app.core.handlers import user
+from app.core.handlers import system, user
 
 
 def attach_all_handlers(dispatcher: Dispatcher):
@@ -11,6 +11,7 @@ def attach_all_handlers(dispatcher: Dispatcher):
         for h in handlers:
             dispatcher.add_handler(h)
 
+    attach_handlers(system.get_handlers(), 'system')
     attach_handlers(user.get_handlers(), 'user')
 
     dispatcher.add_error_handler(report.error_handler)
