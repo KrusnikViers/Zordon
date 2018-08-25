@@ -1,5 +1,4 @@
 # Zordon Telegram Bot 3.0
-_Gathers together capybaras to fight against evil and boredom._
 
 [![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg)](https://travis-ci.org/KrusnikViers/Zordon)
 [![Build status](https://ci.appveyor.com/api/projects/status/5ek9c42yy2usr23h?branch=master&svg=true)](https://ci.appveyor.com/project/KrusnikViers/zordon)
