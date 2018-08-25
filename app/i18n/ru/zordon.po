@@ -1,4 +1,4 @@
-#: handlers/setter.py:39
+#: handlers/setter.py:13
 msgid "start_message"
 msgstr "Здравствуй, мир!"
 
