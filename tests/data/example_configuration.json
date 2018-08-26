@@ -1,4 +1,5 @@
 {
   "telegram_bot_token": "bot_token:for_test",
-  "webhook_url": "http://zordon.bot:11"
+  "webhook_url": "http://zordon.bot:11",
+  "database_url": "schema://json:database@test.cotest:111/db_name"
 }

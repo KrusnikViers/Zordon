@@ -1,2 +1,7 @@
 python-telegram-bot == 10.1.0 # Python API for Telegram Bot
+
 babel == 2.5.1 # Localization library with gettext support
+
+sqlalchemy == 1.2.11 # Database ORM
+psycopg2 == 2.7.5    # PostgreSQL driver for SQLAlchemy
+alembic == 1.0.0     # Migration tool for SQLAlchemy

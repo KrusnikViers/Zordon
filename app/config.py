@@ -10,6 +10,7 @@ APP_DIRECTORY = Path(os.path.realpath(__file__)).parent
 TELEGRAM_BOT_TOKEN = None
 WEBHOOK_URL = None
 WEBHOOK_PORT = None
+DATABASE_URL = None
 
 _args = None
 _json_configuration = None
@@ -19,11 +20,13 @@ def load_user_configuration():
     global TELEGRAM_BOT_TOKEN
     global WEBHOOK_URL
     global WEBHOOK_PORT
+    global DATABASE_URL
 
     _set_args_and_configuration_file()
 
     TELEGRAM_BOT_TOKEN = _maybe_get_value('telegram_bot_token')
     WEBHOOK_URL, WEBHOOK_PORT = _parse_webhook_url(_maybe_get_value('webhook_url'))
+    DATABASE_URL = _parse_database_url(_maybe_get_value('database_url'))
 
     _clean_args_and_configuration_file()
 
@@ -36,6 +39,8 @@ def _get_command_line_arguments() -> argparse.Namespace:
                         help='Telegram bot token, received from @BotFather.')
     parser.add_argument('--webhook-url', '-w', type=str, dest='webhook_url',
                         help='Webhook URL, forces hook mode if provided.')
+    parser.add_argument('--database-url', '-d', type=str, dest='database_url',
+                        help='Database url (user:password@host:port/database_name)')
     return parser.parse_args()
 
 
@@ -69,8 +74,17 @@ def _maybe_get_value(option_name: str):
     return value if value else _json_configuration.get(option_name, None)
 
 
-def _parse_webhook_url(url)->(str, int):
+def _parse_webhook_url(url) -> (str, int):
     if not url:
         return None, None
     port_from_url = urlparse(url).port
     return url, port_from_url if port_from_url else 80
+
+
+def _parse_database_url(url) -> str:
+    if url:
+        schema_delimeter = '://'
+        schema_end_index = url.find(schema_delimeter)
+        if schema_end_index != -1:
+            return url[schema_end_index + len(schema_delimeter):]
+    return url
