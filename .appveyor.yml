@@ -22,10 +22,6 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python --version"
   - "pip install -r requirements.txt"
-  - "pip install codecov"
 
 test_script:
-  - "coverage run --source=app -m unittest"
-
-after_test:
-  - "codecov"
+  - "python -m unittest"

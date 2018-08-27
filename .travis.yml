@@ -11,11 +11,10 @@ python:
 
 install:
   - pip install -r requirements.txt
-  - pip install coveralls codecov
+  - pip install coveralls
 
 script:
   - coverage run --source=app -m unittest
 
 after_success:
   - coveralls
-  - codecov
