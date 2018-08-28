@@ -2,8 +2,7 @@ from babel.messages import catalog, extract, mofile, pofile
 import logging
 from pathlib import Path
 
-from app import config
-
+from app.core import config
 
 SUPPORTED_LANGUAGES = ['ru', 'en']
 LOCALE_DIR = config.APP_DIRECTORY.joinpath('i18n')

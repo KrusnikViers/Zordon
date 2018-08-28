@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 # Variables below must be initialised at the very start and should not be changed any further.
-APP_DIRECTORY = Path(os.path.realpath(__file__)).parent
+APP_DIRECTORY = Path(os.path.realpath(__file__)).parent.parent
 TELEGRAM_BOT_TOKEN = None
 WEBHOOK_URL = None
 WEBHOOK_PORT = None
@@ -83,8 +83,9 @@ def _parse_webhook_url(url) -> (str, int):
 
 def _parse_database_url(url) -> str:
     if url:
-        schema_delimeter = '://'
-        schema_end_index = url.find(schema_delimeter)
+        schema_delimiter = '://'
+        schema_end_index = url.find(schema_delimiter)
         if schema_end_index != -1:
-            return url[schema_end_index + len(schema_delimeter):]
+            url = url[schema_end_index + len(schema_delimiter):]
+        return 'postgres' + schema_delimiter + url
     return url

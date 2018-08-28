@@ -1,9 +1,8 @@
 import logging
 from telegram.ext import Updater
 
-from app import config
-from app.handlers import setter
 from app.i18n import translations
+from app.core import database, config, dispatcher
 
 
 class ZordonBot:
@@ -13,7 +12,7 @@ class ZordonBot:
 
     # Launch and wait for worker threads, that should be stopped with signals SIGINT(2), SIGTERM(15) or SIGABRT(6).
     def run(self):
-        self._set_up_on_start()
+        self._set_up()
 
         logging.info('Launching bot: ' + str(self.updater.bot.get_me()))
         if config.WEBHOOK_URL and config.WEBHOOK_PORT:
@@ -27,9 +26,10 @@ class ZordonBot:
         self.updater.idle()
         logging.info('Bot finished.')
 
-    def _set_up_on_start(self):
+    def _set_up(self):
         config.load_user_configuration()
         translations.initialise()
+        database.initialise()
 
         self.updater = Updater(token=config.TELEGRAM_BOT_TOKEN)
-        setter.set_handlers(self.updater.dispatcher)
+        dispatcher.set_handlers(self.updater.dispatcher)

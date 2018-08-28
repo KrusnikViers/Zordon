@@ -1,5 +1,8 @@
 build: false
 
+services:
+  - postgresql93
+
 environment:
   matrix:
     - PYTHON: "C:\\Python35"
@@ -19,9 +22,12 @@ environment:
       PYTHON_ARCH: "64"
 
 install:
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\Program Files\\PostgreSQL\\9.3\\bin\\;%PATH%"
   - "python --version"
   - "pip install -r requirements.txt"
 
+before_test:
+  - "createdb test_db"
+
 test_script:
-  - "python -m unittest"
+  - "python -m unittest -d postgres://postgres:Password12!@127.0.0.1:5432/test_db"

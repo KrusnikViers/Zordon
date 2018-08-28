@@ -1,6 +1,6 @@
 from telegram import Bot, Update
 
-from app.handlers.base import translatable_handler
+from app.handlers.util.base import translatable_handler
 
 
 @translatable_handler

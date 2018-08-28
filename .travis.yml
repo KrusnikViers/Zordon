@@ -9,12 +9,18 @@ python:
   - 3.7-dev
   - nightly
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database zordon_test_db;' -U postgres
+
 install:
   - pip install -r requirements.txt
   - pip install coveralls
 
 script:
-  - coverage run --source=app -m unittest
+  - coverage run --source=app -m unittest -d postgres://postgres:@127.0.0.1:5432/zordon_test_db
 
 after_success:
   - coveralls
