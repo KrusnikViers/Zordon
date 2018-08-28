@@ -1,7 +1,7 @@
 import logging
 from telegram.ext import Updater
 
-from app.i18n import translations
+from app.i18n.translations import TranslationsList
 from app.core import database, config, dispatcher
 
 
@@ -28,8 +28,7 @@ class ZordonBot:
 
     def _set_up(self):
         config.load_user_configuration()
-        translations.initialise()
-        database.initialise()
-
+        TranslationsList.initialise()
+        database.BaseModel.connect_and_migrate(config.DATABASE_CREDENTIALS)
         self.updater = Updater(token=config.TELEGRAM_BOT_TOKEN)
         dispatcher.set_handlers(self.updater.dispatcher)

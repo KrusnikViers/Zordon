@@ -1,3 +1,5 @@
-from app.i18n import strings_updater
+from app.i18n.updater import TranslationsUpdater
 
-strings_updater.regenerate_translations()
+
+updater = TranslationsUpdater()
+updater.regenerate_translations()

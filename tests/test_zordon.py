@@ -17,7 +17,7 @@ class TestLaunch(TestCase):
         zordon_bot.updater.start_polling.assert_called_once_with()
         zordon_bot.updater.dispatcher.add_handler.assert_called_with(MatcherAny())
         self.assertFalse(zordon_bot.updater.start_webhook.called)
-        self.assertTrue(app.zordon.database.initialise.called)
+        self.assertTrue(app.zordon.database.BaseModel.connect_and_migrate.called)
 
     @patch('app.zordon.Updater', new=MagicMock())
     @patch('app.zordon.database', new=MagicMock())
@@ -29,5 +29,4 @@ class TestLaunch(TestCase):
         zordon_bot.updater.start_webhook.assert_called_once_with(webhook_url='http://test.url:1199', port=1199)
         zordon_bot.updater.dispatcher.add_handler.assert_called_with(MatcherAny())
         self.assertFalse(zordon_bot.updater.start_polling.called)
-        self.assertTrue(app.zordon.database.initialise.called)
-
+        self.assertTrue(app.zordon.database.BaseModel.connect_and_migrate.called)

@@ -12,7 +12,8 @@ class TestConfig(TestCase):
         self.assertEqual('test_value_token', config.TELEGRAM_BOT_TOKEN)
         self.assertEqual('http://test_webhook.url:999', config.WEBHOOK_URL)
         self.assertEqual(999, config.WEBHOOK_PORT)
-        self.assertEqual('postgres://a:b@c.d:1/e', config.DATABASE_URL)
+        self.assertEqual({'database': 'e', 'host': 'c.d', 'port': 1, 'user': 'a', 'password': 'b'},
+                         config.DATABASE_CREDENTIALS)
 
     @patch('sys.argv', ['_', '-c', str(TEST_DATA_DIR.joinpath('example_configuration.json'))])
     def test_read_from_file(self):
@@ -20,7 +21,9 @@ class TestConfig(TestCase):
         self.assertEqual('bot_token:for_test', config.TELEGRAM_BOT_TOKEN)
         self.assertEqual('http://zordon.bot:11', config.WEBHOOK_URL)
         self.assertEqual(11, config.WEBHOOK_PORT)
-        self.assertEqual('postgres://json:database@test.cotest:111/db_name', config.DATABASE_URL)
+        self.assertEqual(
+            {'database': 'db_name', 'host': 'test.com', 'port': 111, 'user': 'json', 'password': 'database'},
+            config.DATABASE_CREDENTIALS)
 
     @patch('sys.argv', ['_', '-c', str(TEST_DATA_DIR.joinpath('example_configuration.json')), '-t', 'token_override'])
     def test_command_line_priority(self):
