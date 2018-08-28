@@ -9,8 +9,7 @@ class User(BaseModel):
     tg_login = TextField(unique=True)
     visible_name = TextField()
     locale = TextField()
-
-    is_mute_enabled = BooleanField(default=False)
+    is_mute_enabled = BooleanField()
 
     class Meta:
         table_name = 'users'
