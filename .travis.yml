@@ -15,12 +15,16 @@ services:
 before_script:
   - psql -c 'create database zordon_test_db;' -U postgres
 
+env:
+  global:
+    - CI_DATABASE="postgres://postgres:@127.0.0.1:5432/zordon_test_db"
+
 install:
   - pip install -r requirements.txt
   - pip install coveralls
 
 script:
-  - coverage run --source=app -m unittest -d postgres://postgres:@127.0.0.1:5432/zordon_test_db
+  - coverage run --source=app -m unittest
 
 after_success:
   - coveralls

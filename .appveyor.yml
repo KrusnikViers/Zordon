@@ -4,6 +4,11 @@ services:
   - postgresql93
 
 environment:
+  global:
+    CI_DATABASE: "postgres://postgres:Password12!@127.0.0.1:5432/test_db"
+    PGUSER: "postgres"
+    PGPASSWORD: "Password12!"
+
   matrix:
     - PYTHON: "C:\\Python35"
       PYTHON_VERSION: "3.5.x"
@@ -30,4 +35,4 @@ before_test:
   - "createdb test_db"
 
 test_script:
-  - "python -m unittest -d postgres://postgres:Password12!@127.0.0.1:5432/test_db"
+  - "python -m unittest"
