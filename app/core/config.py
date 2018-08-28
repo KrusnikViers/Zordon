@@ -20,14 +20,14 @@ def load_user_configuration():
     global WEBHOOK_PORT
     global DATABASE_CREDENTIALS
 
-    reader = _ConfigurationReader()
+    reader = ConfigurationReader()
 
     TELEGRAM_BOT_TOKEN = reader.maybe_get_value('telegram_bot_token')
-    WEBHOOK_URL, WEBHOOK_PORT = reader.maybe_get_webhook_params()
-    DATABASE_CREDENTIALS = reader.maybe_get_database_credentials()
+    WEBHOOK_URL, WEBHOOK_PORT = reader.parse_webhook_params(reader.maybe_get_value('webhook_url'))
+    DATABASE_CREDENTIALS = reader.parse_database_credentials(reader.maybe_get_value('database_url'))
 
 
-class _ConfigurationReader:
+class ConfigurationReader:
     def __init__(self):
         self.args = self._get_command_line_arguments()
         self.json = self._get_configuration_file_content()
@@ -57,15 +57,15 @@ class _ConfigurationReader:
         value = getattr(self.args, option_name)
         return value if value else self.json.get(option_name, None)
 
-    def maybe_get_webhook_params(self) -> (str, int):
-        raw_url = self.maybe_get_value('webhook_url')
+    @staticmethod
+    def parse_webhook_params(raw_url) -> (str, int):
         if not raw_url:
             return None, None
         port_from_url = urllib.parse.urlparse(raw_url).port
         return raw_url, port_from_url if port_from_url else 80
 
-    def maybe_get_database_credentials(self) -> dict:
-        raw_url = self.maybe_get_value('database_url')
+    @staticmethod
+    def parse_database_credentials(raw_url) -> dict:
         if not raw_url:
             return {}
 
