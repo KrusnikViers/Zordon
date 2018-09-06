@@ -1,8 +1,7 @@
-python-telegram-bot == 10.1.0 # Python API for Telegram Bot
+python-telegram-bot == 11.1.0 # Python API for Telegram Bot
 
 babel == 2.6.0 # Localization library with gettext support
 
-psycopg2 == 2.7.5        # PostgreSQL driver for ORM
-peewee == 3.6.4          # Lightweight ORM
-peewee_migrate == 1.1.1  # Migrations tool
-dj-database-url == 0.5.0 # Tool for parsing DSL-formatted URLs
+sqlalchemy == 1.2.11
+alembic == 1.0.0
+psycopg2 == 2.7.5

@@ -2,16 +2,15 @@ import logging
 from babel.messages import catalog, extract, mofile, pofile
 from pathlib import Path
 
-from app.core import config
-
+from app import config
 
 SUPPORTED_LANGUAGES = ['ru', 'en']
 
 
 class TranslationsUpdater:
     def __init__(self,
-                 locale_dir: Path = config.APP_DIRECTORY.joinpath('i18n'),
-                 sources_dir: Path = config.APP_DIRECTORY):
+                 locale_dir: Path = config.APP_DIR.joinpath('i18n'),
+                 sources_dir: Path = config.APP_DIR):
         self.locale_dir = locale_dir
         self.sources_dir = sources_dir
 

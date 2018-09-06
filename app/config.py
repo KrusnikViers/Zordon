@@ -1,5 +1,4 @@
 import argparse
-import dj_database_url
 import json
 import logging
 import os
@@ -7,27 +6,35 @@ import pathlib
 import urllib.parse
 
 
-APP_DIRECTORY = pathlib.Path(os.path.realpath(__file__)).parent.parent
-TELEGRAM_BOT_TOKEN = None
-WEBHOOK_URL = None
-WEBHOOK_PORT = None
-DATABASE_CREDENTIALS = None
+APP_DIR = pathlib.Path(os.path.realpath(__file__)).parent
+TELEGRAM_BOT_TOKEN: str = None
+WEBHOOK_URL: str = None
+WEBHOOK_PORT: str = None
+DATABASE_URL: str = None
 
 
 def load_user_configuration():
-    global TELEGRAM_BOT_TOKEN
-    global WEBHOOK_URL
-    global WEBHOOK_PORT
-    global DATABASE_CREDENTIALS
-
-    reader = ConfigurationReader()
-
-    TELEGRAM_BOT_TOKEN = reader.maybe_get_value('telegram_bot_token')
-    WEBHOOK_URL, WEBHOOK_PORT = reader.parse_webhook_params(reader.maybe_get_value('webhook_url'))
-    DATABASE_CREDENTIALS = reader.parse_database_credentials(reader.maybe_get_value('database_url'))
+    global TELEGRAM_BOT_TOKEN, WEBHOOK_URL, WEBHOOK_PORT, DATABASE_URL
+    loader = _ConfigurationLoader()
+    TELEGRAM_BOT_TOKEN = loader.maybe_get_value('telegram_bot_token')
+    WEBHOOK_URL, WEBHOOK_PORT = parse_webhook_params(loader.maybe_get_value('webhook_url'))
+    DATABASE_URL = parse_database_url(loader.maybe_get_value('database_url'))
 
 
-class ConfigurationReader:
+def parse_webhook_params(raw_url) -> (str, int):
+    if not raw_url:
+        return None, None
+    port_from_url = urllib.parse.urlparse(raw_url).port
+    return raw_url, port_from_url if port_from_url else 80
+
+
+def parse_database_url(raw_url) -> str:
+    if not raw_url:
+        return raw_url
+    return 'postgresql+psycopg2://' + raw_url.split('://')[-1]
+
+
+class _ConfigurationLoader:
     def __init__(self):
         self.args = self._get_command_line_arguments()
         self.json = self._get_configuration_file_content()
@@ -56,29 +63,3 @@ class ConfigurationReader:
     def maybe_get_value(self, option_name: str):
         value = getattr(self.args, option_name)
         return value if value else self.json.get(option_name, None)
-
-    @staticmethod
-    def parse_webhook_params(raw_url) -> (str, int):
-        if not raw_url:
-            return None, None
-        port_from_url = urllib.parse.urlparse(raw_url).port
-        return raw_url, port_from_url if port_from_url else 80
-
-    @staticmethod
-    def parse_database_credentials(raw_url) -> dict:
-        if not raw_url:
-            return {}
-
-        schema_delimiter = '://'
-        schema_end_index = raw_url.find(schema_delimiter)
-        if schema_end_index != -1:
-            raw_url = raw_url[schema_end_index + len(schema_delimiter):]
-
-        parsed_url = dj_database_url.parse('postgres://' + raw_url)
-        return {
-            'database': parsed_url['NAME'],
-            'host': parsed_url['HOST'],
-            'port': parsed_url['PORT'],
-            'user': parsed_url['USER'],
-            'password': parsed_url['PASSWORD']
-        }

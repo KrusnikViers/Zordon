@@ -1,9 +1,10 @@
-from app.core import config, database
+from app import config
+from app.database import connection, updater
 
 
 config.load_user_configuration()
-database.BaseModel.connect_and_migrate(config.DATABASE_CREDENTIALS)
+connection.initialise()
 
-router = database.BaseModel.create_router()
-router.create(name='auto', auto='app.models')
-router.run()
+# First, flush pending migrations, if any.
+updater.run_migrations()
+updater.make_migrations()
