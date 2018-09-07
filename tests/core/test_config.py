@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from unittest import TestCase
 
-import config
+from app import config
 from tests.base import TEST_DATA_DIR
 
 
