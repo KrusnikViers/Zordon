@@ -1,23 +1,30 @@
 from unittest import TestCase, mock
 
+from app.core.info import APP_DIR
 from app.i18n import translations
 
 
 class TestTranslations(TestCase):
-    def test_get_no_language_code(self):
-        translations.initialise()
-        update_mock = mock.MagicMock()
-        update_mock.effective_user.language_code = None
-        self.assertEqual(translations._translations['en'], translations.get_for_update(update_mock))
+    @staticmethod
+    def get_release_translations():
+        return translations.Translations(APP_DIR.joinpath('i18n'), APP_DIR)
 
-    def test_get_correct_code(self):
-        translations.initialise()
-        update_mock = mock.MagicMock()
-        update_mock.effective_user.language_code = 'ru-Ru'
-        self.assertEqual(translations._translations['ru'], translations.get_for_update(update_mock))
+    def test_locale_cut(self):
+        self.assertEqual('ru', translations.Translations.normalise_locale('Ru-Ru'))
+
+    def test_locale_original(self):
+        self.assertEqual('xx', translations.Translations.normalise_locale('xx'))
+
+    def test_get_no_language_code(self):
+        instance = self.get_release_translations()
+        self.assertEqual(instance.translations[translations.DEFAULT_LANGUAGE], instance.get(None))
 
     def test_get_fallback(self):
-        translations.initialise()
-        update_mock = mock.MagicMock()
-        update_mock.effective_user.language_code = 'un-Known'
-        self.assertEqual(translations._translations['en'], translations.get_for_update(update_mock))
+        instance = self.get_release_translations()
+        self.assertEqual(instance.translations[translations.DEFAULT_LANGUAGE], instance.get('xx'))
+
+    def test_get_correct_code(self):
+        instance = self.get_release_translations()
+        self.assertTrue('ru' in translations.SUPPORTED_LANGUAGES)
+        self.assertNotEqual(translations.DEFAULT_LANGUAGE, 'ru')
+        self.assertEqual(instance.translations['ru'], instance.get('ru'))

@@ -1,4 +1,3 @@
-from app.zordon import ZordonBot
+from app.core.bot import Bot
 
-zordon_bot = ZordonBot()
-zordon_bot.run()
+Bot().run()

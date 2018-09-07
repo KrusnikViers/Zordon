@@ -1,16 +1,14 @@
-import logging
 from babel.messages import catalog, extract, mofile, pofile
 from pathlib import Path
+import logging
 
-from app import config
 
 SUPPORTED_LANGUAGES = ['ru', 'en']
+DEFAULT_LANGUAGE = 'en'
 
 
 class TranslationsUpdater:
-    def __init__(self,
-                 locale_dir: Path = config.APP_DIR.joinpath('i18n'),
-                 sources_dir: Path = config.APP_DIR):
+    def __init__(self, locale_dir: Path, sources_dir: Path):
         self.locale_dir = locale_dir
         self.sources_dir = sources_dir
 
@@ -20,7 +18,7 @@ class TranslationsUpdater:
                 return False
         return True
 
-    def regenerate_translations(self) -> bool:
+    def regenerate_all(self) -> bool:
         new_catalog = self._build_strings_catalog_from_sources()
         is_complete = True
         for language in SUPPORTED_LANGUAGES:

@@ -1,16 +1,16 @@
-from sqlalchemy.engine import Engine, create_engine
+from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker
+import logging
 
-from app import config
-from app.database import updater
-
-
-engine: Engine = None
-Session = sessionmaker()
+from app.core.configuration import Configuration
+from app.database.migrations import router
 
 
-def initialise(database_url: str = None):
-    global engine, Session
-    engine = create_engine(database_url if database_url else config.DATABASE_URL)
-    Session.configure(bind=engine)
-    updater.run_migrations()
+class DatabaseConnection:
+    def __init__(self, configuration: Configuration):
+        self.engine = create_engine(configuration.database_url)
+        self.Session = sessionmaker(engine=self.engine)
+
+    def run_migrations(self):
+        logging.info('Running pending migrations')
+        router.run_migrations(self.engine)

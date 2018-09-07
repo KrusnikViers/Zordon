@@ -1,30 +1,28 @@
 import gettext
 import logging
-from telegram import Update
+import pathlib
 
-from app.i18n.updater import TranslationsUpdater, SUPPORTED_LANGUAGES
-from app import config
-
-
-_translations = {}
+from app.i18n.updater import TranslationsUpdater, DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES
 
 
-def initialise():
-    global _translations
-    updater = TranslationsUpdater()
-    if not updater.is_translations_generated():
-        logging.info('Precompiled translations not found, regenerating...')
-        updater.regenerate_translations()
-    for language in SUPPORTED_LANGUAGES:
-        _translations[language] = gettext.translation('zordon',
-                                                      localedir=str(config.APP_DIR.joinpath('i18n')),
-                                                      languages=[language])
+class Translations:
+    def __init__(self, locale_dir: pathlib.Path, sources_dir: pathlib.Path):
+        self.translations = {}
+        updater = TranslationsUpdater(locale_dir, sources_dir)
+        if not updater.is_translations_generated():
+            logging.info('Precompiled translations not found, regenerating...')
+            updater.regenerate_all()
+        for language in SUPPORTED_LANGUAGES:
+            self.translations[language] = gettext.translation('zordon',
+                                                              localedir=str(locale_dir),
+                                                              languages=[language])
 
+    @staticmethod
+    def normalise_locale(global_locale: str):
+        return global_locale.split('-')[0].lower() if global_locale else global_locale
 
-def get_for_update(update: Update):
-    language_code = update.effective_user.language_code
-    if language_code:
-        language_code = language_code.split('-')[0]
-    if language_code in SUPPORTED_LANGUAGES:
-        return _translations[language_code]
-    return _translations['en']
+    def get(self, locale: str):
+        locale = self.normalise_locale(locale)
+        if locale in SUPPORTED_LANGUAGES:
+            return self.translations[locale]
+        return self.translations[DEFAULT_LANGUAGE]

@@ -1,10 +1,11 @@
-from app import config
-from app.database import connection, updater
+from app.core.configuration import Configuration
+from app.database.connection import DatabaseConnection
+from app.database.migrations import router
 
-
-config.load_user_configuration()
-connection.initialise()
+configuration = Configuration.load()
+connection = DatabaseConnection(configuration)
 
 # First, flush pending migrations, if any.
-updater.run_migrations()
-updater.make_migrations()
+connection.run_migrations()
+
+router.make_migrations(connection.engine)
