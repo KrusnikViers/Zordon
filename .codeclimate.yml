@@ -3,4 +3,4 @@ languages:
 
 exclude_paths:
 - "tests/*"
-- "app/models/migrations/*"
+- "app/database/migrations/versions/*"

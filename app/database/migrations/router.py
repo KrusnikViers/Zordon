@@ -1,34 +1,47 @@
 from datetime import datetime
-import os
 import alembic.config
+import os
 
 from app.core.info import APP_DIR
-from app.database.migrations.engine import ScopedEngine
 
 
-def _in_database_dir(command):
-    def impl(*args, **kwargs):
-        initial_cwd = os.getcwd()
+_scoped_engine = None
+
+
+class MigrationScope:
+    @classmethod
+    def current_engine(cls):
+        return _scoped_engine
+
+    def __init__(self, engine):
+        self._old_engine = _scoped_engine
+        self._old_cwd = os.getcwd()
+        self._engine = engine
+
+    def __enter__(self):
+        global _scoped_engine
+        _scoped_engine = self._engine
         os.chdir(APP_DIR.joinpath('database'))
-        command(*args, **kwargs)
-        os.chdir(initial_cwd)
-    return impl
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        global _scoped_engine
+        _scoped_engine = self._old_engine
+        os.chdir(self._old_cwd)
 
 
-@_in_database_dir
+def _run_command(engine, command: list):
+    with MigrationScope(engine):
+        alembic.config.main(argv=command)
+
+
 def run_migrations(engine):
-    with ScopedEngine(engine):
-        alembic.config.main(argv=['upgrade', 'head'])
+    _run_command(engine, ['upgrade', 'head'])
 
 
-@_in_database_dir
 def make_migrations(engine):
     message = 'auto_' + datetime.now().strftime('%Y%m%d_%H%M%S')
-    with ScopedEngine(engine):
-        alembic.config.main(argv=['revision', '--autogenerate', '-m', message])
+    _run_command(engine, ['revision', '--autogenerate', '-m', message])
 
 
-@_in_database_dir
 def rollback_all(engine):
-    with ScopedEngine(engine):
-        alembic.config.main(argv=['downgrade', 'base'])
+    _run_command(engine, ['downgrade', 'base'])

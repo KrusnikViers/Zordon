@@ -3,7 +3,6 @@ import sys
 
 from app.core.info import APP_DIR
 from app.database.migrations import router
-from app.database.migrations.engine import ScopedEngine
 from tests.base import DatabaseTestCase
 
 
