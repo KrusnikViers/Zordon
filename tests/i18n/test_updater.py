@@ -1,14 +1,15 @@
 from collections import Counter
+from pathlib import Path
 import os
 import shutil
 
 from app.core.info import APP_DIR
 from app.i18n import updater
-from tests.base import TEST_DATA_DIR, BaseTestCase
+from tests.base import BaseTestCase
 
 
 class TestStringsUpdater(BaseTestCase):
-    test_dir = TEST_DATA_DIR.joinpath('i18n')
+    test_dir = Path(os.path.realpath(__file__)).parent.joinpath('data')
 
     def test_default_language(self):
         self.assertIsNotNone(updater.DEFAULT_LANGUAGE)
