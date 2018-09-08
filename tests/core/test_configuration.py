@@ -1,11 +1,10 @@
 from unittest.mock import patch
-from unittest import TestCase
 
 from app.core.configuration import Configuration
-from tests.base import TEST_DATA_DIR
+from tests.base import TEST_DATA_DIR, BaseTestCase
 
 
-class TestConfig(TestCase):
+class TestConfig(BaseTestCase):
     @patch('sys.argv', ['_', '-t', 'test_token', '-w', 'http://test_webhook.url:999', '-d', 'a:b@c.d:1/e'])
     def test_command_line(self):
         config = Configuration.load()

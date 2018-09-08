@@ -1,10 +1,9 @@
-from unittest import TestCase, mock
-
 from app.core.info import APP_DIR
 from app.i18n import translations
+from tests.base import BaseTestCase
 
 
-class TestTranslations(TestCase):
+class TestTranslations(BaseTestCase):
     @staticmethod
     def get_release_translations():
         return translations.Translations(APP_DIR.joinpath('i18n'), APP_DIR)

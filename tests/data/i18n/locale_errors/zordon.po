@@ -1,0 +1,6 @@
+#: source.py:1 source.py:2
+msgid "translatable_string_id"
+msgstr "Некорректный перевод?"
+
+msgid "obsolete_string_id"
+msgstr "Устаревшая строка"

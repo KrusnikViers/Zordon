@@ -1,13 +1,11 @@
 from unittest.mock import MagicMock, patch
-from unittest import TestCase
 
 import app.core.bot
 import app.database.connection
+from tests.base import BaseTestCase, MatcherAny
 
-from tests.base import MatcherAny
 
-
-class TestLaunch(TestCase):
+class TestLaunch(BaseTestCase):
     @patch('app.core.bot.Updater', new=MagicMock())
     @patch('app.core.bot.DatabaseConnection', new=MagicMock())
     def test_polling(self):
