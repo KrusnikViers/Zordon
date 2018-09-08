@@ -1,5 +1,4 @@
 from alembic import context
-from logging.config import fileConfig
 
 from app.database.migrations.engine import get_scoped_engine
 
@@ -8,10 +7,7 @@ from app.database.model import Base
 from app.models.all import *
 
 
-fileConfig(context.config.config_file_name)
 target_metadata = Base.metadata
-
-
 with get_scoped_engine().connect() as connection:
     context.configure(connection=connection, target_metadata=target_metadata)
     with context.begin_transaction():
