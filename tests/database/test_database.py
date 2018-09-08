@@ -3,6 +3,7 @@ import sys
 
 from app.core.info import APP_DIR
 from app.database.migrations import router
+from app.database.migrations.engine import ScopedEngine
 from tests.base import DatabaseTestCase
 
 
@@ -42,3 +43,7 @@ class TestDatabase(DatabaseTestCase):
         commands_sequence = ['upgrade():', 'pass', 'downgrade():', 'pass']
         self.assertEqual(commands_sequence,
                          [command for command in migration_contents if command in commands_sequence])
+
+    def test_complete_upgrade_downgrade(self):
+        router.rollback_all(self.connection.engine)
+        router.run_migrations(self.connection.engine)

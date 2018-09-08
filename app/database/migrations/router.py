@@ -26,3 +26,9 @@ def make_migrations(engine):
     message = 'auto_' + datetime.now().strftime('%Y%m%d_%H%M%S')
     with ScopedEngine(engine):
         alembic.config.main(argv=['revision', '--autogenerate', '-m', message])
+
+
+@_in_database_dir
+def rollback_all(engine):
+    with ScopedEngine(engine):
+        alembic.config.main(argv=['downgrade', 'base'])
