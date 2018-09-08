@@ -35,7 +35,6 @@ class Bot:
         logging.basicConfig(format='%(asctime)s:%(name)s:%(levelname)s - %(message)s', level=logging.INFO)
         self.configuration = Configuration.load()
         self.db = DatabaseConnection(self.configuration)
-        self.db.run_migrations()
         self.translations = Translations(APP_DIR.joinpath('i18n'), APP_DIR)
         self.updater = Updater(token=self.configuration.telegram_bot_token)
         dispatcher.set_handlers(self.updater.dispatcher)

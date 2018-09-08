@@ -21,10 +21,10 @@ class Configuration:
 
         return cls(maybe_get_value('telegram_bot_token'),
                    maybe_get_value('webhook_url'),
-                   cls._parse_database_url(maybe_get_value('database_url')))
+                   cls.parse_database_url(maybe_get_value('database_url')))
 
     @staticmethod
-    def _parse_database_url(raw_url) -> str:
+    def parse_database_url(raw_url) -> str:
         if not raw_url:
             return raw_url
         return 'postgresql+psycopg2://' + raw_url.split('://')[-1]

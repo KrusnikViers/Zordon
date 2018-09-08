@@ -10,6 +10,7 @@ class DatabaseConnection:
     def __init__(self, configuration: Configuration):
         self.engine = create_engine(configuration.database_url)
         self.Session = sessionmaker(engine=self.engine)
+        self.run_migrations()
 
     def run_migrations(self):
         logging.info('Running pending migrations')
