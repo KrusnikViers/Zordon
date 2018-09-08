@@ -32,14 +32,13 @@ class TestStringsUpdater(BaseTestCase):
         shutil.rmtree(locale_dir)
 
     def test_translations_obsolete(self):
-        locale_dir = self.test_dir.joinpath('locale_errors')
+        locale_dir = self.test_dir.joinpath('locale_obsolete')
         self.assertEqual(os.listdir(locale_dir), ['zordon.po'])
         for language in updater.SUPPORTED_LANGUAGES:
             locale_dir.joinpath(language).mkdir(parents=True)
             shutil.copyfile(locale_dir.joinpath('zordon.po'), locale_dir.joinpath(language, 'zordon.po'))
 
-        instance = updater.TranslationsUpdater(self.test_dir.joinpath('locale_errors'),
-                                               self.test_dir.joinpath('source'))
+        instance = updater.TranslationsUpdater(locale_dir, self.test_dir.joinpath('source'))
         self.assertFalse(instance.is_translations_generated())
         self.assertTrue(instance.regenerate_all())
 
