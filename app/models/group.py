@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.database.model import Base
-from app.models.group_members import group_members
+from app.models.relationships import group_members
 
 
 class Group(Base):
