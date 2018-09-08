@@ -29,11 +29,11 @@ class TestDatabase(DatabaseTestCase):
         old_migrations_list = sorted(os.listdir(migrations_dir))
         with PrintSuppressor():
             router.make_migrations(self.connection.engine)
-        new_migrations_list = sorted(os.listdir(migrations_dir))
-        self.assertEqual(old_migrations_list, new_migrations_list[:-1])
+        new_migrations = [file for file in os.listdir(migrations_dir) if file not in old_migrations_list]
+        self.assertEqual(1, len(new_migrations))
 
         # Get migration file contents, removing migration file itself.
-        migration_file_path = str(migrations_dir.joinpath(new_migrations_list[-1]))
+        migration_file_path = str(migrations_dir.joinpath(new_migrations[0]))
         with open(migration_file_path, 'r') as migration_file:
             migration_contents = migration_file.read().replace('\n', ' ').split()
         os.remove(migration_file_path)
