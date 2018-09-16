@@ -1,4 +1,16 @@
-#: handlers/simple.py:8
-msgid "start_message"
-msgstr "Здравствуй, мир!"
+#: handlers/common.py:7
+msgid "greet_known_{user}_in_group"
+msgstr "Привет, {user}! Рад новой встрече :)"
+
+#: handlers/common.py:7
+msgid "greet_{user}_in_group"
+msgstr "Привет, {user}. Рад познакомиться!"
+
+#: handlers/common.py:12
+msgid "help_for_group"
+msgstr "TODO: Implement"
+
+#: handlers/common.py:12
+msgid "help_for_private"
+msgstr "TODO: Implement"
 

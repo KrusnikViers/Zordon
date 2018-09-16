@@ -15,5 +15,5 @@ class User(Base):
     is_mute_enabled = Column(Boolean, nullable=False, default=False)
     locale = Column(String, nullable=True)
 
-    groups = relationship("Groups", secondary=group_members, back_populates='users')
-    activities = relationship("Activities", secondary=activity_participants, back_populates='users')
+    groups = relationship("Group", secondary=group_members, back_populates='users')
+    activities = relationship("Activity", secondary=activity_participants, back_populates='users')

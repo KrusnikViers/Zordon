@@ -12,4 +12,4 @@ class Activity(Base):
     name = Column(String, nullable=False)
     locale = Column(String, nullable=True)
 
-    users = relationship("Group", secondary=activity_participants, back_populates='activities')
+    users = relationship("User", secondary=activity_participants, back_populates='activities')

@@ -1,12 +1,11 @@
-import logging
 from telegram.ext import Updater
+import logging
 
 from app.core.configuration import Configuration
 from app.core.info import APP_DIR
 from app.database.connection import DatabaseConnection
 from app.i18n.translations import Translations
-
-from app.handlers import dispatcher
+from app.handlers.dispatcher import Dispatcher
 
 
 class Bot:
@@ -37,4 +36,4 @@ class Bot:
         self.db = DatabaseConnection(self.configuration)
         self.translations = Translations(APP_DIR.joinpath('i18n'), APP_DIR)
         self.updater = Updater(token=self.configuration.telegram_bot_token)
-        dispatcher.set_handlers(self.updater.dispatcher)
+        self.dispatcher = Dispatcher(self.updater, self.db, self.translations)
