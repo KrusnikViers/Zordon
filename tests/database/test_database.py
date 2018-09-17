@@ -3,6 +3,8 @@ import sys
 
 from app.core.info import APP_DIR
 from app.database.migrations import router
+from app.database.scoped_session import ScopedSession
+from app.models.all import Group
 from tests.base import DatabaseTestCase
 
 
@@ -46,3 +48,16 @@ class TestDatabase(DatabaseTestCase):
     def test_complete_upgrade_downgrade(self):
         router.rollback_all(self.connection.engine)
         router.run_migrations(self.connection.engine)
+
+    def test_session_rollback(self):
+        with self.assertRaises(Exception):
+            with ScopedSession(self.connection) as session:
+                new_group = Group(id=0, name='test')
+                session.add(new_group)
+                self.assertEqual(1, len(session.query(Group).all()))
+                session.flush()
+                raise Exception
+
+        # Make sure, that after exception inside session, session will be rolled back.
+        with ScopedSession(self.connection) as session:
+            self.assertEqual(0, len(session.query(Group).all()))
