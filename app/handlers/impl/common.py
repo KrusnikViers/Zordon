@@ -1,3 +1,4 @@
+from app.core.info import PROJECT_FULL_NAME
 from app.handlers.context import Context
 
 
@@ -9,4 +10,5 @@ def maybe_greet_user(context: Context):
 
 
 def on_help_or_start(context: Context):
-    context.send_response_message(_('help_for_group') if context.group else _('help_for_private'))
+    message_template = _('{project}_help_for_group') if context.group else _('{project}_help_for_private')
+    context.send_response_message(message_template.format(project=PROJECT_FULL_NAME))

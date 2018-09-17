@@ -6,7 +6,7 @@ from app.database.connection import DatabaseConnection
 from app.i18n.translations import Translations
 from app.handlers.context import Context
 
-from app.handlers.impl import common
+from app.handlers.impl import common, user
 
 
 class Dispatcher:
@@ -27,3 +27,4 @@ class Dispatcher:
     def _bind_all(self, updater: Updater):
         dispatcher = updater.dispatcher
         dispatcher.add_handler(CommandHandler(['start', 'help'], self._make_handler(common.on_help_or_start)))
+        dispatcher.add_handler(CommandHandler(['setup', 'menu'], self._make_handler(user.on_menu_request)))

@@ -10,4 +10,4 @@ class Context(ScopedContext):
         super(Context, self).__init__(update, bot, db, translations)
 
     def send_response_message(self, text, **kwargs):
-        self.update.effective_chat.send_response_message(text, **kwargs)
+        self.update.effective_chat.send_message(text, **kwargs)

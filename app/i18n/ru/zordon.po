@@ -1,16 +1,34 @@
-#: handlers/impl/common.py:7
+#: handlers/impl/common.py:8
 msgid "greet_known_{user}_in_group"
 msgstr "Привет, {user}! Рад новой встрече :)"
 
-#: handlers/impl/common.py:7
+#: handlers/impl/common.py:8
 msgid "greet_{user}_in_group"
 msgstr "Привет, {user}. Рад познакомиться!"
 
-#: handlers/impl/common.py:12
-msgid "help_for_group"
-msgstr "TODO: Implement"
+#: handlers/impl/user.py:8
+msgid "language_change_offer"
+msgstr "Сменить язык"
 
-#: handlers/impl/common.py:12
-msgid "help_for_private"
-msgstr "TODO: Implement"
+#: handlers/impl/user.py:8
+msgid "language_set_offer"
+msgstr "Выбрать используемый язык"
+
+#: handlers/impl/user.py:7
+msgid "user_setup_menu"
+msgstr "Приступим!"
+
+#: handlers/impl/common.py:13
+msgid "{project}_help_for_group"
+msgstr ""
+"Вот что я могу сделать для вас:\n"
+"\n"
+"{project}"
+
+#: handlers/impl/common.py:13
+msgid "{project}_help_for_private"
+msgstr ""
+"Вот что я могу сделать для тебя:\n"
+"\n"
+"{project}"
 
