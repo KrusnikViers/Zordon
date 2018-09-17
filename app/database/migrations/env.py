@@ -3,7 +3,7 @@ from alembic import context
 from app.database.migrations import router
 
 # This forces all models to be defined, and therefore to be added in the Base model metadata.
-from app.database.model import Base
+from app.database.base_model import Base
 from app.models.all import *
 
 

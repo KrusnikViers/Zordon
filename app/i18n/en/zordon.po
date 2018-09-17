@@ -1,16 +1,16 @@
-#: handlers/common.py:7
+#: handlers/impl/common.py:7
 msgid "greet_known_{user}_in_group"
 msgstr "Hi, {user}! Glad to see you here :)"
 
-#: handlers/common.py:7
+#: handlers/impl/common.py:7
 msgid "greet_{user}_in_group"
 msgstr "Hi, {user}. Nice to meet you!"
 
-#: handlers/common.py:12
+#: handlers/impl/common.py:12
 msgid "help_for_group"
 msgstr "TODO: Implement"
 
-#: handlers/common.py:12
+#: handlers/impl/common.py:12
 msgid "help_for_private"
 msgstr "TODO: Implement"
 

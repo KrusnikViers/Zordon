@@ -18,11 +18,11 @@ class Bot:
     def run(self):
         self._set_up()
         logging.info('Launching bot: ' + str(self.updater.bot.get_me()))
-        self.start_updater()
+        self._start_updater()
         # This call will lock execution until worker threads are stopped with SIGINT(2), SIGTERM(15) or SIGABRT(6).
         self.updater.idle()
 
-    def start_updater(self):
+    def _start_updater(self):
         if self.configuration.webhook_url:
             logging.info('Webhook mode on {}.'.format(self.configuration.webhook_url))
             self.updater.start_webhook(webhook_url=self.configuration.webhook_url)

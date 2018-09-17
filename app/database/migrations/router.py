@@ -5,27 +5,24 @@ import os
 from app.core.info import APP_DIR
 
 
-_scoped_engine = None
-
-
 class MigrationScope:
+    _scoped_engine = None
+
     @classmethod
     def current_engine(cls):
-        return _scoped_engine
+        return cls._scoped_engine
 
     def __init__(self, engine):
-        self._old_engine = _scoped_engine
+        self._old_engine = MigrationScope._scoped_engine
         self._old_cwd = os.getcwd()
         self._engine = engine
 
     def __enter__(self):
-        global _scoped_engine
-        _scoped_engine = self._engine
+        MigrationScope._scoped_engine = self._engine
         os.chdir(APP_DIR.joinpath('database'))
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        global _scoped_engine
-        _scoped_engine = self._old_engine
+        MigrationScope._scoped_engine = self._old_engine
         os.chdir(self._old_cwd)
 
 

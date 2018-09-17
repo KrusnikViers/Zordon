@@ -6,7 +6,7 @@ from app.database.connection import DatabaseConnection
 from app.i18n.translations import Translations
 from app.handlers.context import Context
 
-from app.handlers import common
+from app.handlers.impl import common
 
 
 class Dispatcher:

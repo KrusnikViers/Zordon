@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, Table
 
-from app.database.model import Base
+from app.database.base_model import Base
 
 
 group_members = Table('group_members', Base.metadata,

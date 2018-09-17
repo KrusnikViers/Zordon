@@ -24,12 +24,6 @@ class Configuration:
                    cls.parse_database_url(maybe_get_value('database_url')))
 
     @staticmethod
-    def parse_database_url(raw_url) -> str:
-        if not raw_url:
-            return raw_url
-        return 'postgresql+psycopg2://' + raw_url.split('://')[-1]
-
-    @staticmethod
     def _get_command_line_arguments() -> argparse.Namespace:
         parser = argparse.ArgumentParser(description='Telegram bot to gather people together.')
         parser.add_argument('--configuration-file', '-c', type=str, default='configuration.json',
@@ -42,6 +36,12 @@ class Configuration:
         parser.add_argument('--database-url', '-d', type=str, dest='database_url',
                             help='Database url (user:password@host:port/database_name)')
         return parser.parse_args()
+
+    @staticmethod
+    def parse_database_url(raw_url) -> str:
+        if not raw_url:
+            return raw_url
+        return 'postgresql+psycopg2://' + raw_url.split('://')[-1]
 
     @staticmethod
     def _get_configuration_file_content(configuration_file_path: str) -> dict:

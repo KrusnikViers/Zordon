@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from app.database.model import Base
+from app.database.base_model import Base
 from app.models.relationships import activity_participants, group_members
 
 
