@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.database.base_model import Base
-from app.models.relationships import activity_participants, group_members
+from app.models.relationships import group_members
 
 
 class User(Base):
@@ -16,4 +16,3 @@ class User(Base):
     locale = Column(String, nullable=True)
 
     groups = relationship("Group", secondary=group_members, back_populates='users')
-    activities = relationship("Activity", secondary=activity_participants, back_populates='users')
