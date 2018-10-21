@@ -7,7 +7,6 @@ from app.models.relationships import group_members
 
 class User(Base):
     __tablename__ = 'users'
-
     id = Column(Integer, primary_key=True)
     login = Column(String, nullable=False)
     name = Column(String, nullable=False)
@@ -16,3 +15,5 @@ class User(Base):
     locale = Column(String, nullable=True)
 
     groups = relationship("Group", secondary=group_members, back_populates='users')
+    requests = relationship("Request")
+    responses = relationship("Response")

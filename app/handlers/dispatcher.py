@@ -27,4 +27,4 @@ class Dispatcher:
     def _bind_all(self, updater: Updater):
         dispatcher = updater.dispatcher
         dispatcher.add_handler(CommandHandler(['start', 'help'], self._make_handler(common.on_help_or_start)))
-        dispatcher.add_handler(CommandHandler(['setup', 'menu'], self._make_handler(user.on_menu_request)))
+        dispatcher.add_handler(CommandHandler(['menu'], self._make_handler(user.on_menu_request)))
