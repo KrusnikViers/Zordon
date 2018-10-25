@@ -6,7 +6,7 @@ import os
 from app.core.configuration import Configuration
 from app.database.connection import DatabaseConnection
 from app.database.scoped_session import ScopedSession
-from app.models.all import Group, User
+from app.models.all import Group, Response, Request, User
 
 
 class MatcherAny:
@@ -46,4 +46,6 @@ class DatabaseTestCase(BaseTestCase):
         super(DatabaseTestCase, self).setUp()
         with ScopedSession(self.connection) as session:
             session.query(User).delete()
+            session.query(Response).delete()
+            session.query(Request).delete()
             session.query(Group).delete()
