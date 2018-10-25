@@ -1,34 +1,72 @@
-#: handlers/impl/common.py:8
-msgid "greet_known_{user}_in_group"
+#: handlers/impl/massive_mentions.py:15
+msgid "all_from_{user}"
+msgstr ""
+
+#: handlers/impl/massive_mentions.py:34
+msgid "call_decline"
+msgstr ""
+
+#: handlers/impl/massive_mentions.py:61
+msgid "call_declined_{users}"
+msgstr ""
+
+#: handlers/impl/massive_mentions.py:26
+msgid "call_from_{user}"
+msgstr ""
+
+#: handlers/impl/massive_mentions.py:34
+msgid "call_join"
+msgstr ""
+
+#: handlers/impl/massive_mentions.py:58
+msgid "call_joined_{users}"
+msgstr ""
+
+#: handlers/impl/massive_mentions.py:24
+msgid "call_with_text_from_{user}"
+msgstr ""
+
+#: handlers/impl/basic.py:18
+msgid "farevell_{user}"
+msgstr ""
+
+#: handlers/impl/basic.py:10
+#, fuzzy
+msgid "greet_known_{user}"
 msgstr "Привет, {user}! Рад новой встрече :)"
 
-#: handlers/impl/common.py:8
-msgid "greet_{user}_in_group"
+#: handlers/impl/basic.py:10
+#, fuzzy
+msgid "greet_{user}"
 msgstr "Привет, {user}. Рад познакомиться!"
 
-#: handlers/impl/user.py:8
-msgid "language_change_offer"
-msgstr "Сменить язык"
+#: handlers/impl/massive_mentions.py:65
+msgid "too_old_request_{user}"
+msgstr ""
 
-#: handlers/impl/user.py:8
-msgid "language_set_offer"
-msgstr "Выбрать используемый язык"
-
-#: handlers/impl/user.py:7
-msgid "user_setup_menu"
-msgstr "Приступим!"
-
-#: handlers/impl/common.py:13
+#: handlers/impl/basic.py:22
 msgid "{project}_help_for_group"
 msgstr ""
 "Вот что я могу сделать для вас:\n"
 "\n"
 "{project}"
 
-#: handlers/impl/common.py:13
+#: handlers/impl/basic.py:22
 msgid "{project}_help_for_private"
 msgstr ""
 "Вот что я могу сделать для тебя:\n"
 "\n"
 "{project}"
+
+#~ msgid "group_only_request"
+#~ msgstr ""
+
+#~ msgid "language_change_offer"
+#~ msgstr "Сменить язык"
+
+#~ msgid "language_set_offer"
+#~ msgstr "Выбрать используемый язык"
+
+#~ msgid "user_setup_menu"
+#~ msgstr "Приступим!"
 
