@@ -29,13 +29,7 @@ class Dispatcher:
         if not Dispatcher._should_process(update):
             return
         with Context(update, bot, self.db, self.translations) as context:
-            if context.sender:
-                basic.maybe_greet_user(context, *context.sender)
-            if context.users_joined:
-                for user in context.users_joined:
-                    basic.maybe_greet_user(context, *user)
-            if context.user_left:
-                basic.farewell_left_user(context)
+            basic.process_users_and_groups(context)
             # Empty functions are allowed for informational messages, that should be processed by context only.
             if handler_function:
                 handler_function(context)

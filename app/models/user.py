@@ -12,6 +12,7 @@ class User(Base):
     name = Column(String, nullable=False)
 
     is_mute_enabled = Column(Boolean, nullable=False, default=False)
+    is_known = Column(Boolean, nullable=False, default=False)
     locale = Column(String, nullable=True)
 
     groups = relationship("Group", secondary=group_members, back_populates='users')

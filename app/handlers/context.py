@@ -12,9 +12,11 @@ class Context(ScopedSession):
         super(Context, self).__init__(db)
         self.update = update
         self.bot = bot
-        self.sender, self.is_new_user = self._maybe_get_user_from_update()
-        self.group, self.is_new_group = self._maybe_get_group_from_update()
+        self.sender = self._maybe_get_user_from_update()
         self.users_joined, self.user_left = self._maybe_get_moved_users_from_update()
+        if self.sender and self.sender.is_known:
+            self.users_joined.append(self.sender)
+        self.group = self._maybe_get_group_from_update()
         self._translation = self._get_translation(translations)
 
     def send_response_message(self, text, **kwargs):
@@ -28,15 +30,15 @@ class Context(ScopedSession):
     def __exit__(self, exc_type, exc_val, exc_tb):
         super(Context, self).__exit__(exc_type, exc_val, exc_tb)
 
-    def _maybe_get_user_from_update(self) -> (User, bool):
+    def _maybe_get_user_from_update(self) -> User:
         user = self.update.effective_user
         if not user:
-            return None, False
+            return None
         return get_with_update(self.session, User, user.id, login=user.username, name=user.full_name)
 
-    def _maybe_get_group_from_update(self) -> (Group, bool):
+    def _maybe_get_group_from_update(self) -> Group:
         if self.update.effective_chat.type == Chat.PRIVATE:
-            return None, False
+            return None
         chat = self.update.effective_chat
         return get_with_update(self.session, Group, chat.id, name=chat.title)
 
