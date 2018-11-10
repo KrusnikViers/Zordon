@@ -1,63 +1,65 @@
-#: handlers/impl/massive_mentions.py:15
+#: handlers/impl/massive_mentions.py:10
 msgid "all_from_{user}"
-msgstr ""
+msgstr "{user} asks your attention!"
 
-#: handlers/impl/massive_mentions.py:34
+#: handlers/impl/massive_mentions.py:44
 msgid "call_decline"
-msgstr ""
+msgstr "Decline"
 
-#: handlers/impl/massive_mentions.py:61
+#: handlers/impl/massive_mentions.py:36
 msgid "call_declined_{users}"
-msgstr ""
+msgstr "Declined: {users}"
 
-#: handlers/impl/massive_mentions.py:26
+#: handlers/impl/massive_mentions.py:52
 msgid "call_from_{user}"
-msgstr ""
+msgstr "{user} wants you to join him!"
+
+#: handlers/impl/massive_mentions.py:44
+msgid "call_join"
+msgstr "Join"
 
 #: handlers/impl/massive_mentions.py:34
-msgid "call_join"
-msgstr ""
-
-#: handlers/impl/massive_mentions.py:58
 msgid "call_joined_{users}"
-msgstr ""
+msgstr "Accepted: {users}"
 
-#: handlers/impl/massive_mentions.py:24
+#: handlers/impl/massive_mentions.py:38
+msgid "call_not_answered_{users}"
+msgstr "Not answered: {users}"
+
+#: handlers/impl/massive_mentions.py:50
 msgid "call_with_text_from_{user}"
-msgstr ""
+msgstr "(call from {user})"
 
-#: handlers/impl/basic.py:18
-msgid "farevell_{user}"
-msgstr ""
-
-#: handlers/impl/basic.py:10
+#: handlers/impl/basic.py:17
 #, fuzzy
+msgid "farewell_{user}"
+msgstr "I will be missing {user}, you know."
+
+#: handlers/impl/basic.py:9
 msgid "greet_known_{user}"
 msgstr "Hi, {user}! Glad to see you here :)"
 
-#: handlers/impl/basic.py:10
-#, fuzzy
-msgid "greet_{user}"
+#: handlers/impl/basic.py:9
+msgid "greet_new_{user}"
 msgstr "Hi, {user}. Nice to meet you!"
 
-#: handlers/impl/massive_mentions.py:65
+#: handlers/impl/massive_mentions.py:83
 msgid "too_old_request_{user}"
-msgstr ""
+msgstr "Sorry, {user}, but that request is too old to be answered. You can start new one instead!"
 
-#: handlers/impl/basic.py:22
+#: handlers/impl/basic.py:29
 msgid "{project}_help_for_group"
 msgstr ""
-"Here is what I can do for you:\n"
+"{project} at your service!\n"
 "\n"
-"{project}"
+"Here is what I can help you with:\n"
+"/all - call for everyone's attention\n"
+"/call - invite for everyone to join you\n"
+"/call <text> - same invite with custom text as a title"
 
-#: handlers/impl/basic.py:22
+#: handlers/impl/basic.py:29
 msgid "{project}_help_for_private"
 msgstr ""
-"Here is what I can do for you:\n"
-"\n"
-"{project}"
-
-#~ msgid "group_only_request"
-#~ msgstr ""
+"{project} here!\n"
+"Sorry, but for now I have no functionality in private chats. Yet I will try to learn something new really soon!"
 

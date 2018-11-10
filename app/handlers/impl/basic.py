@@ -8,7 +8,7 @@ def _maybe_greet_user(context: Context, user: User):
         user.groups.append(context.group)
         message_template = _('greet_known_{user}') if user.is_known else _('greet_new_{user}')
         user.is_known = True
-        context.send_response_message(message_template.format(user.name))
+        context.send_response_message(message_template.format(user=user.name))
 
 
 def _maybe_farewell_user(context: Context, user: User):
@@ -17,10 +17,8 @@ def _maybe_farewell_user(context: Context, user: User):
         context.send_response_message(_('farewell_{user}').format(user.name))
 
 
-def process_users_and_groups(context: Context):
-    # TODO: Should bot provide some help when it joins group?
-    if not context.group:
-        return
+def process_group_changes(context: Context):
+    _maybe_greet_user(context, context.sender)
     if context.users_joined:
         for user in context.users_joined:
             _maybe_greet_user(context, user)

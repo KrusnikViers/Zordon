@@ -1,72 +1,64 @@
-#: handlers/impl/massive_mentions.py:15
+#: handlers/impl/massive_mentions.py:10
 msgid "all_from_{user}"
-msgstr ""
+msgstr "{user} просит минутку внимания!"
 
-#: handlers/impl/massive_mentions.py:34
+#: handlers/impl/massive_mentions.py:44
 msgid "call_decline"
-msgstr ""
+msgstr "Отказаться"
 
-#: handlers/impl/massive_mentions.py:61
+#: handlers/impl/massive_mentions.py:36
 msgid "call_declined_{users}"
-msgstr ""
+msgstr "Отказались: {users}"
 
-#: handlers/impl/massive_mentions.py:26
+#: handlers/impl/massive_mentions.py:52
 msgid "call_from_{user}"
-msgstr ""
+msgstr "{user} приглашает присоединиться к нему!"
+
+#: handlers/impl/massive_mentions.py:44
+msgid "call_join"
+msgstr "Согласиться"
 
 #: handlers/impl/massive_mentions.py:34
-msgid "call_join"
-msgstr ""
-
-#: handlers/impl/massive_mentions.py:58
 msgid "call_joined_{users}"
-msgstr ""
+msgstr "Согласны: {users}"
 
-#: handlers/impl/massive_mentions.py:24
+#: handlers/impl/massive_mentions.py:38
+msgid "call_not_answered_{users}"
+msgstr "Не ответили: {users}"
+
+#: handlers/impl/massive_mentions.py:50
 msgid "call_with_text_from_{user}"
-msgstr ""
+msgstr "(призыв от {user})"
 
-#: handlers/impl/basic.py:18
-msgid "farevell_{user}"
-msgstr ""
+#: handlers/impl/basic.py:17
+msgid "farewell_{user}"
+msgstr "Я буду скучать, {user}."
 
-#: handlers/impl/basic.py:10
-#, fuzzy
+#: handlers/impl/basic.py:9
 msgid "greet_known_{user}"
 msgstr "Привет, {user}! Рад новой встрече :)"
 
-#: handlers/impl/basic.py:10
-#, fuzzy
-msgid "greet_{user}"
-msgstr "Привет, {user}. Рад познакомиться!"
+#: handlers/impl/basic.py:9
+msgid "greet_new_{user}"
+msgstr "Привет, {user}. Приятно познакомиться!"
 
-#: handlers/impl/massive_mentions.py:65
+#: handlers/impl/massive_mentions.py:83
 msgid "too_old_request_{user}"
-msgstr ""
+msgstr "Прости, {user}, но на этот запрос уже поздно отвечать. Но можно сделать новый!"
 
-#: handlers/impl/basic.py:22
+#: handlers/impl/basic.py:29
 msgid "{project}_help_for_group"
 msgstr ""
-"Вот что я могу сделать для вас:\n"
+"{project} к вашим услугам!\n"
 "\n"
-"{project}"
+"Вот чем я могу быть полезен:\n"
+"/all - привлечь внимание всех участников чата\n"
+"/call - приглашение всем собраться вместе\n"
+"/call <text> - такое же приглашение, но с вашим заголовком"
 
-#: handlers/impl/basic.py:22
+#: handlers/impl/basic.py:29
 msgid "{project}_help_for_private"
 msgstr ""
-"Вот что я могу сделать для тебя:\n"
-"\n"
-"{project}"
-
-#~ msgid "group_only_request"
-#~ msgstr ""
-
-#~ msgid "language_change_offer"
-#~ msgstr "Сменить язык"
-
-#~ msgid "language_set_offer"
-#~ msgstr "Выбрать используемый язык"
-
-#~ msgid "user_setup_menu"
-#~ msgstr "Приступим!"
+"{project} у аппарата!\n"
+"К сожалению, сейчас я ничем не могу быть полезен в личных чатах. Но я попробую научиться чему-нибудь новому как можно скорее!"
 

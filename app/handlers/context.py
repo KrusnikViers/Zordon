@@ -14,8 +14,6 @@ class Context(ScopedSession):
         self.bot = bot
         self.sender = self._maybe_get_user_from_update()
         self.users_joined, self.user_left = self._maybe_get_moved_users_from_update()
-        if self.sender and self.sender.is_known:
-            self.users_joined.append(self.sender)
         self.group = self._maybe_get_group_from_update()
         self._translation = self._get_translation(translations)
 
@@ -34,7 +32,7 @@ class Context(ScopedSession):
         user = self.update.effective_user
         if not user:
             return None
-        return get_with_update(self.session, User, user.id, login=user.username, name=user.full_name)
+        return get_with_update(self.session, User, user.id, login='@' + user.username, name=user.full_name)
 
     def _maybe_get_group_from_update(self) -> Group:
         if self.update.effective_chat.type == Chat.PRIVATE:
