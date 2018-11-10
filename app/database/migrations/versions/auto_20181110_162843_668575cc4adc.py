@@ -1,9 +1,9 @@
-# 2018-10-21 18:01:45.064237
+# 2018-11-10 16:28:43.306250
 from alembic import op
 import sqlalchemy as sa
 
 
-revision = 'bbe005939ca9'
+revision = '668575cc4adc'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,7 +21,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('login', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('is_mute_enabled', sa.Boolean(), nullable=False),
+    sa.Column('is_mute_enabled', sa.Boolean(), nullable=False, default=False),
+    sa.Column('is_known', sa.Boolean(), nullable=False, default=False),
     sa.Column('locale', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
