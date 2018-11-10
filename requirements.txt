@@ -1,4 +1,4 @@
-python-telegram-bot == 11.1.0 # Python API for Telegram Bot
+python-telegram-bot[socks] == 11.1.0 # Python API for Telegram Bot
 
 babel == 2.6.0 # Localization library with gettext support
 

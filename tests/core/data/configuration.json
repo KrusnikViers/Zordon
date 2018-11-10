@@ -1,5 +1,8 @@
 {
   "telegram_bot_token": "bot_token:for_test",
   "webhook_url": "http://zordon.bot:11",
-  "database_url": "schema://json:database@test.com:111/db_name"
+  "database_url": "schema://json:database@test.com:111/db_name",
+  "proxy_url": "socks5://test.com",
+  "proxy_user": "socks5_user",
+  "proxy_password": "socks5_password"
 }
