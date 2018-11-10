@@ -1,32 +1,32 @@
-#: handlers/impl/massive_mentions.py:10
+#: handlers/impl/broadcasts.py:17
 msgid "all_from_{user}"
 msgstr "{user} просит минутку внимания!"
 
-#: handlers/impl/massive_mentions.py:44
+#: handlers/impl/broadcasts.py:29
 msgid "call_decline"
 msgstr "Отказаться"
 
-#: handlers/impl/massive_mentions.py:36
+#: handlers/impl/broadcasts.py:48
 msgid "call_declined_{users}"
 msgstr "Отказались: {users}"
 
-#: handlers/impl/massive_mentions.py:52
+#: handlers/impl/broadcasts.py:64
 msgid "call_from_{user}"
 msgstr "{user} приглашает присоединиться к нему!"
 
-#: handlers/impl/massive_mentions.py:44
+#: handlers/impl/broadcasts.py:29
 msgid "call_join"
 msgstr "Согласиться"
 
-#: handlers/impl/massive_mentions.py:34
+#: handlers/impl/broadcasts.py:46
 msgid "call_joined_{users}"
 msgstr "Согласны: {users}"
 
-#: handlers/impl/massive_mentions.py:38
+#: handlers/impl/broadcasts.py:50
 msgid "call_not_answered_{users}"
 msgstr "Не ответили: {users}"
 
-#: handlers/impl/massive_mentions.py:50
+#: handlers/impl/broadcasts.py:62
 msgid "call_with_text_from_{user}"
 msgstr "(призыв от {user})"
 
@@ -42,11 +42,15 @@ msgstr "Привет, {user}! Рад новой встрече :)"
 msgid "greet_new_{user}"
 msgstr "Привет, {user}. Приятно познакомиться!"
 
-#: handlers/impl/massive_mentions.py:83
-msgid "too_old_request_{user}"
-msgstr "Прости, {user}, но на этот запрос уже поздно отвечать. Но можно сделать новый!"
+#: handlers/impl/broadcasts.py:15 handlers/impl/broadcasts.py:58
+msgid "no_users_for_broadcast_message"
+msgstr "Сейчас тебя никто не услышит. Пугающе звучит, верно?"
 
-#: handlers/impl/basic.py:29
+#: handlers/impl/broadcasts.py:97
+msgid "too_old_request_{user}"
+msgstr "{user}, к сожалению, этот запрос уже устарел."
+
+#: handlers/impl/basic.py:30
 msgid "{project}_help_for_group"
 msgstr ""
 "{project} к вашим услугам!\n"
@@ -56,7 +60,7 @@ msgstr ""
 "/call - приглашение всем собраться вместе\n"
 "/call <text> - такое же приглашение, но с вашим заголовком"
 
-#: handlers/impl/basic.py:29
+#: handlers/impl/basic.py:30
 msgid "{project}_help_for_private"
 msgstr ""
 "{project} у аппарата!\n"

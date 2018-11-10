@@ -1,37 +1,36 @@
-#: handlers/impl/massive_mentions.py:10
+#: handlers/impl/broadcasts.py:17
 msgid "all_from_{user}"
 msgstr "{user} asks your attention!"
 
-#: handlers/impl/massive_mentions.py:44
+#: handlers/impl/broadcasts.py:29
 msgid "call_decline"
 msgstr "Decline"
 
-#: handlers/impl/massive_mentions.py:36
+#: handlers/impl/broadcasts.py:48
 msgid "call_declined_{users}"
 msgstr "Declined: {users}"
 
-#: handlers/impl/massive_mentions.py:52
+#: handlers/impl/broadcasts.py:64
 msgid "call_from_{user}"
 msgstr "{user} wants you to join him!"
 
-#: handlers/impl/massive_mentions.py:44
+#: handlers/impl/broadcasts.py:29
 msgid "call_join"
 msgstr "Join"
 
-#: handlers/impl/massive_mentions.py:34
+#: handlers/impl/broadcasts.py:46
 msgid "call_joined_{users}"
 msgstr "Accepted: {users}"
 
-#: handlers/impl/massive_mentions.py:38
+#: handlers/impl/broadcasts.py:50
 msgid "call_not_answered_{users}"
 msgstr "Not answered: {users}"
 
-#: handlers/impl/massive_mentions.py:50
+#: handlers/impl/broadcasts.py:62
 msgid "call_with_text_from_{user}"
 msgstr "(call from {user})"
 
 #: handlers/impl/basic.py:17
-#, fuzzy
 msgid "farewell_{user}"
 msgstr "I will be missing {user}, you know."
 
@@ -43,11 +42,15 @@ msgstr "Hi, {user}! Glad to see you here :)"
 msgid "greet_new_{user}"
 msgstr "Hi, {user}. Nice to meet you!"
 
-#: handlers/impl/massive_mentions.py:83
-msgid "too_old_request_{user}"
-msgstr "Sorry, {user}, but that request is too old to be answered. You can start new one instead!"
+#: handlers/impl/broadcasts.py:15 handlers/impl/broadcasts.py:58
+msgid "no_users_for_broadcast_message"
+msgstr "Nobody can hear you right now. Sounds scary, huh?"
 
-#: handlers/impl/basic.py:29
+#: handlers/impl/broadcasts.py:97
+msgid "too_old_request_{user}"
+msgstr "Sorry, {user}, but this request is not valid any more."
+
+#: handlers/impl/basic.py:30
 msgid "{project}_help_for_group"
 msgstr ""
 "{project} at your service!\n"
@@ -57,7 +60,7 @@ msgstr ""
 "/call - invite for everyone to join you\n"
 "/call <text> - same invite with custom text as a title"
 
-#: handlers/impl/basic.py:29
+#: handlers/impl/basic.py:30
 msgid "{project}_help_for_private"
 msgstr ""
 "{project} here!\n"

@@ -14,7 +14,7 @@ def _maybe_greet_user(context: Context, user: User):
 def _maybe_farewell_user(context: Context, user: User):
     if context.group in user.groups:
         user.groups.remove(context.group)
-        context.send_response_message(_('farewell_{user}').format(user.name))
+        context.send_response_message(_('farewell_{user}').format(user=user.login_if_exists()))
 
 
 def process_group_changes(context: Context):

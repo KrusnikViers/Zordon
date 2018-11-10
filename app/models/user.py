@@ -8,7 +8,7 @@ from app.models.relationships import group_members
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    login = Column(String, nullable=False)
+    login = Column(String)
     name = Column(String, nullable=False)
 
     is_mute_enabled = Column(Boolean, nullable=False, default=False)
@@ -18,3 +18,6 @@ class User(Base):
     groups = relationship("Group", secondary=group_members, back_populates='users')
     requests = relationship("Request")
     responses = relationship("Response")
+
+    def login_if_exists(self):
+        return '@' + self.login if self.login else self.name

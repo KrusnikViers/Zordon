@@ -1,4 +1,4 @@
-from telegram import Bot, Chat, Update
+from telegram import Bot, Chat, Message, Update
 
 from app.i18n.translations import Translations
 from app.database.connection import DatabaseConnection
@@ -17,8 +17,8 @@ class Context(ScopedSession):
         self.group = self._maybe_get_group_from_update()
         self._translation = self._get_translation(translations)
 
-    def send_response_message(self, text, **kwargs):
-        self.update.effective_chat.send_message(text, **kwargs)
+    def send_response_message(self, text, **kwargs) -> Message:
+        return self.update.effective_chat.send_message(text, **kwargs)
 
     def __enter__(self):
         super(Context, self).__enter__()
@@ -26,13 +26,15 @@ class Context(ScopedSession):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.update.callback_query:
+            self.update.callback_query.answer()
         super(Context, self).__exit__(exc_type, exc_val, exc_tb)
 
     def _maybe_get_user_from_update(self) -> User:
         user = self.update.effective_user
         if not user:
             return None
-        return get_with_update(self.session, User, user.id, login='@' + user.username, name=user.full_name)
+        return get_with_update(self.session, User, user.id, login=user.username, name=user.full_name)
 
     def _maybe_get_group_from_update(self) -> Group:
         if self.update.effective_chat.type == Chat.PRIVATE:
@@ -41,6 +43,8 @@ class Context(ScopedSession):
         return get_with_update(self.session, Group, chat.id, name=chat.title)
 
     def _maybe_get_moved_users_from_update(self) -> (list, User):
+        if not self.update.message:
+            return [], None
         users_joined = []
         user_left = None
         if self.update.message.new_chat_members:

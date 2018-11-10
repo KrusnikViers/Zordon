@@ -1,5 +1,5 @@
 from telegram import Bot, Chat, Update
-from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler, Updater
+from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler, TypeHandler, Updater
 from telegram.ext.filters import Filters
 import functools
 
@@ -9,7 +9,7 @@ from app.handlers.context import Context
 from app.handlers.inline_menu import InlineMenu
 from app.i18n.translations import Translations
 
-from app.handlers.impl import basic, massive_mentions
+from app.handlers.impl import basic, broadcasts
 
 
 class Dispatcher:
@@ -38,16 +38,15 @@ class Dispatcher:
                            self._make_handler([ChatType.PRIVATE, ChatType.GROUP], basic.on_help_or_start)),
 
             CommandHandler(['all'],
-                           self._make_handler([ChatType.GROUP], massive_mentions.on_all_request)),
+                           self._make_handler([ChatType.GROUP], broadcasts.on_all_request)),
             CommandHandler(['call'],
-                           self._make_handler([ChatType.GROUP], massive_mentions.on_call_request)),
-            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], massive_mentions.on_call_join),
-                                 pattern=InlineMenu.pattern('call_join', True)),
-            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], massive_mentions.on_call_decline),
-                                 pattern=InlineMenu.pattern('call_decline', True)),
+                           self._make_handler([ChatType.GROUP], broadcasts.on_call_request)),
+            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], broadcasts.on_call_join),
+                                 pattern=InlineMenu.pattern('call_join', False)),
+            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], broadcasts.on_call_decline),
+                                 pattern=InlineMenu.pattern('call_decline', False)),
 
-            MessageHandler(Filters.status_update.new_chat_members, self._make_handler([ChatType.GROUP], None)),
-            MessageHandler(Filters.status_update.left_chat_member, self._make_handler([ChatType.GROUP], None)),
+            MessageHandler(Filters.all, self._make_handler([ChatType.GROUP], None)),
         ]
 
         for handler in handlers:

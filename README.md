@@ -9,6 +9,9 @@
 
 To run bot, run `python run_bot.py`. Tests can be run via `python -m unittests` in root directory.
 
+### BotFather
+It is important to disable privacy mode in bot settings - otherwise bot will notice unknown group users only by system messages and  direct /commands.
+
 ### Dependencies:
 
 * Python 3.7 or newer

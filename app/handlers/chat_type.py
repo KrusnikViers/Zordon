@@ -7,6 +7,8 @@ class ChatType:
     CALLBACK_GROUP = 3
     CALLBACK_PRIVATE = 4
 
+    SUPPORTED = [Chat.PRIVATE, Chat.GROUP, Chat.SUPERGROUP]
+
     @staticmethod
     def is_valid(chat_filters: list, update: Update) -> bool:
         if not update.effective_chat:
