@@ -6,7 +6,7 @@ from app.database.migrations import router
 from app.database.scoped_session import ScopedSession
 from app.database.util import get_with_update
 from app.models.all import Group
-from tests.base import DatabaseTestCase
+from tests.base import InBotTestCase
 
 
 class PrintSuppressor:
@@ -19,7 +19,7 @@ class PrintSuppressor:
         sys.stdout = self._original_stdout
 
 
-class TestDatabase(DatabaseTestCase):
+class TestInBot(InBotTestCase):
     def test_connection(self):
         self.assertIsNotNone(self.connection.engine)
         with self.connection.engine.connect():

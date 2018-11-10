@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, PropertyMock
+import builtins
 import logging
 import os
 
@@ -14,17 +14,6 @@ class MatcherAny:
         return True
 
 
-def mock_effective_user(update, tg_id, username, full_name):
-    type(update.effective_user).id = PropertyMock(return_value=tg_id)
-    type(update.effective_user).full_name = PropertyMock(return_value=full_name)
-    type(update.effective_user).username = PropertyMock(return_value=username)
-
-
-def mock_effective_chat(update, tg_id, title):
-    type(update.effective_user).id = PropertyMock(return_value=tg_id)
-    type(update.effective_user).title = PropertyMock(return_value=title)
-
-
 class BaseTestCase(TestCase):
     def setUp(self):
         super(BaseTestCase, self).setUp()
@@ -33,9 +22,9 @@ class BaseTestCase(TestCase):
         logging.disable(logging.ERROR)
 
 
-class DatabaseTestCase(BaseTestCase):
+class InBotTestCase(BaseTestCase):
     def __init__(self, *args, **kwargs):
-        super(DatabaseTestCase, self).__init__(*args, **kwargs)
+        super(InBotTestCase, self).__init__(*args, **kwargs)
 
         self.configuration = Configuration.load()
         if 'CI_DATABASE' in os.environ:
@@ -43,9 +32,14 @@ class DatabaseTestCase(BaseTestCase):
         self.connection = DatabaseConnection(self.configuration)
 
     def setUp(self):
-        super(DatabaseTestCase, self).setUp()
+        super(InBotTestCase, self).setUp()
         with ScopedSession(self.connection) as session:
             session.query(User).delete()
             session.query(Response).delete()
             session.query(Request).delete()
             session.query(Group).delete()
+
+        # Mock translation function, so that localized strings will be returned as their identifiers.
+        # This will be overriden in real translation setup, if needed.
+        if not getattr(builtins, '_', None):
+            builtins._ = lambda x: x
