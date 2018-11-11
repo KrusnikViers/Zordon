@@ -45,11 +45,20 @@ def _message_for_call(context: Context, request: Request):
     if joined:
         message += '\n' + _('call_joined_{users}').format(users=', '.join([user.login_if_exists() for user in joined]))
     if declined:
-        message += '\n' + _('call_declined_{users}').format(users=', '.join([user.login_if_exists() for user in declined]))
+        message += '\n' + _('call_declined_{users}').format(
+            users=', '.join([user.login_if_exists() for user in declined]))
     if rest:
         message += '\n' + _('call_not_answered_{users}').format(
             users=', '.join([user.login_if_exists() for user in rest]))
     return message
+
+
+def _get_user_title(context: Context) -> str:
+    call_text = context.update.message.text
+    divider_index = call_text.find(' ')
+    if divider_index == -1:
+        return ''
+    return call_text[divider_index + 1:].strip()
 
 
 def on_call_request(context: Context):
@@ -57,7 +66,7 @@ def on_call_request(context: Context):
     if not available_users:
         context.send_response_message(text=_('no_users_for_broadcast_message'))
         return
-    user_message = context.update.message.text[context.update.message.text.find(' ') + 1:].strip()
+    user_message = _get_user_title(context)
     if user_message:
         title = user_message + '\n' + _('call_with_text_from_{user}').format(user=context.sender.name)
     else:
