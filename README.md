@@ -7,6 +7,10 @@
 [![Coverage - Coveralls](https://coveralls.io/repos/github/KrusnikViers/Zordon/badge.svg)](https://coveralls.io/github/KrusnikViers/Zordon?branch=master)
 [![Code Climate](https://codeclimate.com/github/KrusnikViers/Zordon/badges/gpa.svg)](https://codeclimate.com/github/KrusnikViers/Zordon)
 
+[![Docker Build Status](https://img.shields.io/docker/build/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
+[![MicroBadger Size](https://images.microbadger.com/badges/image/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
+
 To run bot, run `python run_bot.py`. Tests can be run via `python -m unittests` in root directory.
 
 ### BotFather
