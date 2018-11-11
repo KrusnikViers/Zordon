@@ -10,7 +10,7 @@ msgstr "Decline"
 msgid "call_declined_{users}"
 msgstr "Declined: {users}"
 
-#: handlers/impl/broadcasts.py:64
+#: handlers/impl/broadcasts.py:73
 msgid "call_from_{user}"
 msgstr "{user} wants you to join him!"
 
@@ -22,11 +22,11 @@ msgstr "Join"
 msgid "call_joined_{users}"
 msgstr "Accepted: {users}"
 
-#: handlers/impl/broadcasts.py:50
+#: handlers/impl/broadcasts.py:51
 msgid "call_not_answered_{users}"
 msgstr "Not answered: {users}"
 
-#: handlers/impl/broadcasts.py:62
+#: handlers/impl/broadcasts.py:71
 msgid "call_with_text_from_{user}"
 msgstr "(call from {user})"
 
@@ -42,11 +42,11 @@ msgstr "Hi, {user}! Glad to see you here :)"
 msgid "greet_new_{user}"
 msgstr "Hi, {user}. Nice to meet you!"
 
-#: handlers/impl/broadcasts.py:15 handlers/impl/broadcasts.py:58
+#: handlers/impl/broadcasts.py:15 handlers/impl/broadcasts.py:67
 msgid "no_users_for_broadcast_message"
 msgstr "Nobody can hear you right now. Sounds scary, huh?"
 
-#: handlers/impl/broadcasts.py:97
+#: handlers/impl/broadcasts.py:106
 msgid "too_old_request_{user}"
 msgstr "Sorry, {user}, but this request is not valid any more."
 
