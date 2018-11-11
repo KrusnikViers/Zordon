@@ -2,6 +2,7 @@ import os
 import pathlib
 
 
+# RELEASE-UPDATE
 APP_DIR = pathlib.Path(os.path.realpath(__file__)).parent.parent
 PROJECT_NAME = 'Zordon'
 PROJECT_VERSION = '3.0.0'
