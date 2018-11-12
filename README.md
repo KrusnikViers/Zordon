@@ -11,10 +11,22 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
 [![MicroBadger Size](https://images.microbadger.com/badges/image/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
 
-To run bot, run `python run_bot.py`. Tests can be run via `python -m unittests` in root directory.
+
+## How to run
+
+To run bot in Docker container, use command below: 
+
+`docker run --restart always --net=<internal network with postgresql> --name zordon -v <path to configuration>:/configuration.json -d viers/zordon`
+
+Bot can be started without docker by `python scripts/run_bot.py`. Parameters can be configured via the command line or in the configuration json file.
+
+Tests can be run with `python -m unittests` in root directory.
 
 ### BotFather
-It is important to disable privacy mode in bot settings - otherwise bot will notice unknown group users only by system messages and  direct /commands.
+Check bot settings with BotFather:
+* Group mode should be enabled
+* Inline mode should be disabled
+* Group privacy mode should be disabled
 
 ### Dependencies:
 
