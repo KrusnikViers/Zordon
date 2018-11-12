@@ -1,6 +1,6 @@
 #: handlers/impl/broadcasts.py:17
 msgid "all_from_{user}"
-msgstr "{user} просит минутку внимания!"
+msgstr "{user} просит вашего внимания!"
 
 #: handlers/impl/broadcasts.py:29
 msgid "call_decline"
@@ -12,7 +12,7 @@ msgstr "Отказались: {users}"
 
 #: handlers/impl/broadcasts.py:73
 msgid "call_from_{user}"
-msgstr "{user} приглашает присоединиться к нему!"
+msgstr "{user} приглашает всех присоединиться!"
 
 #: handlers/impl/broadcasts.py:29
 msgid "call_join"
@@ -20,7 +20,7 @@ msgstr "Согласиться"
 
 #: handlers/impl/broadcasts.py:46
 msgid "call_joined_{users}"
-msgstr "Согласны: {users}"
+msgstr "Присоединились: {users}"
 
 #: handlers/impl/broadcasts.py:51
 msgid "call_not_answered_{users}"
@@ -28,7 +28,7 @@ msgstr "Не ответили: {users}"
 
 #: handlers/impl/broadcasts.py:71
 msgid "call_with_text_from_{user}"
-msgstr "(призыв от {user})"
+msgstr "(приглашение от {user})"
 
 #: handlers/impl/basic.py:17
 msgid "farewell_{user}"
@@ -36,7 +36,7 @@ msgstr "Я буду скучать, {user}."
 
 #: handlers/impl/basic.py:9
 msgid "greet_known_{user}"
-msgstr "Привет, {user}! Рад новой встрече :)"
+msgstr "Привет, {user}! Рад снова встретиться :)"
 
 #: handlers/impl/basic.py:9
 msgid "greet_new_{user}"
@@ -44,25 +44,24 @@ msgstr "Привет, {user}. Приятно познакомиться!"
 
 #: handlers/impl/broadcasts.py:15 handlers/impl/broadcasts.py:67
 msgid "no_users_for_broadcast_message"
-msgstr "Сейчас тебя никто не услышит. Пугающе звучит, верно?"
+msgstr "Сейчас некому ответить на призыв. Возможно, позднее?"
 
 #: handlers/impl/broadcasts.py:106
 msgid "too_old_request_{user}"
-msgstr "{user}, к сожалению, этот запрос уже устарел."
+msgstr "{user}, к сожалению, этот запрос уже не может быть использован."
 
 #: handlers/impl/basic.py:30
 msgid "{project}_help_for_group"
 msgstr ""
-"{project} к вашим услугам!\n"
+"{project} - к вашим услугам!\n"
 "\n"
-"Вот чем я могу быть полезен:\n"
-"/all - привлечь внимание всех участников чата\n"
-"/call - приглашение всем собраться вместе\n"
-"/call <text> - такое же приглашение, но с вашим заголовком"
+"/all - привлечь внимание участников чата\n"
+"/call - приглашение всем собраться\n"
+"/call |text| - приглашение собраться с заголовком |text|"
 
 #: handlers/impl/basic.py:30
 msgid "{project}_help_for_private"
 msgstr ""
-"{project} у аппарата!\n"
+"{project} - к вашим услугам!\n"
 "К сожалению, сейчас я ничем не могу быть полезен в личных чатах. Но я попробую научиться чему-нибудь новому как можно скорее!"
 
