@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-export PYTHONPATH="$PYTHONPATH:/zordon"
-python3 /zordon/scripts/run_bot.py --configuration-file=/configuration.json
+export PYTHONPATH="$PYTHONPATH:/"
+python3 /scripts/run_bot.py --configuration-file=/configuration.json
