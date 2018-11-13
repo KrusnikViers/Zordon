@@ -33,6 +33,27 @@ class TestBasicHandlers(InBotTestCase):
         context.send_response_message.assert_any_call('farewell_Leaving one')
         self.assertEqual(3, context.send_response_message.call_count)
 
+    def test_huge_ids(self):
+        huge_id = 1 << 62
+
+        with ScopedSession(self.connection) as session:
+            group = Group(id=huge_id, name='test')
+            session.add(group)
+            new_user = User(id=huge_id + 1, name='New user')
+            session.add(new_user)
+
+            context = MagicMock()
+            type(context).group = PropertyMock(return_value=group)
+            type(context).sender = PropertyMock(return_value=new_user)
+            basic.process_group_changes(context)
+
+        context.send_response_message.assert_any_call('greet_new_New user')
+        self.assertEqual(1, context.send_response_message.call_count)
+
+        with ScopedSession(self.connection) as session:
+            self.assertEqual(huge_id, session.query(Group).first().id)
+            self.assertEqual(huge_id + 1, session.query(User).first().id)
+
     def test_help_or_start_private(self):
         context = MagicMock()
         type(context).group = PropertyMock(return_value=None)

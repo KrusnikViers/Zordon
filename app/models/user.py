@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import BigInteger, Boolean, Column, String
 from sqlalchemy.orm import relationship
 
 from app.database.base_model import Base
@@ -7,7 +7,7 @@ from app.models.relationships import group_members
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
     login = Column(String)
     name = Column(String, nullable=False)
 

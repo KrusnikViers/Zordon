@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, ForeignKey, Table
+from sqlalchemy import BigInteger, Column, ForeignKey, Table
 
 from app.database.base_model import Base
 
 
 group_members = Table('group_members', Base.metadata,
-                      Column('user_id', Integer, ForeignKey('users.id', ondelete='CASCADE', onupdate='CASCADE')),
-                      Column('group_id', Integer, ForeignKey('groups.id', ondelete='CASCADE', onupdate='CASCADE')))
+                      Column('user_id', BigInteger, ForeignKey('users.id', ondelete='CASCADE', onupdate='CASCADE')),
+                      Column('group_id', BigInteger, ForeignKey('groups.id', ondelete='CASCADE', onupdate='CASCADE')))
