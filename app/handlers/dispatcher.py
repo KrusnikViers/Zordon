@@ -36,6 +36,8 @@ class Dispatcher:
         handlers = [
             CommandHandler(['start', 'help'],
                            self._make_handler([ChatType.PRIVATE, ChatType.GROUP], basic.on_help_or_start)),
+            CommandHandler(['clickme'],
+                           self._make_handler([ChatType.GROUP], basic.on_click_here)),
 
             CommandHandler(['all'],
                            self._make_handler([ChatType.GROUP], broadcasts.on_all_request)),

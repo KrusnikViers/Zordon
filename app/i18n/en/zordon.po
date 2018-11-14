@@ -68,3 +68,7 @@ msgstr ""
 "{project} - at your service!\n"
 "Sorry, but for now I have no functionality in private chats. Yet I will try to learn something new really soon!"
 
+#: handlers/impl/basic.py:34
+msgid "rdr2_easter_egg"
+msgstr ""
+"@Greatmatis, let's play Red Dead Redemption II!"
