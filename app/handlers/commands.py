@@ -1,7 +1,7 @@
 COMMANDS_LIST = [
     'cancel',
-    'call_join',
-    'call_decline'
+    'recall_join',
+    'recall_decline'
 ]
 
 _command_codes = {name: index for index, name in enumerate(COMMANDS_LIST)}

@@ -39,12 +39,12 @@ class Dispatcher:
 
             CommandHandler(['all'],
                            self._make_handler([ChatType.GROUP], broadcasts.on_all_request)),
-            CommandHandler(['call'],
-                           self._make_handler([ChatType.GROUP], broadcasts.on_call_request)),
-            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], broadcasts.on_call_join),
-                                 pattern=InlineMenu.pattern('call_join', False)),
-            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], broadcasts.on_call_decline),
-                                 pattern=InlineMenu.pattern('call_decline', False)),
+            CommandHandler(['recall'],
+                           self._make_handler([ChatType.GROUP], broadcasts.on_recall_request)),
+            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], broadcasts.on_recall_join),
+                                 pattern=InlineMenu.pattern('recall_join', False)),
+            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], broadcasts.on_recall_decline),
+                                 pattern=InlineMenu.pattern('recall_decline', False)),
 
             MessageHandler(Filters.all, self._make_handler([ChatType.GROUP], None)),
         ]
