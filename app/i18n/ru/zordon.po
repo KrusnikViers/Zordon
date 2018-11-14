@@ -65,3 +65,7 @@ msgstr ""
 "{project} - к вашим услугам!\n"
 "К сожалению, сейчас я ничем не могу быть полезен в личных чатах. Но я попробую научиться чему-нибудь новому как можно скорее!"
 
+#: handlers/impl/basic.py:34
+msgid "rdr2_easter_egg"
+msgstr ""
+"@Greatmatis, давай лучше погамаем в Red Dead Redemption II!"
