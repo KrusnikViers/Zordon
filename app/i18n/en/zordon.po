@@ -26,6 +26,10 @@ msgstr "Sorry, {user}, but this request is not valid any more."
 msgid "no_users_for_broadcast_message"
 msgstr "Nobody can response you right now. Perhaps, later?"
 
+#: handlers/impl/basic.py:35
+msgid "rdr2_easter_egg"
+msgstr "@Greatmatis, let's play Red Dead Redemption II!"
+
 #: handlers/impl/broadcasts.py:33
 msgid "recall_decline"
 msgstr "Decline"
@@ -68,7 +72,3 @@ msgstr ""
 "{project} - at your service!\n"
 "Sorry, but for now I have no functionality in private chats. Yet I will try to learn something new really soon!"
 
-#: handlers/impl/basic.py:34
-msgid "rdr2_easter_egg"
-msgstr ""
-"@Greatmatis, let's play Red Dead Redemption II!"
