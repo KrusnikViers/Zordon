@@ -5,14 +5,10 @@ from app.handlers.inline_menu import InlineMenu
 from app.models.all import Response, Request
 
 
-def _get_users_for_broadcast(context: Context):
-    return [user for user in context.group.users if user != context.sender]
-
-
 def on_all_request(context: Context):
-    users_list = _get_users_for_broadcast(context)
+    users_list = [user for user in context.group.users if user != context.sender]
     if not users_list:
-        context.send_response_message(text=_('no_users_for_broadcast_message'))
+        context.send_response_message(_('no_users_for_broadcast_message'))
         return
     user_message = context.command_arguments()
     if user_message:
@@ -43,8 +39,6 @@ def _message_for_recall(context: Context, request: Request):
             declined.append(response.user)
     rest = [user for user in context.group.users if
             user != request.author and user not in joined and user not in declined]
-    if not rest and not joined and not declined:
-        return None
     message = request.title + '\n'
     if joined:
         message += '\n' + _('recall_joined_{users}').format(users=', '.join([user.login_if_exists() for user in joined]))
@@ -58,9 +52,9 @@ def _message_for_recall(context: Context, request: Request):
 
 
 def on_recall_request(context: Context):
-    available_users = _get_users_for_broadcast(context)
+    available_users = [user for user in context.group.users if user != context.sender]
     if not available_users:
-        context.send_response_message(text=_('no_users_for_broadcast_message'))
+        context.send_response_message(_('no_users_for_broadcast_message'))
         return
     user_message = context.command_arguments()
     if user_message:
@@ -80,26 +74,20 @@ def on_recall_request(context: Context):
 def _on_recall_response(context: Context, answer: int):
     request = context.session.query(Request).filter(
         Request.message_id == context.update.callback_query.message.message_id).first()
-    if not request:
-        return
-    if context.sender == request.author:
-        return
+    if request and context.sender != request.author:
+        response = context.session.query(Response).filter(Response.user == context.sender,
+                                                          Response.request == request).first()
+        if response:
+            response.answer = answer
+        else:
+            response = Response(request=request, user=context.sender, answer=answer)
+            context.session.add(response)
 
-    response = context.session.query(Response).filter(Response.user == context.sender,
-                                                      Response.request == request).first()
-    if response and response.answer == answer:
-        return
-    elif response:
-        response.answer = answer
-    else:
-        response = Response(request=request, user=context.sender, answer=answer)
-        context.session.add(response)
-
-    try:
-        context.update.callback_query.edit_message_text(text=_message_for_recall(context, request),
-                                                        reply_markup=_markup_for_call())
-    except TelegramError:
-        context.send_response_message(_('invalid_request_{user}').format(user=context.sender.name))
+        try:
+            context.update.callback_query.edit_message_text(text=_message_for_recall(context, request),
+                                                            reply_markup=_markup_for_call())
+        except TelegramError:
+            context.send_response_message(_('invalid_request_{user}').format(user=context.sender.name))
 
 
 def on_recall_join(context: Context):

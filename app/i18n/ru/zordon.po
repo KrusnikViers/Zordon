@@ -1,8 +1,8 @@
-#: handlers/impl/broadcasts.py:21
+#: handlers/impl/broadcasts.py:17
 msgid "all_from_{user}"
 msgstr "{user} просит вашего внимания!"
 
-#: handlers/impl/broadcasts.py:19
+#: handlers/impl/broadcasts.py:15
 msgid "all_with_text_from_{user}"
 msgstr "({user})"
 
@@ -18,39 +18,43 @@ msgstr "Привет, {user}! Рад снова встретиться :)"
 msgid "greet_new_{user}"
 msgstr "Привет, {user}. Приятно познакомиться!"
 
-#: handlers/impl/broadcasts.py:102
+#: handlers/impl/broadcasts.py:96
 msgid "invalid_request_{user}"
 msgstr "{user}, к сожалению, этот запрос уже не может быть использован."
 
-#: handlers/impl/broadcasts.py:15 handlers/impl/broadcasts.py:63
+#: handlers/impl/broadcasts.py:11 handlers/impl/broadcasts.py:57
 msgid "no_users_for_broadcast_message"
 msgstr "Сейчас некому ответить на призыв. Возможно, позднее?"
 
-#: handlers/impl/broadcasts.py:33
+#: handlers/impl/basic.py:35
+msgid "rdr2_easter_egg"
+msgstr "@Greatmatis, давай лучше погамаем в Red Dead Redemption II!"
+
+#: handlers/impl/broadcasts.py:29
 msgid "recall_decline"
 msgstr "Отказаться"
 
-#: handlers/impl/broadcasts.py:52
+#: handlers/impl/broadcasts.py:46
 msgid "recall_declined_{users}"
 msgstr "Отказались: {users}"
 
-#: handlers/impl/broadcasts.py:69
+#: handlers/impl/broadcasts.py:63
 msgid "recall_from_{user}"
 msgstr "{user} приглашает всех присоединиться!"
 
-#: handlers/impl/broadcasts.py:33
+#: handlers/impl/broadcasts.py:29
 msgid "recall_join"
 msgstr "Согласиться"
 
-#: handlers/impl/broadcasts.py:50
+#: handlers/impl/broadcasts.py:44
 msgid "recall_joined_{users}"
 msgstr "Присоединились: {users}"
 
-#: handlers/impl/broadcasts.py:55
+#: handlers/impl/broadcasts.py:49
 msgid "recall_not_answered_{users}"
 msgstr "Не ответили: {users}"
 
-#: handlers/impl/broadcasts.py:67
+#: handlers/impl/broadcasts.py:61
 msgid "recall_with_text_from_{user}"
 msgstr "(приглашение от {user})"
 
@@ -68,7 +72,3 @@ msgstr ""
 "{project} - к вашим услугам!\n"
 "К сожалению, сейчас я ничем не могу быть полезен в личных чатах. Но я попробую научиться чему-нибудь новому как можно скорее!"
 
-#: handlers/impl/basic.py:34
-msgid "rdr2_easter_egg"
-msgstr ""
-"@Greatmatis, давай лучше погамаем в Red Dead Redemption II!"

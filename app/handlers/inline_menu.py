@@ -9,7 +9,7 @@ class InlineMenu(InlineKeyboardMarkup):
         if close_button_text:
             markup.append([(close_button_text, ['cancel'])])
 
-        encode = lambda data: ' '.join([commands.str_code(data[0])] + [str(x) for x in data[1:]])
+        def encode(data): return ' '.join([commands.str_code(data[0])] + [str(x) for x in data[1:]])
         super(InlineMenu, self).__init__([[InlineKeyboardButton(text, callback_data=encode(data))
                                            for text, data in row] for row in markup])
 
