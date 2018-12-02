@@ -18,7 +18,7 @@ msgstr "Привет, {user}! Рад снова встретиться :)"
 msgid "greet_new_{user}"
 msgstr "Привет, {user}. Приятно познакомиться!"
 
-#: handlers/impl/broadcasts.py:96
+#: handlers/impl/broadcasts.py:90
 msgid "invalid_request_{user}"
 msgstr "{user}, к сожалению, этот запрос уже не может быть использован."
 

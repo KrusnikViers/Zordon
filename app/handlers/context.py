@@ -66,6 +66,8 @@ class Context(ScopedSession):
     def _get_translation(self, translations):
         if self.group and self.group.locale:
             return translations.get(self.group.locale)
-        if self.sender.locale:
+        if self.sender and self.sender.locale:
             return translations.get(self.sender.locale)
-        return translations.get(self.update.effective_user.language_code)
+        if self.update.effective_user:
+            return translations.get(self.update.effective_user.language_code)
+        return translations.get('')
