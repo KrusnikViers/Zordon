@@ -22,10 +22,12 @@ class Dispatcher:
         self.updater = updater
         self._bind_all(updater)
 
+    @staticmethod
+    def _is_update_valid(chat_filters: list, update: Update):
+        return ChatType.is_valid(chat_filters, update) and not (update.effective_user and update.effective_user.is_bot)
+
     def _handler(self, chat_filters: list, handler_function, bot: Bot, update: Update):
-        if update.effective_user and update.effective_user.is_bot:
-            return
-        if not ChatType.is_valid(chat_filters, update):
+        if not self._is_update_valid(chat_filters, update):
             return
 
         try:

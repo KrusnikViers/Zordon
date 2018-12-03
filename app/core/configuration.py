@@ -63,11 +63,9 @@ class Configuration:
 
     @staticmethod
     def _make_proxy_parameters(proxy_url, proxy_user, proxy_password):
-        if not proxy_url:
-            return None
-        params = {'proxy_url': proxy_url}
-        if proxy_user or proxy_password:
-            params['urllib3_proxy_kwargs'] = {}
+        params = None
+        if proxy_url:
+            params = {'proxy_url': proxy_url, 'urllib3_proxy_kwargs': {}}
             if proxy_user:
                 params['urllib3_proxy_kwargs']['username'] = proxy_user
             if proxy_password:
