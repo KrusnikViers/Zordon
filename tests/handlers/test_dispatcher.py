@@ -1,15 +1,17 @@
 from unittest.mock import MagicMock, PropertyMock
 from telegram import Chat
 
-from tests.base import BaseTestCase
+from tests.base import BaseTestCase, InBotTestCase, MatcherAny
+from app.database.scoped_session import ScopedSession
 from app.handlers.dispatcher import Dispatcher
 from app.handlers.chat_type import ChatType
+from app.models.all import User
 
 
 class TestDispatcher(BaseTestCase):
     def test_inner_handling(self):
         updater = MagicMock()
-        instance = Dispatcher(updater, MagicMock(), MagicMock())
+        instance = Dispatcher(MagicMock(), updater, MagicMock(), MagicMock())
         updater.dispatcher.add_handler.assert_called()
 
         handler_function = MagicMock()
@@ -29,3 +31,32 @@ class TestDispatcher(BaseTestCase):
 
         instance._handler([ChatType.GROUP], handler_function, MagicMock(), update)
         handler_function.assert_called_once()
+
+
+class TestDispatcherEx(InBotTestCase):
+    def test_exception_caught(self):
+        with ScopedSession(self.connection) as session:
+            user = User(id=1234, login='test', name='Super User')
+            session.add(user)
+
+        configuration = MagicMock()
+        type(configuration).superuser_login = PropertyMock(return_value='@test')
+        bot = MagicMock()
+        updater = MagicMock()
+        type(updater).bot = PropertyMock(return_value=bot)
+
+        instance = Dispatcher(configuration, updater, self.connection, MagicMock())
+        updater.dispatcher.add_handler.assert_called()
+
+        handler_function = MagicMock()
+        handler_function.side_effect = Exception('something bad')
+
+        update = MagicMock()
+        type(update.effective_chat).type = Chat.PRIVATE
+        type(update).callback_query = PropertyMock(return_value=None)
+        type(update).effective_user = PropertyMock(return_value=None)
+        type(update).message = PropertyMock(return_value=None)
+
+        self.assertRaises(Exception, instance._handler, [ChatType.PRIVATE], handler_function, MagicMock(), update)
+        handler_function.assert_called_once()
+        bot.send_message.assert_called_once_with(1234, MatcherAny())

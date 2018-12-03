@@ -5,9 +5,10 @@ import pathlib
 
 
 class Configuration:
-    def __init__(self, _telegram_bot_token, _webhook_url, _database_url, _proxy_params):
+    def __init__(self, _telegram_bot_token, _superuser_login, _webhook_url, _database_url, _proxy_params):
         self.telegram_bot_token: str = _telegram_bot_token
         self.webhook_url: str = _webhook_url
+        self.superuser_login: str = _superuser_login
         self.database_url: str = _database_url
         self.proxy_params = _proxy_params
 
@@ -21,11 +22,12 @@ class Configuration:
             return value if value else json_config.get(option_name, None)
 
         return cls(maybe_get_value('telegram_bot_token'),
+                   cls._parse_telegram_login(maybe_get_value('superuser')),
                    maybe_get_value('webhook_url'),
-                   cls.parse_database_url(maybe_get_value('database_url')),
-                   cls.make_proxy_parameters(maybe_get_value('proxy_url'),
-                                             maybe_get_value('proxy_user'),
-                                             maybe_get_value('proxy_password')))
+                   cls._parse_database_url(maybe_get_value('database_url')),
+                   cls._make_proxy_parameters(maybe_get_value('proxy_url'),
+                                              maybe_get_value('proxy_user'),
+                                              maybe_get_value('proxy_password')))
 
     @staticmethod
     def _get_command_line_arguments() -> argparse.Namespace:
@@ -37,6 +39,8 @@ class Configuration:
                             help='Telegram bot token, received from @BotFather.')
         parser.add_argument('--webhook-url', '-w', type=str, dest='webhook_url',
                             help='Webhook URL, forces hook mode if provided.')
+        parser.add_argument('--superuser', '-s', type=str, dest='superuser',
+                            help='Telegram login of user to manage bot and receive support messages.')
         parser.add_argument('--database-url', '-d', type=str, dest='database_url',
                             help='Database url (user:password@host:port/database_name)')
         parser.add_argument('--proxy-url', '-p', type=str, dest='proxy_url', help='Socks5 proxy server URL.')
@@ -46,13 +50,19 @@ class Configuration:
         return parser.parse_args()
 
     @staticmethod
-    def parse_database_url(raw_url) -> str:
+    def _parse_telegram_login(raw_login) -> str:
+        if raw_login and raw_login[0] != '@':
+            return '@' + raw_login
+        return raw_login
+
+    @staticmethod
+    def _parse_database_url(raw_url) -> str:
         if not raw_url:
             return raw_url
         return 'postgresql+psycopg2://' + raw_url.split('://')[-1]
 
     @staticmethod
-    def make_proxy_parameters(proxy_url, proxy_user, proxy_password):
+    def _make_proxy_parameters(proxy_url, proxy_user, proxy_password):
         if not proxy_url:
             return None
         params = {'proxy_url': proxy_url}

@@ -28,7 +28,7 @@ class InBotTestCase(BaseTestCase):
 
         self.configuration = Configuration.load()
         if 'CI_DATABASE' in os.environ:
-            self.configuration.database_url = Configuration.parse_database_url(os.environ['CI_DATABASE'])
+            self.configuration.database_url = Configuration._parse_database_url(os.environ['CI_DATABASE'])
         self.connection = DatabaseConnection(self.configuration)
 
     def setUp(self):

@@ -37,4 +37,4 @@ class Bot:
         self.translations = Translations(APP_DIR.joinpath('i18n'), APP_DIR)
         self.updater = Updater(token=self.configuration.telegram_bot_token,
                                request_kwargs=self.configuration.proxy_params)
-        self.dispatcher = Dispatcher(self.updater, self.db, self.translations)
+        self.dispatcher = Dispatcher(self.configuration, self.updater, self.db, self.translations)

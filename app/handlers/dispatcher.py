@@ -4,18 +4,22 @@ from telegram.ext.filters import Filters
 import functools
 
 from app.database.connection import DatabaseConnection
+from app.core.configuration import Configuration
 from app.handlers.chat_type import ChatType
 from app.handlers.context import Context
 from app.handlers.inline_menu import InlineMenu
 from app.i18n.translations import Translations
 
-from app.handlers.impl import basic, broadcasts
+from app.handlers.impl import basic, broadcasts, manage
 
 
 class Dispatcher:
-    def __init__(self, updater: Updater, db_connection: DatabaseConnection, translations: Translations):
+    def __init__(self, configuration: Configuration, updater: Updater, db_connection: DatabaseConnection,
+                 translations: Translations):
+        self.configuration = configuration
         self.db = db_connection
         self.translations = translations
+        self.updater = updater
         self._bind_all(updater)
 
     def _handler(self, chat_filters: list, handler_function, bot: Bot, update: Update):
@@ -23,11 +27,16 @@ class Dispatcher:
             return
         if not ChatType.is_valid(chat_filters, update):
             return
-        with Context(update, bot, self.db, self.translations) as context:
-            if context.group:
-                basic.process_group_changes(context)
-            if handler_function:
-                handler_function(context)
+
+        try:
+            with Context(update, bot, self.db, self.translations) as context:
+                if context.group:
+                    basic.process_group_changes(context)
+                if handler_function:
+                    handler_function(context)
+        except Exception as exc:
+            manage.on_handler_exception(self.updater.bot, self.configuration, self.db)
+            raise exc
 
     def _make_handler(self, chat_filters: list, raw_callable):
         return functools.partial(Dispatcher._handler, self, chat_filters, raw_callable)
