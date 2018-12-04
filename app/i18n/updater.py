@@ -65,19 +65,24 @@ class TranslationsUpdater:
         return catalog.Catalog()
 
     @staticmethod
+    def _check_message_and_get_error(message, language) -> str:
+        error_string = ''
+        if message.id:
+            if not message.string:
+                error_string = 'Translation for {msg}({lang}) is missing!'.format(msg=message.id, lang=language)
+            elif message.check():
+                errors = ', '.join(map(str, message.check()))
+                error_string = '{msg}({lang}): {errors}'.format(msg=message.id, lang=language, errors=errors)
+            elif message.fuzzy:
+                error_string = 'Translation for {msg}({lang}) is fuzzy!'.format(msg=message.id, lang=language)
+        return error_string
+
+    @staticmethod
     def _is_translations_complete(strings_catalog: catalog.Catalog, language: str) -> bool:
         is_translations_valid = True
         for msg in strings_catalog:
-            if not msg.id:
-                continue
-            if not msg.string:
-                logging.error('Translation for {msg}({lang}) is missing!'.format(msg=msg.id, lang=language))
-                is_translations_valid = False
-            elif msg.check():
-                errors = ', '.join(map(str, msg.check()))
-                logging.error('{msg}({lang}): {errors}'.format(msg=msg.id, lang=language, errors=errors))
-                is_translations_valid = False
-            elif msg.fuzzy:
-                logging.error('Translation for {msg}({lang}) is fuzzy!'.format(msg=msg.id, lang=language))
+            error_string = TranslationsUpdater._check_message_and_get_error(msg, language)
+            if error_string:
+                logging.error(error_string)
                 is_translations_valid = False
         return is_translations_valid

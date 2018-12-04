@@ -29,7 +29,7 @@ def _markup_for_call():
     return InlineMenu([[(_('recall_join'), ['recall_join']), (_('recall_decline'), ['recall_decline'])]])
 
 
-def _message_for_recall(context: Context, request: Request):
+def _get_users_for_recall(context: Context, request: Request) -> ([], [], []):
     joined = []
     declined = []
     for response in request.responses:
@@ -39,6 +39,11 @@ def _message_for_recall(context: Context, request: Request):
             declined.append(response.user)
     rest = [user for user in context.group.users if
             user != request.author and user not in joined and user not in declined]
+    return joined, declined, rest
+
+
+def _message_for_recall(context: Context, request: Request):
+    joined, declined, rest = _get_users_for_recall(context, request)
     message = request.title + '\n'
     if joined:
         message += '\n' + _('recall_joined_{users}').format(users=', '.join([user.login_if_exists() for user in joined]))
@@ -71,6 +76,14 @@ def on_recall_request(context: Context):
     request.message_id = request_message.message_id
 
 
+def _try_update_message(context: Context, request: Request):
+    try:
+        context.update.callback_query.edit_message_text(text=_message_for_recall(context, request),
+                                                        reply_markup=_markup_for_call())
+    except TelegramError:
+        context.send_response_message(_('invalid_request_{user}').format(user=context.sender.name))
+
+
 def _on_recall_response(context: Context, answer: int):
     request = context.session.query(Request).filter(
         Request.message_id == context.update.callback_query.message.message_id).first()
@@ -82,12 +95,7 @@ def _on_recall_response(context: Context, answer: int):
         else:
             response = Response(request=request, user=context.sender, answer=answer)
             context.session.add(response)
-
-        try:
-            context.update.callback_query.edit_message_text(text=_message_for_recall(context, request),
-                                                            reply_markup=_markup_for_call())
-        except TelegramError:
-            context.send_response_message(_('invalid_request_{user}').format(user=context.sender.name))
+    _try_update_message(context, request)
 
 
 def on_recall_join(context: Context):
