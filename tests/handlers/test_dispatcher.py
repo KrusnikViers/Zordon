@@ -4,7 +4,7 @@ from telegram import Chat
 from tests.base import BaseTestCase, InBotTestCase, MatcherAny
 from app.database.scoped_session import ScopedSession
 from app.handlers.dispatcher import Dispatcher
-from app.handlers.chat_type import ChatType
+from app.handlers.input_filters import ChatFilter, InputFilters
 from app.models.all import User
 
 
@@ -21,15 +21,15 @@ class TestDispatcher(BaseTestCase):
         type(update.effective_chat).type = Chat.GROUP
         type(update).callback_query = PropertyMock(return_value=None)
         type(update.effective_user).is_bot = PropertyMock(return_value=True)
-        instance._handler([ChatType.GROUP], handler_function, MagicMock(), update)
+        instance._handler(handler_function, InputFilters(), MagicMock(), update)
         self.assertFalse(handler_function.called)
 
         # Do not handle message of wrong type.
         type(update.effective_user).is_bot = PropertyMock(return_value=False)
-        instance._handler([ChatType.PRIVATE], handler_function, MagicMock(), update)
+        instance._handler(handler_function, InputFilters(chat=ChatFilter.PRIVATE), MagicMock(), update)
         self.assertFalse(handler_function.called)
 
-        instance._handler([ChatType.GROUP], handler_function, MagicMock(), update)
+        instance._handler(handler_function, InputFilters(chat=ChatFilter.GROUP), MagicMock(), update)
         handler_function.assert_called_once()
 
 
@@ -57,6 +57,6 @@ class TestDispatcherEx(InBotTestCase):
         type(update).effective_user = PropertyMock(return_value=None)
         type(update).message = PropertyMock(return_value=None)
 
-        self.assertRaises(Exception, instance._handler, [ChatType.PRIVATE], handler_function, MagicMock(), update)
+        self.assertRaises(Exception, instance._handler, handler_function, InputFilters(), MagicMock(), update)
         handler_function.assert_called_once()
         bot.send_message.assert_called_once_with(1234, MatcherAny())

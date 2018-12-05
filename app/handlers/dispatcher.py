@@ -5,7 +5,7 @@ import functools
 
 from app.database.connection import DatabaseConnection
 from app.core.configuration import Configuration
-from app.handlers.chat_type import ChatType
+from app.handlers.input_filters import ChatFilter, MessageFilter, InputFilters, is_message_valid
 from app.handlers.context import Context
 from app.handlers.inline_menu import InlineMenu
 from app.i18n.translations import Translations
@@ -23,11 +23,12 @@ class Dispatcher:
         self._bind_all(updater)
 
     @staticmethod
-    def _is_update_valid(chat_filters: list, update: Update):
-        return ChatType.is_valid(chat_filters, update) and not (update.effective_user and update.effective_user.is_bot)
+    def _is_update_valid(filters: InputFilters, update: Update):
+        return is_message_valid(filters, update) and \
+               not (update.effective_user and update.effective_user.is_bot)
 
-    def _handler(self, chat_filters: list, handler_function, bot: Bot, update: Update):
-        if not self._is_update_valid(chat_filters, update):
+    def _handler(self, handler_function, input_filters, bot: Bot, update: Update):
+        if not self._is_update_valid(input_filters, update):
             return
 
         try:
@@ -40,26 +41,27 @@ class Dispatcher:
             manage.on_handler_exception(self.updater.bot, self.configuration, self.db)
             raise exc
 
-    def _make_handler(self, chat_filters: list, raw_callable):
-        return functools.partial(Dispatcher._handler, self, chat_filters, raw_callable)
+    def _make_handler(self, raw_callable, input_filters: InputFilters=InputFilters()):
+        return functools.partial(Dispatcher._handler, self, raw_callable, input_filters)
 
     def _bind_all(self, updater: Updater):
         handlers = [
-            CommandHandler(['start', 'help'],
-                           self._make_handler([ChatType.PRIVATE, ChatType.GROUP], basic.on_help_or_start)),
-            CommandHandler(['clickme'],
-                           self._make_handler([ChatType.GROUP], basic.on_click_here)),
+            CommandHandler(['start', 'help'], self._make_handler(basic.on_help_or_start)),
+            CommandHandler(['clickme'], self._make_handler(basic.on_click_here, InputFilters(chat=ChatFilter.GROUP))),
 
-            CommandHandler(['all'],
-                           self._make_handler([ChatType.GROUP], broadcasts.on_all_request)),
+            CommandHandler(['all'], self._make_handler(broadcasts.on_all_request, InputFilters(chat=ChatFilter.GROUP))),
             CommandHandler(['recall'],
-                           self._make_handler([ChatType.GROUP], broadcasts.on_recall_request)),
-            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], broadcasts.on_recall_join),
+                           self._make_handler(broadcasts.on_recall_request, InputFilters(chat=ChatFilter.GROUP))),
+            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_join,
+                                                    InputFilters(chat=ChatFilter.GROUP,
+                                                                 message=MessageFilter.CALLBACK)),
                                  pattern=InlineMenu.pattern('recall_join', False)),
-            CallbackQueryHandler(self._make_handler([ChatType.CALLBACK_GROUP], broadcasts.on_recall_decline),
+            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_decline,
+                                                    InputFilters(chat=ChatFilter.GROUP,
+                                                                 message=MessageFilter.CALLBACK)),
                                  pattern=InlineMenu.pattern('recall_decline', False)),
 
-            MessageHandler(Filters.all, self._make_handler([ChatType.GROUP], None)),
+            MessageHandler(Filters.all, self._make_handler(None, InputFilters(chat=ChatFilter.GROUP))),
         ]
 
         for handler in handlers:
