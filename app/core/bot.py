@@ -1,11 +1,12 @@
-from telegram.ext import Updater
 import logging
+
+from telegram.ext import Updater
 
 from app.core.configuration import Configuration
 from app.core.info import APP_DIR
 from app.database.connection import DatabaseConnection
-from app.i18n.translations import Translations
 from app.handlers.dispatcher import Dispatcher
+from app.i18n.translations import Translations
 
 
 class Bot:

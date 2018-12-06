@@ -1,4 +1,4 @@
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 from app.handlers import commands
 

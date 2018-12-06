@@ -1,9 +1,10 @@
 from unittest.mock import MagicMock, PropertyMock
+
 from telegram import InlineKeyboardButton, TelegramError
 
-from tests.base import InBotTestCase, ScopedSession
-from app.models.all import *
 from app.handlers.impl import broadcasts
+from app.models.all import *
+from tests.base import InBotTestCase, ScopedSession
 
 
 class TestBroadcastHandlers(InBotTestCase):

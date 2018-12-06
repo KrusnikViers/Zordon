@@ -1,6 +1,7 @@
-from datetime import datetime
-import alembic.config
 import os
+from datetime import datetime
+
+import alembic.config
 
 from app.core.info import APP_DIR
 

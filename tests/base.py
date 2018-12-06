@@ -1,12 +1,12 @@
-from unittest import TestCase
 import builtins
 import logging
 import os
+from unittest import TestCase
 
 from app.core.configuration import Configuration
 from app.database.connection import DatabaseConnection
 from app.database.scoped_session import ScopedSession
-from app.models.all import Group, Response, Request, User
+from app.models.all import Group, Request, Response, User
 
 
 class MatcherAny:

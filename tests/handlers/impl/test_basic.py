@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, PropertyMock
 
-from tests.base import InBotTestCase, ScopedSession
 from app.handlers.impl import basic
+from tests.base import InBotTestCase
 
 
 class TestBasicHandlers(InBotTestCase):

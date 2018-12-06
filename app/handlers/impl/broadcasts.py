@@ -2,7 +2,7 @@ from telegram import TelegramError
 
 from app.handlers.context import Context
 from app.handlers.inline_menu import InlineMenu
-from app.models.all import Response, Request
+from app.models.all import Request, Response
 
 
 def on_all_request(context: Context):

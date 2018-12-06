@@ -1,7 +1,6 @@
+import os
 from pathlib import Path
 from unittest.mock import patch
-import os
-
 
 from app.core.configuration import Configuration
 from tests.base import BaseTestCase

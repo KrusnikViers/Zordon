@@ -2,7 +2,7 @@ import gettext
 import logging
 import pathlib
 
-from app.i18n.updater import TranslationsUpdater, DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES
+from app.i18n.updater import DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, TranslationsUpdater
 
 
 class Translations:

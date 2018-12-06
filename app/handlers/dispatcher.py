@@ -1,17 +1,17 @@
+import functools
+
 from telegram import Bot, Update
 from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler, Updater
 from telegram.ext.filters import Filters
-import functools
 
-from app.database.connection import DatabaseConnection
 from app.core.configuration import Configuration
-from app.handlers.input_filters import ChatFilter, MessageFilter, InputFilters, is_message_valid
-from app.handlers.context import Context
-from app.handlers.inline_menu import callback_pattern
-from app.i18n.translations import Translations
+from app.database.connection import DatabaseConnection
 from app.handlers import preprocessing
-
+from app.handlers.context import Context
 from app.handlers.impl import basic, broadcasts, manage
+from app.handlers.inline_menu import callback_pattern
+from app.handlers.input_filters import ChatFilter, InputFilters, MessageFilter, is_message_valid
+from app.i18n.translations import Translations
 
 
 class Dispatcher:

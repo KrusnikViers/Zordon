@@ -1,7 +1,7 @@
-from babel.messages import catalog, extract, mofile, pofile
-from pathlib import Path
 import logging
+from pathlib import Path
 
+from babel.messages import catalog, extract, mofile, pofile
 
 SUPPORTED_LANGUAGES = ['ru', 'en']
 DEFAULT_LANGUAGE = 'en'

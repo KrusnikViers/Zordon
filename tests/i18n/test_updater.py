@@ -1,7 +1,7 @@
-from collections import Counter
-from pathlib import Path
 import os
 import shutil
+from collections import Counter
+from pathlib import Path
 
 from app.core.info import APP_DIR
 from app.i18n import updater

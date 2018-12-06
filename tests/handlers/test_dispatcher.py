@@ -1,11 +1,12 @@
 from unittest.mock import MagicMock, PropertyMock
+
 from telegram import Chat
 
-from tests.base import BaseTestCase, InBotTestCase, MatcherAny
 from app.database.scoped_session import ScopedSession
 from app.handlers.dispatcher import Dispatcher
 from app.handlers.input_filters import ChatFilter, InputFilters
 from app.models.all import User
+from tests.base import BaseTestCase, InBotTestCase, MatcherAny
 
 
 class TestDispatcher(BaseTestCase):

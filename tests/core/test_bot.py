@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import app.core.bot
 import app.database.connection
-from tests.base import BaseTestCase, MatcherAny
+from tests.base import BaseTestCase
 
 
 class TestLaunch(BaseTestCase):

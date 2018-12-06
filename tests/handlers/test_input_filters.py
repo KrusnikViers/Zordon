@@ -1,8 +1,9 @@
 from unittest.mock import MagicMock, PropertyMock
+
 from telegram import Chat
 
+from app.handlers.input_filters import ChatFilter, InputFilters, MessageFilter, is_message_valid
 from tests.base import BaseTestCase
-from app.handlers.input_filters import ChatFilter, MessageFilter, InputFilters, is_message_valid
 
 
 class TestInputFilters(BaseTestCase):

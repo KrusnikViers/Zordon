@@ -1,9 +1,10 @@
-from telegram import Bot
 import traceback
 
+from telegram import Bot
+
+from app.core.configuration import Configuration
 from app.database.connection import DatabaseConnection
 from app.database.scoped_session import ScopedSession
-from app.core.configuration import Configuration
 from app.models.all import User
 
 

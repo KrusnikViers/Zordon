@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Column, ForeignKey, Integer
+from sqlalchemy import BigInteger, Column, ForeignKey
 from sqlalchemy.orm import relationship
 
 from app.database.base_model import Base
