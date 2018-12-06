@@ -1,5 +1,6 @@
 from telegram import TelegramError
 
+from app.handlers import actions
 from app.handlers.context import Context
 from app.handlers.inline_menu import InlineMenu
 from app.models.all import Request, Response
@@ -26,7 +27,8 @@ _MESSAGE_UNDEFINED = -777
 
 
 def _markup_for_call():
-    return InlineMenu([[(_('recall_join'), ['recall_join']), (_('recall_decline'), ['recall_decline'])]])
+    return InlineMenu([[(_('recall_join'), [actions.Callback.RECALL_JOIN]),
+                        (_('recall_decline'), [actions.Callback.RECALL_DECLINE])]])
 
 
 def _get_users_for_recall(context: Context, request: Request) -> ([], [], []):
