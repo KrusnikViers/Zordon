@@ -9,7 +9,7 @@ class TestInlineMenu(BaseTestCase):
     def test_callback_data(self):
         update = MagicMock()
         type(update.callback_query).data = PropertyMock(return_value='123 1 False What?')
-        self.assertEqual(('1', 'False', 'What?'), inline_menu.InlineMenu.response_data(update))
+        self.assertEqual(('1', 'False', 'What?'), inline_menu.callback_data(update))
 
     def test_close_button(self):
         menu = inline_menu.InlineMenu([[('manual_close', ['cancel', 'test', 'what?'])]], 'close_button')

@@ -13,11 +13,11 @@ class InlineMenu(InlineKeyboardMarkup):
         super(InlineMenu, self).__init__([[InlineKeyboardButton(text, callback_data=encode(data))
                                            for text, data in row] for row in markup])
 
-    @staticmethod
-    def response_data(update: Update) -> tuple:
-        # First element is a command identifier.
-        return tuple(update.callback_query.data.split()[1:])
 
-    @staticmethod
-    def pattern(command: str, has_parameters: bool) -> str:
-        return '^{0}{1}$'.format(commands.str_code(command), '\ .+' if has_parameters else '')
+def callback_data(update: Update) -> tuple:
+    # First element is a command identifier.
+    return tuple(update.callback_query.data.split()[1:])
+
+
+def callback_pattern(command: str, has_parameters: bool) -> str:
+    return '^{0}{1}$'.format(commands.str_code(command), '\ .+' if has_parameters else '')

@@ -1,5 +1,5 @@
-from telegram import Bot, Chat, Update
-from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler, TypeHandler, Updater
+from telegram import Bot, Update
+from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler, Updater
 from telegram.ext.filters import Filters
 import functools
 
@@ -7,8 +7,9 @@ from app.database.connection import DatabaseConnection
 from app.core.configuration import Configuration
 from app.handlers.input_filters import ChatFilter, MessageFilter, InputFilters, is_message_valid
 from app.handlers.context import Context
-from app.handlers.inline_menu import InlineMenu
+from app.handlers.inline_menu import callback_pattern
 from app.i18n.translations import Translations
+from app.handlers import preprocessing
 
 from app.handlers.impl import basic, broadcasts, manage
 
@@ -34,7 +35,7 @@ class Dispatcher:
         try:
             with Context(update, bot, self.db, self.translations) as context:
                 if context.group:
-                    basic.process_group_changes(context)
+                    preprocessing.update_group_memberships(context)
                 if handler_function:
                     handler_function(context)
         except Exception as exc:
@@ -55,11 +56,11 @@ class Dispatcher:
             CallbackQueryHandler(self._make_handler(broadcasts.on_recall_join,
                                                     InputFilters(chat=ChatFilter.GROUP,
                                                                  message=MessageFilter.CALLBACK)),
-                                 pattern=InlineMenu.pattern('recall_join', False)),
+                                 pattern=callback_pattern('recall_join', False)),
             CallbackQueryHandler(self._make_handler(broadcasts.on_recall_decline,
                                                     InputFilters(chat=ChatFilter.GROUP,
                                                                  message=MessageFilter.CALLBACK)),
-                                 pattern=InlineMenu.pattern('recall_decline', False)),
+                                 pattern=callback_pattern('recall_decline', False)),
 
             MessageHandler(Filters.all, self._make_handler(None, InputFilters(chat=ChatFilter.GROUP))),
         ]
