@@ -4,20 +4,19 @@ from telegram import Bot, Update
 from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler, Updater
 from telegram.ext.filters import Filters
 
-from app.core.configuration import Configuration
 from app.database.connection import DatabaseConnection
-from app.handlers import preprocessing
+from app.handlers.actions import Callback
 from app.handlers.context import Context
-from app.handlers.impl import basic, broadcasts, manage
+from app.handlers.impl import basic, broadcasts, routing
 from app.handlers.inline_menu import callback_pattern
 from app.handlers.input_filters import ChatFilter, InputFilters, MessageFilter, is_message_valid
+from app.handlers.reports import ReportsSender
 from app.i18n.translations import Translations
 
 
 class Dispatcher:
-    def __init__(self, configuration: Configuration, updater: Updater, db_connection: DatabaseConnection,
+    def __init__(self, updater: Updater, db_connection: DatabaseConnection,
                  translations: Translations):
-        self.configuration = configuration
         self.db = db_connection
         self.translations = translations
         self.updater = updater
@@ -35,20 +34,21 @@ class Dispatcher:
         try:
             with Context(update, bot, self.db, self.translations) as context:
                 if context.group:
-                    preprocessing.update_group_memberships(context)
-                if handler_function:
-                    handler_function(context)
+                    routing.update_group_memberships(context)
+                handler_function(context)
         except Exception as exc:
-            manage.on_handler_exception(self.updater.bot, self.configuration, self.db)
+            ReportsSender.report_exception(self.db)
             raise exc
 
-    def _make_handler(self, raw_callable, input_filters: InputFilters=InputFilters()):
+    def _make_handler(self, raw_callable, input_filters: InputFilters = InputFilters()):
         return functools.partial(Dispatcher._handler, self, raw_callable, input_filters)
 
     def _bind_all(self, updater: Updater):
         handlers = [
             CommandHandler(['start', 'help'], self._make_handler(basic.on_help_or_start)),
             CommandHandler(['clickme'], self._make_handler(basic.on_click_here, InputFilters(chat=ChatFilter.GROUP))),
+            CommandHandler(['cancel'], self._make_handler(basic.on_reset_action)),
+            CommandHandler(['report'], self._make_handler(basic.on_user_report_request)),
 
             CommandHandler(['all'], self._make_handler(broadcasts.on_all_request, InputFilters(chat=ChatFilter.GROUP))),
             CommandHandler(['recall'],
@@ -56,13 +56,13 @@ class Dispatcher:
             CallbackQueryHandler(self._make_handler(broadcasts.on_recall_join,
                                                     InputFilters(chat=ChatFilter.GROUP,
                                                                  message=MessageFilter.CALLBACK)),
-                                 pattern=callback_pattern('recall_join', False)),
+                                 pattern=callback_pattern(Callback.RECALL_JOIN, False)),
             CallbackQueryHandler(self._make_handler(broadcasts.on_recall_decline,
                                                     InputFilters(chat=ChatFilter.GROUP,
                                                                  message=MessageFilter.CALLBACK)),
-                                 pattern=callback_pattern('recall_decline', False)),
+                                 pattern=callback_pattern(Callback.RECALL_DECLINE, False)),
 
-            MessageHandler(Filters.all, self._make_handler(None, InputFilters(chat=ChatFilter.GROUP))),
+            MessageHandler(Filters.text, self._make_handler(routing.dispatch_bare_message)),
         ]
 
         for handler in handlers:

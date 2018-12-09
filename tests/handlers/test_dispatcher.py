@@ -5,6 +5,7 @@ from telegram import Chat
 from app.database.scoped_session import ScopedSession
 from app.handlers.dispatcher import Dispatcher
 from app.handlers.input_filters import ChatFilter, InputFilters
+from app.handlers.reports import ReportsSender
 from app.models.all import User
 from tests.base import BaseTestCase, InBotTestCase, MatcherAny
 
@@ -12,7 +13,7 @@ from tests.base import BaseTestCase, InBotTestCase, MatcherAny
 class TestDispatcher(BaseTestCase):
     def test_inner_handling(self):
         updater = MagicMock()
-        instance = Dispatcher(MagicMock(), updater, MagicMock(), MagicMock())
+        instance = Dispatcher(updater, MagicMock(), MagicMock())
         updater.dispatcher.add_handler.assert_called()
 
         handler_function = MagicMock()
@@ -41,12 +42,13 @@ class TestDispatcherEx(InBotTestCase):
             session.add(user)
 
         configuration = MagicMock()
-        type(configuration).superuser_login = PropertyMock(return_value='@test')
+        type(configuration).superuser_login = PropertyMock(return_value='test')
         bot = MagicMock()
         updater = MagicMock()
         type(updater).bot = PropertyMock(return_value=bot)
+        ReportsSender.instance = ReportsSender(bot, configuration)
 
-        instance = Dispatcher(configuration, updater, self.connection, MagicMock())
+        instance = Dispatcher(updater, self.connection, MagicMock())
         updater.dispatcher.add_handler.assert_called()
 
         handler_function = MagicMock()

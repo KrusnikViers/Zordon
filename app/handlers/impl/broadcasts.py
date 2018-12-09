@@ -16,8 +16,7 @@ def on_all_request(context: Context):
         message = user_message + '\n' + _('all_with_text_from_{user}').format(user=context.sender.name)
     else:
         message = _('all_from_{user}').format(user=context.sender.name)
-    message += '\n\n' + \
-               ', '.join([user.login_if_exists() for user in users_list])
+    message += '\n\n' + ', '.join([user.mention_name() for user in users_list])
     context.send_response_message(message)
 
 
@@ -31,7 +30,7 @@ def _markup_for_call():
                         (_('recall_decline'), [actions.Callback.RECALL_DECLINE])]])
 
 
-def _get_users_for_recall(context: Context, request: Request) -> ([], [], []):
+def _get_users_for_recall(context: Context, request: Request) -> (list, list, list):
     joined = []
     declined = []
     for response in request.responses:
@@ -48,13 +47,13 @@ def _message_for_recall(context: Context, request: Request):
     joined, declined, rest = _get_users_for_recall(context, request)
     message = request.title + '\n'
     if joined:
-        message += '\n' + _('recall_joined_{users}').format(users=', '.join([user.login_if_exists() for user in joined]))
+        message += '\n' + _('recall_joined_{users}').format(users=', '.join([user.mention_name() for user in joined]))
     if declined:
         message += '\n' + _('recall_declined_{users}').format(
-            users=', '.join([user.login_if_exists() for user in declined]))
+            users=', '.join([user.mention_name() for user in declined]))
     if rest:
         message += '\n' + _('recall_not_answered_{users}').format(
-            users=', '.join([user.login_if_exists() for user in rest]))
+            users=', '.join([user.mention_name() for user in rest]))
     return message
 
 
