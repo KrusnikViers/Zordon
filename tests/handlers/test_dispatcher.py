@@ -63,3 +63,27 @@ class TestDispatcherEx(InBotTestCase):
         self.assertRaises(Exception, instance._handler, handler_function, InputFilters(), MagicMock(), update)
         handler_function.assert_called_once()
         bot.send_message.assert_called_once_with(1234, MatcherAny())
+
+    def test_no_superuser_no_crash(self):
+        configuration = MagicMock()
+        type(configuration).superuser_login = PropertyMock(return_value='test')
+        bot = MagicMock()
+        updater = MagicMock()
+        type(updater).bot = PropertyMock(return_value=bot)
+        ReportsSender.instance = ReportsSender(bot, configuration)
+
+        instance = Dispatcher(updater, self.connection, MagicMock())
+        updater.dispatcher.add_handler.assert_called()
+
+        handler_function = MagicMock()
+        handler_function.side_effect = Exception('something bad')
+
+        update = MagicMock()
+        type(update.effective_chat).type = Chat.PRIVATE
+        type(update).callback_query = PropertyMock(return_value=None)
+        type(update).effective_user = PropertyMock(return_value=None)
+        type(update).message = PropertyMock(return_value=None)
+
+        self.assertRaises(Exception, instance._handler, handler_function, InputFilters(), MagicMock(), update)
+        handler_function.assert_called_once()
+        self.assertFalse(bot.send_message.called)

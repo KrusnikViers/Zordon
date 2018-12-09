@@ -25,7 +25,7 @@ class MessageFilter:
     def from_update(cls, update: Update):
         if update.callback_query:
             return cls.CALLBACK
-        return INVALID
+        return ALL
 
 
 class InputFilters:
@@ -34,7 +34,12 @@ class InputFilters:
         self.message = message
 
 
+def _is_type_valid(filter_class, filter_value, update: Update):
+    message_type = filter_class.from_update(update)
+    return message_type != INVALID and (filter_value == ALL or filter_value == message_type)
+
+
 def is_message_valid(input_filters: InputFilters, update: Update) -> bool:
     return update.effective_chat and \
-           input_filters.chat in [ALL, ChatFilter.from_update(update)] and \
-           input_filters.message in [ALL, MessageFilter.from_update(update)]
+           _is_type_valid(ChatFilter, input_filters.chat, update) and \
+           _is_type_valid(MessageFilter, input_filters.message, update)

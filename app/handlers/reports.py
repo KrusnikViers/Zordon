@@ -19,7 +19,7 @@ class ReportsSender:
 
     @classmethod
     def _find_superuser(cls, session) -> User:
-        if cls.instance:
+        if cls.instance and cls.instance.superuser_login:
             return session.query(User).filter_by(login=cls.instance.superuser_login).one_or_none()
         return None
 
@@ -34,4 +34,6 @@ class ReportsSender:
     def forward_user_message(cls, context: Context):
         superuser = cls._find_superuser(context.session)
         if superuser:
-            cls.instance.bot.forward_message(superuser.id, context.update.effective_chat.id, context.update.message.id)
+            cls.instance.bot.forward_message(superuser.id,
+                                             context.update.effective_chat.id,
+                                             context.update.message.message_id)

@@ -12,8 +12,11 @@ class TestInputFilters(BaseTestCase):
 
         type(update).effective_chat = PropertyMock(return_value=None)
         self.assertFalse(is_message_valid(InputFilters(), update))
-        #
+
         type(update).effective_chat = PropertyMock(return_value=MagicMock())
+        type(update.effective_chat).type = Chat.CHANNEL
+        self.assertFalse(is_message_valid(InputFilters(), update))
+
         type(update.effective_chat).type = Chat.PRIVATE
         self.assertTrue(is_message_valid(InputFilters(chat=ChatFilter.PRIVATE), update))
         self.assertTrue(is_message_valid(InputFilters(chat=ChatFilter.PRIVATE, message=MessageFilter.CALLBACK), update))

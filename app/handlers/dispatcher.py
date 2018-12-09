@@ -62,7 +62,7 @@ class Dispatcher:
                                                                  message=MessageFilter.CALLBACK)),
                                  pattern=callback_pattern(Callback.RECALL_DECLINE, False)),
 
-            MessageHandler(Filters.text, self._make_handler(routing.dispatch_bare_message)),
+            MessageHandler(Filters.all, self._make_handler(routing.dispatch_bare_message)),
         ]
 
         for handler in handlers:

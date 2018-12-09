@@ -1,5 +1,5 @@
 from sqlalchemy import BigInteger, Boolean, Column, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, object_session
 
 from app.database.base_model import Base
 from app.models.pending_actions import PendingAction
@@ -33,9 +33,9 @@ class User(Base):
 
     def _update_existing_action(self, pending_action: PendingAction, action_string: str) -> bool:
         if not action_string:
-            self.pending_actions.remove(pending_action)
+            object_session(self).delete(pending_action)
         elif pending_action.action != action_string:
-            pending_action = action_string
+            pending_action.action = action_string
         else:
             return False
         return True
@@ -48,5 +48,5 @@ class User(Base):
             if self._update_existing_action(existing_action, action_string):
                 return previous_action_string
         elif action_string:
-            self.pending_actions.append(PendingAction(chat_id=chat_id, action=action_string))
+            self.pending_actions.append(PendingAction(user_id=self.id, chat_id=chat_id, action=action_string))
         return ''
