@@ -1,9 +1,10 @@
 from unittest.mock import MagicMock, PropertyMock
+
 from telegram import Chat
 
-from tests.base import InBotTestCase, ScopedSession
-from app.models.all import *
 from app.handlers import context
+from app.models.all import *
+from tests.base import InBotTestCase, ScopedSession
 
 
 class TestContext(InBotTestCase):

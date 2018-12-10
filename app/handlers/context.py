@@ -1,10 +1,10 @@
 from telegram import Bot, Chat, Message, Update
 
-from app.i18n.translations import Translations
 from app.database.connection import DatabaseConnection
 from app.database.scoped_session import ScopedSession
 from app.database.util import get_with_update
-from app.models.all import User, Group
+from app.i18n.translations import Translations
+from app.models.all import Group, User
 
 
 class Context(ScopedSession):

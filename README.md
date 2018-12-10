@@ -1,4 +1,4 @@
-# Zordon Telegram Bot 3.0.0
+# Zordon Telegram Bot 3.1.0
 
 Telegram bot for group broadcasts and gathering people together.
 
@@ -22,7 +22,7 @@ At the moment, webhook mode is not available.
 Bot could be configured through configuration json file or via command line (not available for a container mode). Configuration parameters (`json root key/command line key`):
 * `/-c`: path to the configuration file
 * `telegram_bot_token/-t`: token from @BotFather
-* `webhook_url/-w`: server URL for webhook mode (not available yet)
+* `superuser/-s`: telegram login of the bot administrator
 * `database_url/-d`: database URL as `user:password@host:port/name`,
 * `proxy_url/-p`: bot could work via SOCKS5 proxy, if needed.
 * `proxy_user/-pu`: SOCKS5 user name

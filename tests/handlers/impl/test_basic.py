@@ -1,71 +1,72 @@
 from unittest.mock import MagicMock, PropertyMock
 
-from tests.base import InBotTestCase, ScopedSession
+from app.database.scoped_session import ScopedSession
+from app.handlers.impl import basic, routing
+from app.handlers.reports import ReportsSender
 from app.models.all import *
-from app.handlers.impl import basic
+from tests.base import InBotTestCase
 
 
 class TestBasicHandlers(InBotTestCase):
-    def test_group_changes(self):
-        with ScopedSession(self.connection) as session:
-            group = Group(id=0, name='test')
-            session.add(group)
-
-            leaving_user = User(id=0, name='Leaving one')
-            leaving_user.groups.append(group)
-            session.add(leaving_user)
-
-            new_user_login = User(id=1, name='New one 1', login='new_one_1', is_known=True)
-            session.add(new_user_login)
-            new_user_name = User(id=2, name='New one 2')
-            session.add(new_user_name)
-
-            context = MagicMock()
-            type(context).group = PropertyMock(return_value=group)
-            type(context).sender = PropertyMock(return_value=new_user_login)
-            type(context).users_joined = PropertyMock(return_value=[new_user_login, new_user_name])
-            type(context).user_left = PropertyMock(return_value=leaving_user)
-
-            basic.process_group_changes(context)
-
-        context.send_response_message.assert_any_call('greet_known_New one 1')
-        context.send_response_message.assert_any_call('greet_new_New one 2')
-        context.send_response_message.assert_any_call('farewell_Leaving one')
-        self.assertEqual(3, context.send_response_message.call_count)
-
-    def test_huge_ids(self):
-        huge_id = 1 << 62
-
-        with ScopedSession(self.connection) as session:
-            group = Group(id=huge_id, name='test')
-            session.add(group)
-            new_user = User(id=huge_id + 1, name='New user')
-            session.add(new_user)
-
-            context = MagicMock()
-            type(context).group = PropertyMock(return_value=group)
-            type(context).sender = PropertyMock(return_value=new_user)
-            basic.process_group_changes(context)
-
-        context.send_response_message.assert_any_call('greet_new_New user')
-        self.assertEqual(1, context.send_response_message.call_count)
-
-        with ScopedSession(self.connection) as session:
-            self.assertEqual(huge_id, session.query(Group).first().id)
-            self.assertEqual(huge_id + 1, session.query(User).first().id)
-
     def test_help_or_start_private(self):
         context = MagicMock()
         type(context).group = PropertyMock(return_value=None)
         basic.on_help_or_start(context)
-        context.send_response_message.assert_called_once_with('Zordon v3.0.0_help_for_private')
+        context.send_response_message.assert_called_once_with('Zordon v3.1.0_help_for_private')
 
     def test_help_or_start_group(self):
         context = MagicMock()
         basic.on_help_or_start(context)
-        context.send_response_message.assert_called_once_with('Zordon v3.0.0_help_for_group')
+        context.send_response_message.assert_called_once_with('Zordon v3.1.0_help_for_group')
 
     def test_click_here(self):
         context = MagicMock()
         basic.on_click_here(context)
-        context.send_response_message.assert_called_once_with(_('rdr2_easter_egg'))
+        context.send_response_message.assert_called_once_with('rdr2_easter_egg')
+
+    def test_user_report_sent(self):
+        configuration = MagicMock()
+        type(configuration).superuser_login = PropertyMock(return_value='test')
+        bot = MagicMock()
+        updater = MagicMock()
+        type(updater).bot = PropertyMock(return_value=bot)
+        ReportsSender.instance = ReportsSender(bot, configuration)
+
+        with ScopedSession(self.connection) as session:
+            superuser = User(id=1234, login='test', name='Super User')
+            session.add(superuser)
+            user = User(id=0, login='reporter', name='Reporting User')
+            session.add(user)
+
+            context = MagicMock()
+            type(context).sender = PropertyMock(return_value=user)
+            type(context).session = PropertyMock(return_value=session)
+            type(context.update.effective_chat).id = 777
+            basic.on_user_report_request(context)
+            context.send_response_message.assert_called_once_with('waiting_for_Reporting User_report')
+            context.send_response_message.reset_mock()
+            session.flush()
+
+            type(context.update.message).message_id = PropertyMock(return_value=4321)
+            routing.dispatch_bare_message(context)
+            context.send_response_message.assert_called_once_with('Reporting User_report_sent')
+            bot.forward_message.assert_called_once_with(1234, 777, 4321)
+            self.assertEqual(0, session.query(PendingAction).count())
+
+    def test_user_report_cancelled(self):
+        with ScopedSession(self.connection) as session:
+            user = User(id=0, login='reporter', name='Reporting User')
+            session.add(user)
+
+            context = MagicMock()
+            type(context).sender = PropertyMock(return_value=user)
+            type(context).session = PropertyMock(return_value=session)
+            type(context.update.effective_chat).id = 777
+            basic.on_user_report_request(context)
+            context.send_response_message.assert_called_once_with('waiting_for_Reporting User_report')
+            context.send_response_message.reset_mock()
+            session.flush()
+
+            type(context.update.message).id = PropertyMock(return_value=4321)
+            basic.on_reset_action(context)
+            context.send_response_message.assert_called_once_with('pending_action_cancelled')

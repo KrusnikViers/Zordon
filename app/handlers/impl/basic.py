@@ -1,29 +1,7 @@
 from app.core.info import PROJECT_FULL_NAME
+from app.handlers.actions import Pending
 from app.handlers.context import Context
-from app.models.all import User
-
-
-def _maybe_greet_user(context: Context, user: User):
-    if context.group not in user.groups:
-        user.groups.append(context.group)
-        message_template = _('greet_known_{user}') if user.is_known else _('greet_new_{user}')
-        user.is_known = True
-        context.send_response_message(message_template.format(user=user.name))
-
-
-def _maybe_farewell_user(context: Context, user: User):
-    if context.group in user.groups:
-        user.groups.remove(context.group)
-        context.send_response_message(_('farewell_{user}').format(user=user.login_if_exists()))
-
-
-def process_group_changes(context: Context):
-    _maybe_greet_user(context, context.sender)
-    if context.users_joined:
-        for user in context.users_joined:
-            _maybe_greet_user(context, user)
-    if context.user_left:
-        _maybe_farewell_user(context, context.user_left)
+from app.handlers.reports import ReportsSender
 
 
 def on_help_or_start(context: Context):
@@ -33,3 +11,19 @@ def on_help_or_start(context: Context):
 
 def on_click_here(context: Context):
     context.send_response_message(_('rdr2_easter_egg'))
+
+
+def on_reset_action(context: Context, new_action=None):
+    action_string = context.sender.reset_pending_action(new_action, context.update.effective_chat.id)
+    if action_string:
+        context.send_response_message(_('pending_action_cancelled'))
+
+
+def on_user_report_request(context: Context):
+    on_reset_action(context, new_action=Pending.REPORT)
+    context.send_response_message(_('waiting_for_{user}_report').format(user=context.sender.name))
+
+
+def on_user_report_received(context: Context):
+    ReportsSender.forward_user_message(context)
+    context.send_response_message(_('{user}_report_sent').format(user=context.sender.name))

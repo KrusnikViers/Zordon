@@ -1,23 +1,23 @@
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
-from app.handlers import commands
+from app.handlers import actions
 
 
 class InlineMenu(InlineKeyboardMarkup):
-    # Expects a list of rows, where each row is a list of tuples ('Button text', [command_name, <parameters>])
+    # Expects a list of rows, where each row is a list of tuples ('Button text', [command, <parameters>])
     def __init__(self, markup: list, close_button_text: str = ''):
         if close_button_text:
-            markup.append([(close_button_text, ['cancel'])])
+            markup.append([(close_button_text, [actions.Callback.CANCEL])])
 
-        def encode(data): return ' '.join([commands.str_code(data[0])] + [str(x) for x in data[1:]])
+        def encode(data): return ' '.join([str(x) for x in data])
         super(InlineMenu, self).__init__([[InlineKeyboardButton(text, callback_data=encode(data))
                                            for text, data in row] for row in markup])
 
-    @staticmethod
-    def response_data(update: Update) -> tuple:
-        # First element is a command identifier.
-        return tuple(update.callback_query.data.split()[1:])
 
-    @staticmethod
-    def pattern(command: str, has_parameters: bool) -> str:
-        return '^{0}{1}$'.format(commands.str_code(command), '\ .+' if has_parameters else '')
+def callback_data(update: Update) -> tuple:
+    # First element is a command identifier.
+    return tuple(update.callback_query.data.split()[1:])
+
+
+def callback_pattern(command: int, has_parameters: bool) -> str:
+    return '^{0}{1}$'.format(str(command), '\ .+' if has_parameters else '')

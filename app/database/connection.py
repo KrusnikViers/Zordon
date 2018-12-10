@@ -1,6 +1,7 @@
+import logging
+
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker
-import logging
 
 from app.core.configuration import Configuration
 from app.database.migrations import router

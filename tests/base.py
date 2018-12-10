@@ -1,12 +1,12 @@
-from unittest import TestCase
 import builtins
 import logging
 import os
+from unittest import TestCase
 
 from app.core.configuration import Configuration
 from app.database.connection import DatabaseConnection
 from app.database.scoped_session import ScopedSession
-from app.models.all import Group, Response, Request, User
+from app.models.all import Group, Request, Response, User
 
 
 class MatcherAny:
@@ -28,7 +28,7 @@ class InBotTestCase(BaseTestCase):
 
         self.configuration = Configuration.load()
         if 'CI_DATABASE' in os.environ:
-            self.configuration.database_url = Configuration.parse_database_url(os.environ['CI_DATABASE'])
+            self.configuration.database_url = Configuration._parse_database_url(os.environ['CI_DATABASE'])
         self.connection = DatabaseConnection(self.configuration)
 
     def setUp(self):
