@@ -3,6 +3,13 @@ from telegram import Chat, Update
 from app.handlers.inline_menu import callback_data
 
 
+def _check_personal_callback(update: Update):
+    if update.callback_query is None or not update.effective_user:
+        return False
+    data = callback_data(update)
+    return len(data) > 0 and int(data[0]) == update.effective_user.id
+
+
 class Filter:
     # Messages from groups and supergroups.
     GROUP = 1
@@ -14,13 +21,6 @@ class Filter:
     PERSONAL_CALLBACK = 11
     # Ensures, that message has effective_chat, effective_user and message.
     FULL_DATA = 30
-
-    @staticmethod
-    def _check_personal_callback(update: Update):
-        if update.callback_query is None or not update.effective_user:
-            return False
-        data = callback_data(update)
-        return len(data) > 1 and data[1] == update.effective_user.id
 
     _CHECKS = {
         GROUP: lambda x: x.effective_chat.type in [Chat.GROUP, Chat.SUPERGROUP],

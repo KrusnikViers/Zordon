@@ -28,6 +28,14 @@ class TestInputFilters(BaseTestCase):
         type(update.effective_chat).type = Chat.SUPERGROUP
         self.assertTrue(Filter.apply([Filter.GROUP], update))
 
+        self.assertFalse(Filter.apply([Filter.PERSONAL_CALLBACK], update))
+        type(update).callback_query = PropertyMock(return_value=None)
+        self.assertFalse(Filter.apply([Filter.PERSONAL_CALLBACK], update))
+        type(update.effective_user).id = PropertyMock(return_value=1234)
+        type(update).callback_query = PropertyMock(return_value=MagicMock())
+        type(update.callback_query).data = PropertyMock(return_value='command 1234 some other data')
+        self.assertTrue(Filter.apply([Filter.PERSONAL_CALLBACK], update))
+
     def test_all_filters_covered(self):
         filters = [Filter.FULL_DATA, Filter.PERSONAL_CALLBACK, Filter.PRIVATE, Filter.GROUP, Filter.CALLBACK]
         for filter_value in filters:
