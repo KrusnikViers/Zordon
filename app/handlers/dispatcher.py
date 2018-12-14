@@ -9,7 +9,7 @@ from app.handlers.actions import Callback
 from app.handlers.context import Context
 from app.handlers.impl import basic, broadcasts, routing
 from app.handlers.inline_menu import callback_pattern
-from app.handlers.input_filters import ChatFilter, InputFilters, MessageFilter, is_message_valid
+from app.handlers.input_filters import Filter
 from app.handlers.reports import ReportsSender
 from app.i18n.translations import Translations
 
@@ -23,11 +23,11 @@ class Dispatcher:
         self._bind_all(updater)
 
     @staticmethod
-    def _is_update_valid(filters: InputFilters, update: Update):
-        return is_message_valid(filters, update) and \
+    def _is_update_valid(filters: list, update: Update):
+        return Filter.apply(filters, update) and \
                not (update.effective_user and update.effective_user.is_bot)
 
-    def _handler(self, handler_function, input_filters, bot: Bot, update: Update):
+    def _handler(self, handler_function, input_filters: list, bot: Bot, update: Update):
         if not self._is_update_valid(input_filters, update):
             return
 
@@ -40,29 +40,25 @@ class Dispatcher:
             ReportsSender.report_exception(self.db)
             raise exc
 
-    def _make_handler(self, raw_callable, input_filters: InputFilters = InputFilters()):
+    def _make_handler(self, raw_callable, input_filters: list = (Filter.FULL_DATA,)):
         return functools.partial(Dispatcher._handler, self, raw_callable, input_filters)
 
     def _bind_all(self, updater: Updater):
         handlers = [
             CommandHandler(['start', 'help'], self._make_handler(basic.on_help_or_start)),
-            CommandHandler(['clickme'], self._make_handler(basic.on_click_here, InputFilters(chat=ChatFilter.GROUP))),
+            CommandHandler(['clickme'], self._make_handler(basic.on_click_here, [Filter.GROUP])),
             CommandHandler(['cancel'], self._make_handler(basic.on_reset_action)),
             CommandHandler(['report'], self._make_handler(basic.on_user_report_request)),
 
-            CommandHandler(['all'], self._make_handler(broadcasts.on_all_request, InputFilters(chat=ChatFilter.GROUP))),
+            CommandHandler(['all'], self._make_handler(broadcasts.on_all_request, [Filter.GROUP])),
             CommandHandler(['recall'],
-                           self._make_handler(broadcasts.on_recall_request, InputFilters(chat=ChatFilter.GROUP))),
-            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_join,
-                                                    InputFilters(chat=ChatFilter.GROUP,
-                                                                 message=MessageFilter.CALLBACK)),
+                           self._make_handler(broadcasts.on_recall_request, [Filter.GROUP])),
+            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_join, [Filter.GROUP, Filter.CALLBACK]),
                                  pattern=callback_pattern(Callback.RECALL_JOIN, False)),
-            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_decline,
-                                                    InputFilters(chat=ChatFilter.GROUP,
-                                                                 message=MessageFilter.CALLBACK)),
+            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_decline, [Filter.GROUP, Filter.CALLBACK]),
                                  pattern=callback_pattern(Callback.RECALL_DECLINE, False)),
 
-            MessageHandler(Filters.all, self._make_handler(routing.dispatch_bare_message)),
+            MessageHandler(Filters.all, self._make_handler(routing.dispatch_bare_message, [])),
         ]
 
         for handler in handlers:
