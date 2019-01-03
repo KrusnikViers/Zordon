@@ -17,3 +17,10 @@ class TestInlineMenu(BaseTestCase):
         self.assertEqual(['0 test what?', '0'], [x[0].callback_data for x in menu.inline_keyboard])
         self.assertEqual([[InlineKeyboardButton('manual_close', callback_data='0 test what')],
                           [InlineKeyboardButton('close_button', callback_data='0')]], menu.inline_keyboard)
+
+    def test_user_id(self):
+        menu = inline_menu.InlineMenu([[('manual_close', [actions.Callback.CANCEL, 'test', 'what?'])]], 'close_button',
+                                      user_id=1234)
+        self.assertEqual(['0 1234 test what?', '0 1234'], [x[0].callback_data for x in menu.inline_keyboard])
+        self.assertEqual([[InlineKeyboardButton('manual_close', callback_data='0 test what')],
+                          [InlineKeyboardButton('close_button', callback_data='0')]], menu.inline_keyboard)

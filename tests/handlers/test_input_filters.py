@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, PropertyMock
 
 from telegram import Chat
 
-from app.handlers.input_filters import ChatFilter, InputFilters, MessageFilter, is_message_valid
+from app.handlers.input_filters import Filter
 from tests.base import BaseTestCase
 
 
@@ -11,18 +11,32 @@ class TestInputFilters(BaseTestCase):
         update = MagicMock()
 
         type(update).effective_chat = PropertyMock(return_value=None)
-        self.assertFalse(is_message_valid(InputFilters(), update))
+        type(update.effective_user).is_bot = PropertyMock(return_value=False)
+        self.assertFalse(Filter.apply([], update))
 
         type(update).effective_chat = PropertyMock(return_value=MagicMock())
         type(update.effective_chat).type = Chat.CHANNEL
-        self.assertFalse(is_message_valid(InputFilters(), update))
+        self.assertFalse(Filter.apply([], update))
 
         type(update.effective_chat).type = Chat.PRIVATE
-        self.assertTrue(is_message_valid(InputFilters(chat=ChatFilter.PRIVATE), update))
-        self.assertTrue(is_message_valid(InputFilters(chat=ChatFilter.PRIVATE, message=MessageFilter.CALLBACK), update))
+        self.assertTrue(Filter.apply([Filter.PRIVATE], update))
+        self.assertTrue(Filter.apply([Filter.PRIVATE, Filter.CALLBACK], update))
 
         type(update.effective_chat).type = Chat.GROUP
-        self.assertTrue(is_message_valid(InputFilters(chat=ChatFilter.GROUP, message=MessageFilter.CALLBACK), update))
+        self.assertTrue(Filter.apply([Filter.GROUP, Filter.CALLBACK], update))
 
         type(update.effective_chat).type = Chat.SUPERGROUP
-        self.assertTrue(is_message_valid(InputFilters(chat=ChatFilter.GROUP), update))
+        self.assertTrue(Filter.apply([Filter.GROUP], update))
+
+        self.assertFalse(Filter.apply([Filter.PERSONAL_CALLBACK], update))
+        type(update).callback_query = PropertyMock(return_value=None)
+        self.assertFalse(Filter.apply([Filter.PERSONAL_CALLBACK], update))
+        type(update.effective_user).id = PropertyMock(return_value=1234)
+        type(update).callback_query = PropertyMock(return_value=MagicMock())
+        type(update.callback_query).data = PropertyMock(return_value='command 1234 some other data')
+        self.assertTrue(Filter.apply([Filter.PERSONAL_CALLBACK], update))
+
+    def test_all_filters_covered(self):
+        filters = [Filter.FULL_DATA, Filter.PERSONAL_CALLBACK, Filter.PRIVATE, Filter.GROUP, Filter.CALLBACK]
+        for filter_value in filters:
+            self.assertTrue(filter_value in Filter._CHECKS)
