@@ -88,12 +88,10 @@ def _try_update_message(context: Context, request: Request):
 def _on_recall_response(context: Context, answer: int):
     request = context.session.query(Request).filter(
         Request.message_id == context.update.callback_query.message.message_id).first()
-    if request and context.sender != request.author:
-        response = context.session.query(Response).filter(Response.user == context.sender,
-                                                          Response.request == request).first()
-        if response and response.answer == answer:
-            return
-
+    assert request
+    response = context.session.query(Response).filter(Response.user == context.sender,
+                                                      Response.request == request).first()
+    if context.sender != request.author and (not response or response.answer != answer):
         if response:
             response.answer = answer
         else:
