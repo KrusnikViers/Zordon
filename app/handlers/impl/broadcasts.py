@@ -91,12 +91,15 @@ def _on_recall_response(context: Context, answer: int):
     if request and context.sender != request.author:
         response = context.session.query(Response).filter(Response.user == context.sender,
                                                           Response.request == request).first()
+        if response and response.answer == answer:
+            return
+
         if response:
             response.answer = answer
         else:
             response = Response(request=request, user=context.sender, answer=answer)
             context.session.add(response)
-    _try_update_message(context, request)
+        _try_update_message(context, request)
 
 
 def on_recall_join(context: Context):
