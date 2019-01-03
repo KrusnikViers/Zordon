@@ -126,9 +126,75 @@ class TestBroadcastHandlers(InBotTestCase):
             # Message became obsolete and can not be updated.
             self._reset_message(context)
             context.update.callback_query.edit_message_text.side_effect = TelegramError('')
-            broadcasts.on_recall_decline(context)
+            broadcasts.on_recall_join(context)
             context.update.callback_query.edit_message_text.assert_called_once_with(
-                text='recall_from_sender\n\nrecall_declined_user 1, user 2\nrecall_not_answered_user 3',
+                text='recall_from_sender\n\nrecall_joined_user 1\nrecall_declined_user 2\nrecall_not_answered_user 3',
                 reply_markup=self.MatcherResponseKeyboard())
             context.send_response_message.assert_called_once_with('invalid_request_user 1')
             self.assertEqual(2, session.query(Response).count())
+
+    def test_recall_multiple_responses(self):
+        with ScopedSession(self.connection) as session:
+            context = self._create_context(session)
+            second_user = User(id=2, name='user 2')
+            context.group.users.append(second_user)
+            session.add(second_user)
+
+            # Create recall message.
+            self._reset_message(context)
+            broadcasts.on_recall_request(context)
+            context.send_response_message.assert_called_once_with(
+                'recall_from_sender\n\nrecall_not_answered_user 2',
+                reply_markup=self.MatcherResponseKeyboard())
+            request = session.query(Request).first()
+            context.update.callback_query.edit_message_text.reset_mock()
+
+            # Accept by the first user.
+            self._reset_message(context)
+            type(context).sender = PropertyMock(return_value=second_user)
+            type(context.update.callback_query.message).message_id = PropertyMock(return_value=request.message_id)
+            broadcasts.on_recall_join(context)
+            context.update.callback_query.edit_message_text.assert_called_once_with(
+                text='recall_from_sender\n\nrecall_joined_user 2',
+                reply_markup=self.MatcherResponseKeyboard())
+            self.assertFalse(context.send_response_message.called)
+
+            # Accept again - should be ignored.
+            broadcasts.on_recall_join(context)
+            self.assertFalse(context.send_response_message.called)
+            context.update.callback_query.edit_message_text.reset_mock()
+
+            # Decline and decline once again.
+            broadcasts.on_recall_decline(context)
+            context.update.callback_query.edit_message_text.assert_called_once_with(
+                text='recall_from_sender\n\nrecall_declined_user 2',
+                reply_markup=self.MatcherResponseKeyboard())
+            self.assertFalse(context.send_response_message.called)
+            broadcasts.on_recall_decline(context)
+            self.assertFalse(context.send_response_message.called)
+
+    def test_request_initiator_responses(self):
+        with ScopedSession(self.connection) as session:
+            context = self._create_context(session)
+            second_user = User(id=2, name='user 2')
+            context.group.users.append(second_user)
+            session.add(second_user)
+
+            # Create recall message.
+            self._reset_message(context)
+            broadcasts.on_recall_request(context)
+            context.send_response_message.assert_called_once_with(
+                'recall_from_sender\n\nrecall_not_answered_user 2',
+                reply_markup=self.MatcherResponseKeyboard())
+            request = session.query(Request).first()
+            context.update.callback_query.edit_message_text.reset_mock()
+
+            # Accept and decline by sender.
+            self._reset_message(context)
+            type(context.update.callback_query.message).message_id = PropertyMock(return_value=request.message_id)
+            broadcasts.on_recall_join(context)
+            self.assertFalse(context.send_response_message.called)
+            self.assertFalse(context.update.callback_query.edit_message_text.called)
+            broadcasts.on_recall_decline(context)
+            self.assertFalse(context.send_response_message.called)
+            self.assertFalse(context.update.callback_query.edit_message_text.called)

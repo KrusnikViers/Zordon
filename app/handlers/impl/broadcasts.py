@@ -88,15 +88,16 @@ def _try_update_message(context: Context, request: Request):
 def _on_recall_response(context: Context, answer: int):
     request = context.session.query(Request).filter(
         Request.message_id == context.update.callback_query.message.message_id).first()
-    if request and context.sender != request.author:
-        response = context.session.query(Response).filter(Response.user == context.sender,
-                                                          Response.request == request).first()
+    assert request
+    response = context.session.query(Response).filter(Response.user == context.sender,
+                                                      Response.request == request).first()
+    if context.sender != request.author and (not response or response.answer != answer):
         if response:
             response.answer = answer
         else:
             response = Response(request=request, user=context.sender, answer=answer)
             context.session.add(response)
-    _try_update_message(context, request)
+        _try_update_message(context, request)
 
 
 def on_recall_join(context: Context):
