@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, PropertyMock
 
 from telegram import Chat
 
-from app.handlers.input_filters import Filter
+from app.handlers.filters import Filter
 from tests.base import BaseTestCase
 
 

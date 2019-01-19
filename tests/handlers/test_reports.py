@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from app.handlers.reports import ReportsSender
+from app.handlers.util.reports import ReportsSender
 from tests.base import BaseTestCase
 
 

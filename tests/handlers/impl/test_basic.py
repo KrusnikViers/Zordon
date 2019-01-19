@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, PropertyMock
 
 from app.database.scoped_session import ScopedSession
 from app.handlers.impl import basic, routing
-from app.handlers.reports import ReportsSender
+from app.handlers.util.reports import ReportsSender
 from app.models.all import *
 from tests.base import InBotTestCase
 

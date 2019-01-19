@@ -2,7 +2,8 @@ from unittest.mock import MagicMock, PropertyMock
 
 from telegram import InlineKeyboardButton
 
-from app.handlers import actions, inline_menu
+from app.handlers import actions
+from app.handlers.util import inline_menu
 from tests.base import BaseTestCase
 
 

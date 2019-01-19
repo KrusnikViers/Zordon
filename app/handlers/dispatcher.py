@@ -7,10 +7,10 @@ from telegram.ext.filters import Filters
 from app.database.connection import DatabaseConnection
 from app.handlers.actions import Callback
 from app.handlers.context import Context
+from app.handlers.filters import Filter
 from app.handlers.impl import basic, broadcasts, routing
-from app.handlers.inline_menu import callback_pattern
-from app.handlers.input_filters import Filter
-from app.handlers.reports import ReportsSender
+from app.handlers.util.inline_menu import callback_pattern
+from app.handlers.util.reports import ReportsSender
 from app.i18n.translations import Translations
 
 
@@ -46,11 +46,17 @@ class Dispatcher:
     def _bind_all(self, updater: Updater):
         handlers = [
             CommandHandler(['start', 'help'], self._make_handler(basic.on_help_or_start)),
+
             CommandHandler(['clickme'], self._make_handler(basic.on_click_here, [Filter.GROUP])),
+
             CommandHandler(['cancel'], self._make_handler(basic.on_reset_action)),
+            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_join, [Filter.CALLBACK]),
+                                 pattern=callback_pattern(Callback.CANCEL, False)),
+
             CommandHandler(['report'], self._make_handler(basic.on_user_report_request)),
 
             CommandHandler(['all'], self._make_handler(broadcasts.on_all_request, [Filter.GROUP])),
+
             CommandHandler(['recall'],
                            self._make_handler(broadcasts.on_recall_request, [Filter.GROUP])),
             CallbackQueryHandler(self._make_handler(broadcasts.on_recall_join, [Filter.GROUP, Filter.CALLBACK]),

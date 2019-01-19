@@ -4,8 +4,8 @@ from telegram import Chat
 
 from app.database.scoped_session import ScopedSession
 from app.handlers.dispatcher import Dispatcher
-from app.handlers.input_filters import Filter
-from app.handlers.reports import ReportsSender
+from app.handlers.filters import Filter
+from app.handlers.util.reports import ReportsSender
 from app.models.all import User
 from tests.base import BaseTestCase, InBotTestCase, MatcherAny
 

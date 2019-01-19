@@ -1,6 +1,6 @@
 from telegram import Chat, Update
 
-from app.handlers.inline_menu import callback_data
+from app.handlers.util.inline_menu import callback_data
 
 
 def _check_personal_callback(update: Update):

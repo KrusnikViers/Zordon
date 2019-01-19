@@ -1,7 +1,7 @@
 from app.core.info import PROJECT_FULL_NAME
 from app.handlers.actions import Pending
 from app.handlers.context import Context
-from app.handlers.reports import ReportsSender
+from app.handlers.util.reports import ReportsSender
 
 
 def on_help_or_start(context: Context):
