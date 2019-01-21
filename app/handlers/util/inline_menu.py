@@ -26,7 +26,3 @@ class InlineMenu(InlineKeyboardMarkup):
 def callback_data(update: Update) -> tuple:
     # First element is a command identifier.
     return tuple(update.callback_query.data.split()[1:])
-
-
-def callback_pattern(command: int, has_parameters: bool) -> str:
-    return '^{0}{1}$'.format(str(command), '\ .+' if has_parameters else '')

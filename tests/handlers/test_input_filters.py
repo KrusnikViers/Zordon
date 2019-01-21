@@ -37,6 +37,6 @@ class TestInputFilters(BaseTestCase):
         self.assertTrue(Filter.apply([Filter.PERSONAL_CALLBACK], update))
 
     def test_all_filters_covered(self):
-        filters = [Filter.FULL_DATA, Filter.PERSONAL_CALLBACK, Filter.PRIVATE, Filter.GROUP, Filter.CALLBACK]
+        filters = [x for x in Filter.__dict__.values() if isinstance(x, int)]
         for filter_value in filters:
-            self.assertTrue(filter_value in Filter._CHECKS)
+            self.assertTrue(filter_value in Filter._CHECKS or filter_value in Filter._NO_CHECKS)
