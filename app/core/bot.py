@@ -1,8 +1,8 @@
 import logging
 
+from flexiconf import ArgsLoader, Configuration, JsonLoader
 from telegram.ext import Updater
 
-from app.core.configuration import Configuration
 from app.core.info import APP_DIR
 from app.database.connection import DatabaseConnection
 from app.handlers.dispatcher import Dispatcher
@@ -26,11 +26,17 @@ class Bot:
 
     def _set_up(self):
         logging.basicConfig(format='%(asctime)s:%(name)s:%(levelname)s - %(message)s', level=logging.INFO)
-        self.configuration = Configuration.load()
+
+        bare_args_config = Configuration([ArgsLoader()])
+        self.configuration = Configuration([
+            JsonLoader(bare_args_config.get_string('config', default=str(APP_DIR.joinpath('configuration.json')))),
+            ArgsLoader()
+        ])
+
         self.database_connection = DatabaseConnection(self.configuration)
         self.translations = Translations(APP_DIR.joinpath('i18n'), APP_DIR)
-        self.updater = Updater(token=self.configuration.telegram_bot_token,
-                               request_kwargs=self.configuration.proxy_params)
+        self.updater = Updater(token=self.configuration.get_string('telegram_bot_token', default=""),
+                               request_kwargs=self.configuration.get('proxy', default=None))
         self.dispatcher = Dispatcher(self.updater, self.database_connection, self.translations)
 
         ReportsSender.instance = ReportsSender(self.updater.bot, self.configuration)

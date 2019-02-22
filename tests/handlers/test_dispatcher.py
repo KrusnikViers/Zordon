@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, PropertyMock
 
 from telegram import Chat
+from flexiconf import Configuration
 
 from app.database.scoped_session import ScopedSession
 from app.handlers.dispatcher import Dispatcher
@@ -41,8 +42,8 @@ class TestDispatcherEx(InBotTestCase):
             user = User(id=1234, login='test', name='Super User')
             session.add(user)
 
-        configuration = MagicMock()
-        type(configuration).superuser_login = PropertyMock(return_value='test')
+        configuration = Configuration([])
+        configuration.set('superuser_login', 'test')
         bot = MagicMock()
         updater = MagicMock()
         type(updater).bot = PropertyMock(return_value=bot)

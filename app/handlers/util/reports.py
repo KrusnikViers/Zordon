@@ -1,8 +1,8 @@
 import traceback
 
+from flexiconf import Configuration
 from telegram import Bot
 
-from app.core.configuration import Configuration
 from app.database.connection import DatabaseConnection
 from app.database.scoped_session import ScopedSession
 from app.handlers.context import Context
@@ -15,7 +15,7 @@ class ReportsSender:
 
     def __init__(self, bot: Bot, configuration: Configuration):
         self.bot = bot
-        self.superuser_login = configuration.superuser_login
+        self.superuser_login = configuration.get_string('superuser_login', default=None)
 
     @classmethod
     def _find_superuser(cls, session) -> User:

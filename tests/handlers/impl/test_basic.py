@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, PropertyMock
+from flexiconf import Configuration
 
 from app.database.scoped_session import ScopedSession
 from app.handlers.impl import basic, routing
@@ -25,8 +26,8 @@ class TestBasicHandlers(InBotTestCase):
         context.send_response_message.assert_called_once_with('rdr2_easter_egg')
 
     def test_user_report_sent(self):
-        configuration = MagicMock()
-        type(configuration).superuser_login = PropertyMock(return_value='test')
+        configuration = Configuration([])
+        configuration.set('superuser_login', 'test')
         bot = MagicMock()
         updater = MagicMock()
         type(updater).bot = PropertyMock(return_value=bot)

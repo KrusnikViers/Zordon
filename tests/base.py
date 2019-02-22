@@ -3,7 +3,8 @@ import logging
 import os
 from unittest import TestCase
 
-from app.core.configuration import Configuration
+from flexiconf import Configuration, ArgsLoader
+
 from app.database.connection import DatabaseConnection
 from app.database.scoped_session import ScopedSession
 from app.models.all import Group, Request, Response, User
@@ -26,9 +27,9 @@ class InBotTestCase(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super(InBotTestCase, self).__init__(*args, **kwargs)
 
-        self.configuration = Configuration.load()
+        self.configuration = Configuration([ArgsLoader()])
         if 'CI_DATABASE' in os.environ:
-            self.configuration.database_url = Configuration._parse_database_url(os.environ['CI_DATABASE'])
+            self.configuration.set('database_url', os.environ['CI_DATABASE'])
         self.connection = DatabaseConnection(self.configuration)
 
     def setUp(self):

@@ -1,0 +1,12 @@
+{
+  "telegram_bot_token": "bot_token:for_test",
+  "database_url": "schema://json:database@test.com:111/db_name",
+  "superuser": "login_without_@",
+  "proxy": {
+    "proxy_url": "socks5://test.com",
+    "urllib3_proxy_kwargs": {
+        "username": "socks5_user",
+        "password": "socks5_password"
+    }
+  }
+}
