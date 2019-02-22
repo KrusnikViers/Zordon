@@ -15,7 +15,7 @@ class ReportsSender:
 
     def __init__(self, bot: Bot, configuration: Configuration):
         self.bot = bot
-        self.superuser_login = configuration.get_string('superuser_login', default=None)
+        self.superuser_login = configuration.get_string('superuser', default=None)
 
     @classmethod
     def _find_superuser(cls, session) -> User:

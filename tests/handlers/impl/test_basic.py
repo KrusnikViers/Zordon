@@ -27,7 +27,7 @@ class TestBasicHandlers(InBotTestCase):
 
     def test_user_report_sent(self):
         configuration = Configuration([])
-        configuration.set('superuser_login', 'test')
+        configuration.set('superuser', 'test')
         bot = MagicMock()
         updater = MagicMock()
         type(updater).bot = PropertyMock(return_value=bot)

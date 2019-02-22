@@ -17,10 +17,10 @@ env:
 
 install:
   - pip install -r requirements.txt
-  - pip install coveralls
+  - pip install codecov
 
 script:
   - coverage run --source=app -m unittest
 
 after_success:
-  - coveralls
+  - codecov
