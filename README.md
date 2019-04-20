@@ -39,6 +39,6 @@ Project root directory should be added to `PYTHONPATH` for correct work. There a
 
 ### Dependencies:
 
-* Python 3.7 or newer
+* Python 3.6 or newer
 * PostgreSQL database
 * Packages from `requirements.txt`
