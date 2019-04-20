@@ -1,6 +1,6 @@
 from telegram import Chat, Update
 
-from app.handlers.inline_menu import callback_data
+from app.handlers.util.inline_menu import callback_data
 
 
 def _check_personal_callback(update: Update):
@@ -19,28 +19,35 @@ class Filter:
     CALLBACK = 10
     # Same as previous, but also checks that first argument of the callback data is equal to sender's id.
     PERSONAL_CALLBACK = 11
-    # Ensures, that message has effective_chat, effective_user and message.
-    FULL_DATA = 30
+
+    # Let pass the message with no effective_chat, effective_user or message.
+    NOT_FULL_DATA = 30
 
     _CHECKS = {
         GROUP: lambda x: x.effective_chat.type in [Chat.GROUP, Chat.SUPERGROUP],
         PRIVATE: lambda x: x.effective_chat.type == Chat.PRIVATE,
         CALLBACK: lambda x: x.callback_query is not None,
         PERSONAL_CALLBACK: _check_personal_callback,
-        FULL_DATA: lambda x: x.effective_user and x.effective_chat and x.message,
+    }
+
+    _NO_CHECKS = {
+        NOT_FULL_DATA
     }
 
     @staticmethod
-    def _basic_filters(update: Update):
+    def _basic_filters(filters: list, update: Update):
         return update.effective_chat and \
                update.effective_chat.type in [Chat.GROUP, Chat.SUPERGROUP, Chat.PRIVATE] and \
-               not (update.effective_user and update.effective_user.is_bot)
+               not (update.effective_user and update.effective_user.is_bot) and \
+               (Filter.NOT_FULL_DATA in filters or (update.effective_user and
+                                                    update.effective_chat and
+                                                    update.message))
 
     @staticmethod
     def apply(filters: list, update: Update):
-        if not Filter._basic_filters(update):
+        if not Filter._basic_filters(filters, update):
             return False
         for filter_value in filters:
-            if not Filter._CHECKS[filter_value](update):
+            if not (filter_value in Filter._NO_CHECKS or Filter._CHECKS[filter_value](update)):
                 return False
         return True

@@ -2,7 +2,7 @@ from telegram import TelegramError
 
 from app.handlers import actions
 from app.handlers.context import Context
-from app.handlers.inline_menu import InlineMenu
+from app.handlers.util.inline_menu import InlineMenu
 from app.models.all import Request, Response
 
 

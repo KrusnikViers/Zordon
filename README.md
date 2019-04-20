@@ -1,10 +1,10 @@
-# Zordon Telegram Bot 3.1.1
+# Zordon Telegram Bot 3.1.3
 
 Telegram bot for group broadcasts and gathering people together.
 
 [![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg)](https://travis-ci.org/KrusnikViers/Zordon)
 [![Build status](https://ci.appveyor.com/api/projects/status/5ek9c42yy2usr23h?svg=true)](https://ci.appveyor.com/project/KrusnikViers/zordon)
-[![Coverage - Coveralls](https://coveralls.io/repos/github/KrusnikViers/Zordon/badge.svg)](https://coveralls.io/github/KrusnikViers/Zordon?branch=master)
+[![Coverage - Codecov](https://codecov.io/gh/KrusnikViers/Zordon/branch/master/graph/badge.svg)](https://codecov.io/gh/KrusnikViers/Zordon)
 [![Code Climate](https://codeclimate.com/github/KrusnikViers/Zordon/badges/gpa.svg)](https://codeclimate.com/github/KrusnikViers/Zordon)
 
 [![Docker Build Status](https://img.shields.io/docker/build/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
@@ -19,14 +19,9 @@ To be launched, bot needs token from @BotFather and PostgreSQL database. Also ch
 
 At the moment, webhook mode is not available.
 
-Bot could be configured through configuration json file or via command line (not available for a container mode). Configuration parameters (`json root key/command line key`):
-* `/-c`: path to the configuration file
-* `telegram_bot_token/-t`: token from @BotFather
-* `superuser/-s`: telegram login of the bot administrator
-* `database_url/-d`: database URL as `user:password@host:port/name`,
-* `proxy_url/-p`: bot could work via SOCKS5 proxy, if needed.
-* `proxy_user/-pu`: SOCKS5 user name
-* `proxy_password/-pp`: SOCKS5 proxy password,
+Bot could be configured by configuration json file or via command line (`-param_name=value`). Configuration example is in the `configuration.json.example` file, database url and Telegram API token are only required parameters.
+
+You may specify path to the configuration file by `config=path` command line parameter. If path was not specified, bot will be looking for `configuration.json` file in the root folder.
 
 ## How to run via Docker
 

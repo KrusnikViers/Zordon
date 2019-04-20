@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import app.core.bot
 import app.database.connection
-from app.handlers.reports import ReportsSender
+from app.handlers.util.reports import ReportsSender
 from tests.base import BaseTestCase, MatcherAny
 
 

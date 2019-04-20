@@ -7,10 +7,9 @@ from telegram.ext.filters import Filters
 from app.database.connection import DatabaseConnection
 from app.handlers.actions import Callback
 from app.handlers.context import Context
+from app.handlers.filters import Filter
 from app.handlers.impl import basic, broadcasts, routing
-from app.handlers.inline_menu import callback_pattern
-from app.handlers.input_filters import Filter
-from app.handlers.reports import ReportsSender
+from app.handlers.util.reports import ReportsSender
 from app.i18n.translations import Translations
 
 
@@ -22,13 +21,8 @@ class Dispatcher:
         self.updater = updater
         self._bind_all(updater)
 
-    @staticmethod
-    def _is_update_valid(filters: list, update: Update):
-        return Filter.apply(filters, update) and \
-               not (update.effective_user and update.effective_user.is_bot)
-
     def _handler(self, handler_function, input_filters: list, bot: Bot, update: Update):
-        if not self._is_update_valid(input_filters, update):
+        if not Filter.apply(input_filters, update):
             return
 
         try:
@@ -40,25 +34,35 @@ class Dispatcher:
             ReportsSender.report_exception(self.db)
             raise exc
 
-    def _make_handler(self, raw_callable, input_filters: list = (Filter.FULL_DATA,)):
+    def _make_handler(self, raw_callable, input_filters: list):
         return functools.partial(Dispatcher._handler, self, raw_callable, input_filters)
+
+    def command_handler(self, commands_list: list, raw_callable,
+                        input_filters: list = list()) -> CommandHandler:
+        return CommandHandler(commands_list, self._make_handler(raw_callable, input_filters))
+
+    def callback_handler(self, command: int, raw_callable,
+                         input_filters: list = list(),
+                         has_params: bool = False) -> CallbackQueryHandler:
+        def make_callback_pattern(callback_command: int, has_parameters: bool) -> str:
+            return '^{0}{1}$'.format(str(callback_command), '\ .+' if has_parameters else '')
+        return CallbackQueryHandler(self._make_handler(raw_callable, input_filters + [Filter.CALLBACK]),
+                                    pattern=make_callback_pattern(command, has_params))
 
     def _bind_all(self, updater: Updater):
         handlers = [
-            CommandHandler(['start', 'help'], self._make_handler(basic.on_help_or_start)),
-            CommandHandler(['clickme'], self._make_handler(basic.on_click_here, [Filter.GROUP])),
-            CommandHandler(['cancel'], self._make_handler(basic.on_reset_action)),
-            CommandHandler(['report'], self._make_handler(basic.on_user_report_request)),
+            self.command_handler(['start', 'help'], basic.on_help_or_start),
+            self.command_handler(['clickme'], basic.on_click_here, [Filter.GROUP]),
+            self.command_handler(['cancel'], basic.on_reset_action),
+            self.command_handler(['report'], basic.on_user_report_request),
 
-            CommandHandler(['all'], self._make_handler(broadcasts.on_all_request, [Filter.GROUP])),
-            CommandHandler(['recall'],
-                           self._make_handler(broadcasts.on_recall_request, [Filter.GROUP])),
-            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_join, [Filter.GROUP, Filter.CALLBACK]),
-                                 pattern=callback_pattern(Callback.RECALL_JOIN, False)),
-            CallbackQueryHandler(self._make_handler(broadcasts.on_recall_decline, [Filter.GROUP, Filter.CALLBACK]),
-                                 pattern=callback_pattern(Callback.RECALL_DECLINE, False)),
+            self.command_handler(['all'], broadcasts.on_all_request, [Filter.GROUP]),
+            self.command_handler(['recall'], broadcasts.on_recall_request, [Filter.GROUP]),
+            self.callback_handler(Callback.RECALL_JOIN, broadcasts.on_recall_join, [Filter.GROUP]),
+            self.callback_handler(Callback.RECALL_DECLINE, broadcasts.on_recall_decline, [Filter.GROUP]),
 
-            MessageHandler(Filters.all, self._make_handler(routing.dispatch_bare_message, [])),
+            # Special empty handler to let bot update user statuses even from non-message events.
+            MessageHandler(Filters.all, self._make_handler(routing.dispatch_bare_message, [Filter.NOT_FULL_DATA])),
         ]
 
         for handler in handlers:

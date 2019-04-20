@@ -1,11 +1,12 @@
 from unittest.mock import MagicMock, PropertyMock
 
 from telegram import Chat
+from flexiconf import Configuration
 
 from app.database.scoped_session import ScopedSession
 from app.handlers.dispatcher import Dispatcher
-from app.handlers.input_filters import Filter
-from app.handlers.reports import ReportsSender
+from app.handlers.filters import Filter
+from app.handlers.util.reports import ReportsSender
 from app.models.all import User
 from tests.base import BaseTestCase, InBotTestCase, MatcherAny
 
@@ -41,8 +42,8 @@ class TestDispatcherEx(InBotTestCase):
             user = User(id=1234, login='test', name='Super User')
             session.add(user)
 
-        configuration = MagicMock()
-        type(configuration).superuser_login = PropertyMock(return_value='test')
+        configuration = Configuration([])
+        configuration.set('superuser', 'test')
         bot = MagicMock()
         updater = MagicMock()
         type(updater).bot = PropertyMock(return_value=bot)
@@ -60,7 +61,7 @@ class TestDispatcherEx(InBotTestCase):
         type(update).effective_user = PropertyMock(return_value=None)
         type(update).message = PropertyMock(return_value=None)
 
-        self.assertRaises(Exception, instance._handler, handler_function, [], MagicMock(), update)
+        self.assertRaises(Exception, instance._handler, handler_function, [Filter.NOT_FULL_DATA], MagicMock(), update)
         handler_function.assert_called_once()
         bot.send_message.assert_called_once_with(1234, MatcherAny())
 
@@ -84,6 +85,6 @@ class TestDispatcherEx(InBotTestCase):
         type(update).effective_user = PropertyMock(return_value=None)
         type(update).message = PropertyMock(return_value=None)
 
-        self.assertRaises(Exception, instance._handler, handler_function, [], MagicMock(), update)
+        self.assertRaises(Exception, instance._handler, handler_function, [Filter.NOT_FULL_DATA], MagicMock(), update)
         handler_function.assert_called_once()
         self.assertFalse(bot.send_message.called)

@@ -1,8 +1,9 @@
 from unittest.mock import MagicMock, PropertyMock
+from flexiconf import Configuration
 
 from app.database.scoped_session import ScopedSession
 from app.handlers.impl import basic, routing
-from app.handlers.reports import ReportsSender
+from app.handlers.util.reports import ReportsSender
 from app.models.all import *
 from tests.base import InBotTestCase
 
@@ -12,12 +13,12 @@ class TestBasicHandlers(InBotTestCase):
         context = MagicMock()
         type(context).group = PropertyMock(return_value=None)
         basic.on_help_or_start(context)
-        context.send_response_message.assert_called_once_with('Zordon v3.1.1_help_for_private')
+        context.send_response_message.assert_called_once_with('Zordon v3.1.3_help_for_private')
 
     def test_help_or_start_group(self):
         context = MagicMock()
         basic.on_help_or_start(context)
-        context.send_response_message.assert_called_once_with('Zordon v3.1.1_help_for_group')
+        context.send_response_message.assert_called_once_with('Zordon v3.1.3_help_for_group')
 
     def test_click_here(self):
         context = MagicMock()
@@ -25,8 +26,8 @@ class TestBasicHandlers(InBotTestCase):
         context.send_response_message.assert_called_once_with('rdr2_easter_egg')
 
     def test_user_report_sent(self):
-        configuration = MagicMock()
-        type(configuration).superuser_login = PropertyMock(return_value='test')
+        configuration = Configuration([])
+        configuration.set('superuser', 'test')
         bot = MagicMock()
         updater = MagicMock()
         type(updater).bot = PropertyMock(return_value=bot)
