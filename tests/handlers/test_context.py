@@ -66,3 +66,9 @@ class TestContext(InBotTestCase):
         type(update.message).text = PropertyMock(return_value='/command_and_nothing_more')
         instance = context.Context(update, MagicMock(), MagicMock(), MagicMock())
         self.assertEqual('', instance.command_arguments())
+
+    def test_send_response_message(self):
+        update = MagicMock()
+        instance = context.Context(update, MagicMock(), MagicMock(), MagicMock())
+        instance.send_response_message('test_text')
+        instance.update.effective_chat.send_message.assert_called_once_with('test_text')

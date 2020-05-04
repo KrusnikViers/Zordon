@@ -28,9 +28,7 @@ class InBotTestCase(BaseTestCase):
         super(InBotTestCase, self).__init__(*args, **kwargs)
 
         self.configuration = Configuration([ArgsLoader()])
-        if 'CI_DATABASE' in os.environ:
-            self.configuration.set('database_url', os.environ['CI_DATABASE'])
-        self.connection = DatabaseConnection(self.configuration)
+        self.connection = DatabaseConnection(None, for_tests=True)
 
     def setUp(self):
         super(InBotTestCase, self).setUp()

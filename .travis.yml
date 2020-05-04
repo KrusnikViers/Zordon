@@ -1,21 +1,10 @@
-dist: trusty
-sudo: false
 language: python
 python:
   - 3.6
-  - 3.6-dev
-  - 3.7-dev
+  - 3.7
+  - 3.8
+  - 3.8-dev
   - nightly
-
-services:
-  - postgresql
-
-before_script:
-  - psql -c 'create database zordon_test_db;' -U postgres
-
-env:
-  global:
-    - CI_DATABASE="postgres://postgres:@127.0.0.1:5432/zordon_test_db"
 
 install:
   - pip install -r requirements.txt

@@ -1,14 +1,6 @@
 build: false
 
-services:
-  - postgresql93
-
 environment:
-  global:
-    CI_DATABASE: "postgres://postgres:Password12!@127.0.0.1:5432/test_db"
-    PGUSER: "postgres"
-    PGPASSWORD: "Password12!"
-
   matrix:
     - PYTHON: "C:\\Python36"
       PYTHON_VERSION: "3.6.x"
@@ -26,13 +18,18 @@ environment:
       PYTHON_VERSION: "3.7.x"
       PYTHON_ARCH: "64"
 
+    - PYTHON: "C:\\Python38"
+      PYTHON_VERSION: "3.8.x"
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python38-64"
+      PYTHON_VERSION: "3.8.x"
+      PYTHON_ARCH: "64"
+
 install:
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\Program Files\\PostgreSQL\\9.3\\bin\\;%PATH%"
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python --version"
   - "pip install -r requirements.txt"
-
-before_test:
-  - "createdb test_db"
 
 test_script:
   - "python -m unittest"

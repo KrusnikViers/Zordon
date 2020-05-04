@@ -5,7 +5,7 @@ from app.core.info import APP_DIR
 from app.database.migrations import router
 from app.database.scoped_session import ScopedSession
 from app.database.util import get_with_update
-from app.models.all import Group
+from app.models.all import User
 from tests.base import InBotTestCase
 
 
@@ -53,39 +53,39 @@ class TestInBot(InBotTestCase):
     def test_session_rollback(self):
         with self.assertRaises(Exception):
             with ScopedSession(self.connection) as session:
-                new_group = Group(id=0, name='test')
-                session.add(new_group)
-                self.assertEqual(1, len(session.query(Group).all()))
+                new_user = User(id=0, name='test')
+                session.add(new_user)
+                self.assertEqual(1, len(session.query(User).all()))
                 session.flush()
                 raise Exception
 
         # Make sure, that after exception inside session, session will be rolled back.
         with ScopedSession(self.connection) as session:
-            self.assertEqual(0, len(session.query(Group).all()))
+            self.assertEqual(0, len(session.query(User).all()))
 
     def test_get_with_update_util(self):
         with ScopedSession(self.connection) as session:
-            new_group = Group(id=0, name='test')
-            session.add(new_group)
-            self.assertEqual(1, len(session.query(Group).all()))
+            new_user = User(id=0, name='test')
+            session.add(new_user)
+            self.assertEqual(1, len(session.query(User).all()))
 
         # Test existing group with valid information.
         with ScopedSession(self.connection) as session:
-            group = get_with_update(session, Group, 0, name='test')
-            self.assertEqual(1, len(session.query(Group).all()))
-            self.assertEqual(group.id, 0)
-            self.assertEqual(group.name, 'test')
+            user = get_with_update(session, User, 0, name='test')
+            self.assertEqual(1, len(session.query(User).all()))
+            self.assertEqual(user.id, 0)
+            self.assertEqual(user.name, 'test')
 
         # Test existing record with updated information.
         with ScopedSession(self.connection) as session:
-            group = get_with_update(session, Group, 0, name='test_updated')
-            self.assertEqual(1, len(session.query(Group).all()))
-            self.assertEqual(group.id, 0)
-            self.assertEqual(group.name, 'test_updated')
+            user = get_with_update(session, User, 0, name='test_updated')
+            self.assertEqual(1, len(session.query(User).all()))
+            self.assertEqual(user.id, 0)
+            self.assertEqual(user.name, 'test_updated')
 
         # Test new record.
         with ScopedSession(self.connection) as session:
-            group = get_with_update(session, Group, 1, name='another_test')
-            self.assertEqual(2, len(session.query(Group).all()))
-            self.assertEqual(group.id, 1)
-            self.assertEqual(group.name, 'another_test')
+            user = get_with_update(session, User, 1, name='another_test')
+            self.assertEqual(2, len(session.query(User).all()))
+            self.assertEqual(user.id, 1)
+            self.assertEqual(user.name, 'another_test')

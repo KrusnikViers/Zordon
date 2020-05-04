@@ -1,12 +1,5 @@
 {
   "telegram_bot_token": "bot_token_from_botfather",
-  "database_url": "://user:password@database_url:port/database_name",
   "superuser": "login_without_@",
-  "proxy": {
-    "proxy_url": "socks5://proxy.url",
-    "urllib3_proxy_kwargs": {
-        "username": "socks5_user",
-        "password": "socks5_password"
-    }
-  }
+  "db_path": "path_to_db_file"
 }

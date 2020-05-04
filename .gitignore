@@ -1,3 +1,6 @@
+# Actual configuration should never end up in the repository
+configuration.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -5,6 +8,9 @@ __pycache__/
 
 # IDE directories
 .idea/
+
+# Directory, that often used for local buildfiles
+build/
 
 # Virtual environment
 venv/

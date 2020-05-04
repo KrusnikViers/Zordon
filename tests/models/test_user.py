@@ -24,3 +24,8 @@ class TestUser(InBotTestCase):
             # Trying to add the same action should also return nothing.
             self.assertEqual('', user.reset_pending_action('action_3', 25))
             self.assertEqual(2, session.query(PendingAction).count())
+
+    def test_mention_name(self):
+        with ScopedSession(self.connection):
+            user = User(id=0, name='only_name')
+            self.assertEqual('only_name', user.mention_name())

@@ -1,4 +1,4 @@
-# Zordon Telegram Bot 3.1.3
+# Zordon Telegram Bot 4.0.0
 
 Telegram bot for group broadcasts and gathering people together.
 
@@ -17,28 +17,23 @@ To be launched, bot needs token from @BotFather and PostgreSQL database. Also ch
 * Inline mode should be disabled
 * Group privacy mode should be disabled
 
-At the moment, webhook mode is not available.
-
-Bot could be configured by configuration json file or via command line (`-param_name=value`). Configuration example is in the `configuration.json.example` file, database url and Telegram API token are only required parameters.
-
-You may specify path to the configuration file by `config=path` command line parameter. If path was not specified, bot will be looking for `configuration.json` file in the root folder.
+Options could be passed via configuration json file or command line (`-param_name=value`), configuration example is
+in the `configuration.json.example` file. By default, bot will be looking for `configuration.json` file in the root
+directory (same level with this README file). Telegram API token is the only required parameter to have bot started.
 
 ## How to run via Docker
 
-It is recommended to run PostgreSQL as another container and unite both containers in one internal network. Otherwise, additional `net` param is not required. To run bot as a Docker container (with docker installed) use command below: 
+```
+docker run --restart always --name <instance name> -d <docker image name> \
+ -v <path to configuration>:/instance/configuration.json \
+ -v <path to the db directory>:/instance/storage
+```
 
-`docker run --restart always --net=<internal network with postgresql> --name zordon -v <path to configuration>:/configuration.json -d viers/zordon`
+## How to run as a developer
 
-## Run as a developer
-
-Project root directory should be added to `PYTHONPATH` for correct work. There are few scripts in `/scripts` directory, that are necessary for development:
-* `make_migrations.py`: autogenerate migrations from updated models. Requires only `-d` parameter.
-* `update_translations.py`: regenerate translations from code.
-* `run_tests.py`: launch python tests. Requires only `-d` parameter, **everything in this database will be erased**
+Project root directory should be added to `PYTHONPATH`. There are few scripts in `/scripts` directory, that are
+useful for the development:
+* `make_migrations.py`: autogenerate migrations from the updated models.
+* `update_translations.py`: regenerate translations from the code.
+* `run_tests.py`: launch python tests.
 * `run_bot.py`: launch bot itself. Requires full configuration. 
-
-### Dependencies:
-
-* Python 3.6 or newer
-* PostgreSQL database
-* Packages from `requirements.txt`
