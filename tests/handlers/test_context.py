@@ -3,7 +3,8 @@ from unittest.mock import MagicMock, PropertyMock
 from telegram import Chat
 
 from app.handlers import context
-from tests.base import InBotTestCase
+from app.models.all import *
+from tests.base import InBotTestCase, ScopedSession
 
 
 class TestContext(InBotTestCase):
@@ -16,6 +17,23 @@ class TestContext(InBotTestCase):
         with instance:
             self.assertFalse(instance.update.callback_query.answer.called)
         self.assertTrue(instance.update.callback_query.answer.called)
+
+    def test_private_locale(self):
+        with ScopedSession(self.connection) as session:
+            user = User(id=0, name='test', locale='ch')
+            session.add(user)
+
+        effective_user = MagicMock()
+        type(effective_user).id = PropertyMock(return_value=0)
+        type(effective_user).username = PropertyMock(return_value='login')
+        type(effective_user).full_name = PropertyMock(return_value='Test Test')
+        translations = MagicMock()
+        update = MagicMock()
+        type(update).effective_user = effective_user
+        type(update.effective_chat).type = PropertyMock(return_value=Chat.PRIVATE)
+        type(update).message = PropertyMock(return_value=None)
+        context.Context(update, MagicMock(), self.connection, translations)
+        translations.get.assert_called_once_with('ch')
 
     def test_effective_user_locale(self):
         effective_user = MagicMock()

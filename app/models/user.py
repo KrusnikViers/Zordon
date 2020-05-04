@@ -1,8 +1,9 @@
-from sqlalchemy import BigInteger, Column, String
+from sqlalchemy import BigInteger, Boolean, Column, String
 from sqlalchemy.orm import relationship, object_session
 
 from app.database.base_model import Base
 from app.models.pending_actions import PendingAction
+from app.models.relationships import group_members
 
 
 class User(Base):
@@ -12,6 +13,13 @@ class User(Base):
     login = Column(String)
     name = Column(String, nullable=False)
 
+    is_mute_enabled = Column(Boolean, nullable=False, default=False)
+    is_known = Column(Boolean, nullable=False, default=False)
+    locale = Column(String, nullable=True)
+
+    groups = relationship("Group", secondary=group_members, back_populates='users')
+    requests = relationship("Request")
+    responses = relationship("Response")
     pending_actions = relationship("PendingAction")
 
     def mention_name(self):

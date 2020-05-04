@@ -1,20 +1,82 @@
+#: handlers/impl/broadcasts.py:18
+msgid "all_from_{user}"
+msgstr "{user} просит вашего внимания!"
+
+#: handlers/impl/broadcasts.py:16
+msgid "all_with_text_from_{user}"
+msgstr "({user})"
+
+#: handlers/impl/routing.py:18
+msgid "farewell_{user}"
+msgstr "Я буду скучать, {user}."
+
+#: handlers/impl/routing.py:10
+msgid "greet_known_{user}"
+msgstr "Привет, {user}! Рад снова встретиться :)"
+
+#: handlers/impl/routing.py:10
+msgid "greet_new_{user}"
+msgstr "Привет, {user}. Приятно познакомиться!"
+
+#: handlers/impl/broadcasts.py:85
+msgid "invalid_request_{user}"
+msgstr "{user}, к сожалению, этот запрос уже не может быть использован."
+
+#: handlers/impl/broadcasts.py:12 handlers/impl/broadcasts.py:63
+msgid "no_users_for_broadcast_message"
+msgstr "Сейчас некому ответить на призыв. Возможно, позднее?"
+
 #: handlers/impl/basic.py:15
 msgid "pending_action_cancelled"
-msgstr "Нет так нет."
+msgstr "Начатое ранее ожидание сообщения было прекращено."
+
+#: handlers/impl/broadcasts.py:30
+msgid "recall_decline"
+msgstr "Отказаться"
+
+#: handlers/impl/broadcasts.py:52
+msgid "recall_declined_{users}"
+msgstr "Отказались: {users}"
+
+#: handlers/impl/broadcasts.py:69
+msgid "recall_from_{user}"
+msgstr "{user} приглашает всех присоединиться!"
+
+#: handlers/impl/broadcasts.py:29
+msgid "recall_join"
+msgstr "Согласиться"
+
+#: handlers/impl/broadcasts.py:50
+msgid "recall_joined_{users}"
+msgstr "Присоединились: {users}"
+
+#: handlers/impl/broadcasts.py:55
+msgid "recall_not_answered_{users}"
+msgstr "Не ответили: {users}"
+
+#: handlers/impl/broadcasts.py:67
+msgid "recall_with_text_from_{user}"
+msgstr "(приглашение от {user})"
 
 #: handlers/impl/basic.py:20
 msgid "waiting_for_{user}_report"
 msgstr ""
-"{user}, я готов передать ваше следующее сообщение своему администратору.\n"
+"{user}, я перешлю ваше следующее сообщение из этого чата в поддержку.\n"
 "Это действие можно отменить: /cancel"
 
 #: handlers/impl/basic.py:8
 msgid "{project}_help_for_group"
-msgstr "{project} - к вашим услугам!"
+msgstr ""
+"{project} - к вашим услугам!\n"
+"\n"
+"/all [text] - привлечь внимание участников чата\n"
+"/recall [text] - приглашение всем собраться вместе\n"
 
 #: handlers/impl/basic.py:8
 msgid "{project}_help_for_private"
-msgstr "{project} - к вашим услугам!"
+msgstr ""
+"{project} - к вашим услугам!\n"
+"К сожалению, сейчас я ничем не могу быть полезен в личных чатах. Но я попробую научиться чему-нибудь новому как можно скорее!"
 
 #: handlers/impl/basic.py:25
 msgid "{user}_report_sent"
