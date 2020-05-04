@@ -1,7 +1,7 @@
 import functools
 
-from telegram import Bot, Update
-from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler, Updater
+from telegram import Update
+from telegram.ext import CallbackQueryHandler, CommandHandler, MessageHandler, Updater, CallbackContext
 from telegram.ext.filters import Filters
 
 from app.database.connection import DatabaseConnection
@@ -21,12 +21,12 @@ class Dispatcher:
         self.updater = updater
         self._bind_all(updater)
 
-    def _handler(self, handler_function, input_filters: list, bot: Bot, update: Update):
+    def _handler(self, handler_function, input_filters: list, update: Update, callback_context: CallbackContext):
         if not Filter.apply(input_filters, update):
             return
 
         try:
-            with Context(update, bot, self.db, self.translations) as context:
+            with Context(update, callback_context, self.db, self.translations) as context:
                 if context.group:
                     routing.update_group_memberships(context)
                 handler_function(context)

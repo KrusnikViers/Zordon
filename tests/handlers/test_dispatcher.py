@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, PropertyMock
 
-from telegram import Chat
 from flexiconf import Configuration
+from telegram import Chat
 
 from app.database.scoped_session import ScopedSession
 from app.handlers.dispatcher import Dispatcher
@@ -29,10 +29,10 @@ class TestDispatcher(BaseTestCase):
 
         # Do not handle message of wrong type.
         type(update.effective_user).is_bot = PropertyMock(return_value=False)
-        instance._handler(handler_function, [Filter.PRIVATE], MagicMock(), update)
+        instance._handler(handler_function, [Filter.PRIVATE], update, MagicMock())
         self.assertFalse(handler_function.called)
 
-        instance._handler(handler_function, [Filter.GROUP], MagicMock(), update)
+        instance._handler(handler_function, [Filter.GROUP], update, MagicMock())
         handler_function.assert_called_once()
 
 
@@ -61,7 +61,7 @@ class TestDispatcherEx(InBotTestCase):
         type(update).effective_user = PropertyMock(return_value=None)
         type(update).message = PropertyMock(return_value=None)
 
-        self.assertRaises(Exception, instance._handler, handler_function, [Filter.INCOMPLETE_DATA], MagicMock(), update)
+        self.assertRaises(Exception, instance._handler, handler_function, [Filter.INCOMPLETE_DATA], update, MagicMock())
         handler_function.assert_called_once()
         bot.send_message.assert_called_once_with(1234, MatcherAny())
 
@@ -85,6 +85,6 @@ class TestDispatcherEx(InBotTestCase):
         type(update).effective_user = PropertyMock(return_value=None)
         type(update).message = PropertyMock(return_value=None)
 
-        self.assertRaises(Exception, instance._handler, handler_function, [Filter.INCOMPLETE_DATA], MagicMock(), update)
+        self.assertRaises(Exception, instance._handler, handler_function, [Filter.INCOMPLETE_DATA], update, MagicMock())
         handler_function.assert_called_once()
         self.assertFalse(bot.send_message.called)

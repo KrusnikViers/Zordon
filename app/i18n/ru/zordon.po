@@ -28,7 +28,7 @@ msgstr "Сейчас некому ответить на призыв. Возмо
 
 #: handlers/impl/basic.py:15
 msgid "pending_action_cancelled"
-msgstr "Начатое ранее ожидание сообщения было прекращено."
+msgstr "Действие отменено."
 
 #: handlers/impl/broadcasts.py:30
 msgid "recall_decline"
@@ -61,7 +61,7 @@ msgstr "(приглашение от {user})"
 #: handlers/impl/basic.py:20
 msgid "waiting_for_{user}_report"
 msgstr ""
-"{user}, я перешлю ваше следующее сообщение из этого чата в поддержку.\n"
+"{user}, я перешлю ваше следующее сообщение администратору бота.\n"
 "Это действие можно отменить: /cancel"
 
 #: handlers/impl/basic.py:8

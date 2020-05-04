@@ -28,7 +28,7 @@ msgstr "Nobody can response you right now. Perhaps, later?"
 
 #: handlers/impl/basic.py:15
 msgid "pending_action_cancelled"
-msgstr "Previous message waiting was cancelled"
+msgstr "Cancelled."
 
 #: handlers/impl/broadcasts.py:30
 msgid "recall_decline"
@@ -61,7 +61,7 @@ msgstr "(invite from {user})"
 #: handlers/impl/basic.py:20
 msgid "waiting_for_{user}_report"
 msgstr ""
-"{user}, I will forward your next message in this chat to the bot support.\n"
+"{user}, I will send your next message to the bot administrator\n"
 "(You may /cancel this action)"
 
 #: handlers/impl/basic.py:8

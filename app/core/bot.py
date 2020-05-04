@@ -28,14 +28,13 @@ class Bot:
         logging.basicConfig(format='%(asctime)s:%(name)s:%(levelname)s - %(message)s', level=logging.INFO)
 
         self.configuration = Configuration([
-            JsonLoader(str(ROOT_DIR.joinpath('/configuration.json'))),
+            JsonLoader(str(ROOT_DIR / 'configuration.json')),
             ArgsLoader()
         ])
 
         self.database_connection = DatabaseConnection(self.configuration)
         self.translations = Translations(APP_DIR.joinpath('i18n'), APP_DIR)
-        self.updater = Updater(token=self.configuration.get_string('telegram_bot_token', default=""),
-                               request_kwargs=self.configuration.get('proxy', default=None))
+        self.updater = Updater(token=self.configuration.get_string('telegram_bot_token', default=""), use_context=True)
         self.dispatcher = Dispatcher(self.updater, self.database_connection, self.translations)
 
         ReportsSender.instance = ReportsSender(self.updater.bot, self.configuration)
