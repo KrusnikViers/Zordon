@@ -3,8 +3,7 @@ from unittest.mock import MagicMock, PropertyMock
 from telegram import Chat
 
 from app.handlers import context
-from app.models.all import *
-from tests.base import InBotTestCase, ScopedSession
+from tests.base import InBotTestCase
 
 
 class TestContext(InBotTestCase):
@@ -17,23 +16,6 @@ class TestContext(InBotTestCase):
         with instance:
             self.assertFalse(instance.update.callback_query.answer.called)
         self.assertTrue(instance.update.callback_query.answer.called)
-
-    def test_private_locale(self):
-        with ScopedSession(self.connection) as session:
-            user = User(id=0, name='test', locale='ch')
-            session.add(user)
-
-        effective_user = MagicMock()
-        type(effective_user).id = PropertyMock(return_value=0)
-        type(effective_user).username = PropertyMock(return_value='login')
-        type(effective_user).full_name = PropertyMock(return_value='Test Test')
-        translations = MagicMock()
-        update = MagicMock()
-        type(update).effective_user = effective_user
-        type(update.effective_chat).type = PropertyMock(return_value=Chat.PRIVATE)
-        type(update).message = PropertyMock(return_value=None)
-        context.Context(update, MagicMock(), self.connection, translations)
-        translations.get.assert_called_once_with('ch')
 
     def test_effective_user_locale(self):
         effective_user = MagicMock()
@@ -66,3 +48,9 @@ class TestContext(InBotTestCase):
         type(update.message).text = PropertyMock(return_value='/command_and_nothing_more')
         instance = context.Context(update, MagicMock(), MagicMock(), MagicMock())
         self.assertEqual('', instance.command_arguments())
+
+    def test_send_response_message(self):
+        update = MagicMock()
+        instance = context.Context(update, MagicMock(), MagicMock(), MagicMock())
+        instance.send_response_message('test_text')
+        instance.update.effective_chat.send_message.assert_called_once_with('test_text')

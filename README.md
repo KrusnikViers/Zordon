@@ -1,44 +1,40 @@
-# Zordon Telegram Bot 3.1.3
+# Telegram Bot Template 1.0.0
 
-Telegram bot for group broadcasts and gathering people together.
+[![Build Status](https://travis-ci.org/KrusnikViers/TgBotTemplate.svg)](https://travis-ci.org/KrusnikViers/TgBotTemplate)
+[![Build status](https://ci.appveyor.com/api/projects/status/6uaw3t0aevq62ydp?svg=true)](https://ci.appveyor.com/project/KrusnikViers/tgbottemplate)
+[![Coverage - Codecov](https://codecov.io/gh/KrusnikViers/TgBotTemplate/branch/master/graph/badge.svg)](https://codecov.io/gh/KrusnikViers/TgBotTemplate)
+[![Maintainability](https://api.codeclimate.com/v1/badges/11bbbf9259251bdcada3/maintainability)](https://codeclimate.com/github/KrusnikViers/TgBotTemplate/maintainability)
 
-[![Build Status](https://travis-ci.org/KrusnikViers/Zordon.svg)](https://travis-ci.org/KrusnikViers/Zordon)
-[![Build status](https://ci.appveyor.com/api/projects/status/5ek9c42yy2usr23h?svg=true)](https://ci.appveyor.com/project/KrusnikViers/zordon)
-[![Coverage - Codecov](https://codecov.io/gh/KrusnikViers/Zordon/branch/master/graph/badge.svg)](https://codecov.io/gh/KrusnikViers/Zordon)
-[![Code Climate](https://codeclimate.com/github/KrusnikViers/Zordon/badges/gpa.svg)](https://codeclimate.com/github/KrusnikViers/Zordon)
+This project is intended to be used as a base for other Telegram bots. Current template has next features/requirements:
+* Requires Python 3.6 or newer
+* Requires Python packages from `requirements.txt`
+* Contains lightweight database, that could be used to store your bot information
+* Has localization support using Babel library.
+* Has templates for tests and CI services for open source projects.
 
-[![Docker Build Status](https://img.shields.io/docker/build/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
-[![MicroBadger Size](https://images.microbadger.com/badges/image/viers/zordon.svg)](https://hub.docker.com/r/viers/zordon/)
+_If any changes made to this file, check all places with RELEASE-UPDATE comment in code to be updated accordingly_
 
 ## Before the start
-To be launched, bot needs token from @BotFather and PostgreSQL database. Also check token settings:
-* Group mode should be enabled
-* Inline mode should be disabled
-* Group privacy mode should be disabled
+Every Telegram bot needs token from the @BotFather. When registering a token, keep in mind:
+* For participating in groups, Group mode should be enabled;
+* To see group message history, Group privacy mode should be disabled.
 
-At the moment, webhook mode is not available.
-
-Bot could be configured by configuration json file or via command line (`-param_name=value`). Configuration example is in the `configuration.json.example` file, database url and Telegram API token are only required parameters.
-
-You may specify path to the configuration file by `config=path` command line parameter. If path was not specified, bot will be looking for `configuration.json` file in the root folder.
+Options could be passed via configuration json file or command line (`-param_name=value`), configuration example is
+in the `configuration.json.example` file. By default, bot will be looking for `configuration.json` file in the root
+directory (same level with this README file). Telegram API token is the only required parameter to have bot started.
 
 ## How to run via Docker
+```
+docker run --restart always --name <instance name> -d <docker image name> \
+ -v <path to configuration>:/instance/configuration.json \
+ -v <path to the db directory>:/instance/storage
+```
 
-It is recommended to run PostgreSQL as another container and unite both containers in one internal network. Otherwise, additional `net` param is not required. To run bot as a Docker container (with docker installed) use command below: 
+## How to run as a developer
 
-`docker run --restart always --net=<internal network with postgresql> --name zordon -v <path to configuration>:/configuration.json -d viers/zordon`
-
-## Run as a developer
-
-Project root directory should be added to `PYTHONPATH` for correct work. There are few scripts in `/scripts` directory, that are necessary for development:
-* `make_migrations.py`: autogenerate migrations from updated models. Requires only `-d` parameter.
-* `update_translations.py`: regenerate translations from code.
-* `run_tests.py`: launch python tests. Requires only `-d` parameter, **everything in this database will be erased**
+Project root directory should be added to `PYTHONPATH`. There are few scripts in `/scripts` directory, that are
+useful for the development:
+* `make_migrations.py`: autogenerate migrations from the updated models.
+* `update_translations.py`: regenerate translations from the code.
+* `run_tests.py`: launch python tests.
 * `run_bot.py`: launch bot itself. Requires full configuration. 
-
-### Dependencies:
-
-* Python 3.6 or newer
-* PostgreSQL database
-* Packages from `requirements.txt`

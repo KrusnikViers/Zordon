@@ -6,5 +6,8 @@ __pycache__/
 # IDE directories
 .idea/
 
+# Directory, that often used for local buildfiles
+build/
+
 # Virtual environment
 venv/

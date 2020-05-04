@@ -61,7 +61,7 @@ class TestDispatcherEx(InBotTestCase):
         type(update).effective_user = PropertyMock(return_value=None)
         type(update).message = PropertyMock(return_value=None)
 
-        self.assertRaises(Exception, instance._handler, handler_function, [Filter.NOT_FULL_DATA], MagicMock(), update)
+        self.assertRaises(Exception, instance._handler, handler_function, [Filter.INCOMPLETE_DATA], MagicMock(), update)
         handler_function.assert_called_once()
         bot.send_message.assert_called_once_with(1234, MatcherAny())
 
@@ -85,6 +85,6 @@ class TestDispatcherEx(InBotTestCase):
         type(update).effective_user = PropertyMock(return_value=None)
         type(update).message = PropertyMock(return_value=None)
 
-        self.assertRaises(Exception, instance._handler, handler_function, [Filter.NOT_FULL_DATA], MagicMock(), update)
+        self.assertRaises(Exception, instance._handler, handler_function, [Filter.INCOMPLETE_DATA], MagicMock(), update)
         handler_function.assert_called_once()
         self.assertFalse(bot.send_message.called)

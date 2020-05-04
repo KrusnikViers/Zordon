@@ -1,88 +1,20 @@
-#: handlers/impl/broadcasts.py:18
-msgid "all_from_{user}"
-msgstr "{user} asks your attention!"
-
-#: handlers/impl/broadcasts.py:16
-msgid "all_with_text_from_{user}"
-msgstr "({user})"
-
-#: handlers/impl/routing.py:18
-msgid "farewell_{user}"
-msgstr "I'll be missing you, {user}."
-
-#: handlers/impl/routing.py:10
-msgid "greet_known_{user}"
-msgstr "Hi, {user}! Nice to see you again :)"
-
-#: handlers/impl/routing.py:10
-msgid "greet_new_{user}"
-msgstr "Hi, {user}. Nice to meet you!"
-
-#: handlers/impl/broadcasts.py:85
-msgid "invalid_request_{user}"
-msgstr "Sorry, {user}, but this request is not valid any more."
-
-#: handlers/impl/broadcasts.py:12 handlers/impl/broadcasts.py:63
-msgid "no_users_for_broadcast_message"
-msgstr "Nobody can response you right now. Perhaps, later?"
+#: handlers/impl/basic.py:15
+msgid "pending_action_cancelled"
+msgstr "Cancelled."
 
 #: handlers/impl/basic.py:20
-msgid "pending_action_cancelled"
-msgstr "Previous message waiting was cancelled"
+msgid "waiting_for_{user}_report"
+msgstr "{user}, I am ready to send your next message to support.(You may /cancel this action)"
 
-#: handlers/impl/basic.py:14
-msgid "rdr2_easter_egg"
-msgstr "@Greatmatis, let's play Red Dead Redemption II!"
+#: handlers/impl/basic.py:8
+msgid "{project}_help_for_group"
+msgstr "{project} - at your service!"
 
-#: handlers/impl/broadcasts.py:30
-msgid "recall_decline"
-msgstr "Decline"
-
-#: handlers/impl/broadcasts.py:52
-msgid "recall_declined_{users}"
-msgstr "Declined: {users}"
-
-#: handlers/impl/broadcasts.py:69
-msgid "recall_from_{user}"
-msgstr "{user} invites everyone!"
-
-#: handlers/impl/broadcasts.py:29
-msgid "recall_join"
-msgstr "Join"
-
-#: handlers/impl/broadcasts.py:50
-msgid "recall_joined_{users}"
-msgstr "Joined: {users}"
-
-#: handlers/impl/broadcasts.py:55
-msgid "recall_not_answered_{users}"
-msgstr "Not answered: {users}"
-
-#: handlers/impl/broadcasts.py:67
-msgid "recall_with_text_from_{user}"
-msgstr "(invite from {user})"
+#: handlers/impl/basic.py:8
+msgid "{project}_help_for_private"
+msgstr "{project} - at your service!"
 
 #: handlers/impl/basic.py:25
-msgid "waiting_for_{user}_report"
-msgstr ""
-"{user}, I will forward your next message in this chat to the bot support.\n"
-"(You may /cancel this action)"
-
-#: handlers/impl/basic.py:9
-msgid "{project}_help_for_group"
-msgstr ""
-"{project} - at your service!\n"
-"\n"
-"/all [text] - ask everyone's attention\n"
-"/recall [text] - invite everyone to join you\n"
-
-#: handlers/impl/basic.py:9
-msgid "{project}_help_for_private"
-msgstr ""
-"{project} - at your service!\n"
-"Sorry, but for now I have no functionality in private chats. Yet I will try to learn something new really soon!"
-
-#: handlers/impl/basic.py:30
 msgid "{user}_report_sent"
 msgstr "{user}, your message has been forwarded. Thank you for your feedback!"
 
