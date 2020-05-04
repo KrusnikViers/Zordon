@@ -20,11 +20,12 @@ To be launched, bot needs token from @BotFather and PostgreSQL database. Also ch
 Options could be passed via configuration json file or command line (`-param_name=value`), configuration example is
 in the `configuration.json.example` file. By default, bot will be looking for `configuration.json` file in the root
 directory (same level with this README file). Telegram API token is the only required parameter to have bot started.
+Parameter dp_path should be skipped, if bot is running as a Docker container.
 
 ## How to run via Docker
 
 ```
-docker run --restart always --name <instance name> -d <docker image name> \
+docker run --restart always --name <instance name> -d viers/zordon \
  -v <path to configuration>:/instance/configuration.json \
  -v <path to the db directory>:/instance/storage
 ```
