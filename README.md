@@ -25,9 +25,10 @@ Parameter dp_path should be skipped, if bot is running as a Docker container.
 ## How to run via Docker
 
 ```
-docker run --restart always --name <instance name> -d viers/zordon \
+docker run --restart always --name <instance name> -d \
  -v <path to configuration>:/instance/configuration.json \
- -v <path to the db directory>:/instance/storage
+ -v <path to the db directory>:/instance/storage \
+ viers/zordon
 ```
 
 ## How to run as a developer
