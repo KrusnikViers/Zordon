@@ -47,9 +47,7 @@ class Filter:
             return True
         if not update.effective_user or not update.effective_chat:
             return False
-        if Filter.CALLBACK in filters or Filter.PERSONAL_CALLBACK in filters or update.message:
-            return True
-        return False
+        return Filter.CALLBACK in filters or Filter.PERSONAL_CALLBACK in filters or update.message
 
     @staticmethod
     def apply(filters: list, update: Update):
