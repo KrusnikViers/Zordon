@@ -35,17 +35,25 @@ class Filter:
     }
 
     @staticmethod
-    def _basic_filters(filters: list, update: Update):
-        return update.effective_chat and \
-               update.effective_chat.type in [Chat.GROUP, Chat.SUPERGROUP, Chat.PRIVATE] and \
-               not (update.effective_user and update.effective_user.is_bot) and \
-               (Filter.INCOMPLETE_DATA in filters or (update.effective_user and
-                                                      update.effective_chat and
-                                                      update.message))
+    def _basic_filters(update: Update) -> bool:
+        if update.effective_chat and update.effective_chat.type not in [Chat.GROUP, Chat.SUPERGROUP, Chat.PRIVATE]:
+            return False
+        if update.effective_user and update.effective_user.is_bot: return False
+        return True
+
+    @staticmethod
+    def _completeness_filters(filters: list, update: Update) -> bool:
+        if Filter.INCOMPLETE_DATA in filters:
+            return True
+        if not update.effective_user or not update.effective_chat:
+            return False
+        if Filter.CALLBACK in filters or Filter.PERSONAL_CALLBACK in filters or update.message:
+            return True
+        return False
 
     @staticmethod
     def apply(filters: list, update: Update):
-        if not Filter._basic_filters(filters, update):
+        if not Filter._basic_filters(update) or not Filter._completeness_filters(filters, update):
             return False
         for filter_value in filters:
             if not (filter_value in Filter._NO_CHECKS or Filter._CHECKS[filter_value](update)):
